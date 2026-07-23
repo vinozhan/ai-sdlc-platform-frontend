@@ -13,8 +13,6 @@ import {
   Sparkles,
   Sun,
   Moon,
-  Plus,
-  ChevronDown,
   User,
   GitBranch,
   Cloud,
@@ -60,47 +58,7 @@ function Sidebar() {
         </div>
       </div>
 
-      <div className="px-3 pb-2">
-        <button
-          onClick={() => navigate("/settings")}
-          className={cn(
-            "flex w-full items-center gap-2 rounded-xl border px-3 py-2 text-left transition-colors",
-            isDark
-              ? "border-white/[0.06] bg-white/[0.03] hover:bg-white/[0.06]"
-              : "border-slate-200 bg-slate-50/80 hover:bg-slate-100"
-          )}
-        >
-          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-violet-500 text-[10px] font-bold text-white">
-            {settings.profile.name
-              .split(" ")
-              .map((n) => n[0])
-              .join("")
-              .slice(0, 2)
-              .toUpperCase()}
-          </div>
-          <span className={cn("flex-1 truncate text-xs font-medium", isDark ? "text-slate-200" : "text-slate-700")}>
-            {settings.profile.workspace}
-          </span>
-          <ChevronDown className={cn("h-3.5 w-3.5", isDark ? "text-slate-500" : "text-slate-400")} />
-        </button>
-      </div>
-
-      <div className="space-y-1.5 px-3 pb-3">
-        <button
-          onClick={() => navigate("/projects/new")}
-          className={cn(
-            "flex w-full items-center gap-2 rounded-xl border px-3 py-2.5 text-[13px] font-medium transition-all",
-            isDark
-              ? "border-violet-500/20 bg-violet-500/10 text-violet-200 hover:bg-violet-500/15"
-              : "border-violet-200 bg-violet-50 text-violet-700 hover:bg-violet-100"
-          )}
-        >
-          <Plus className="h-4 w-4" />
-          Create something new
-        </button>
-      </div>
-
-      <nav className="flex-1 space-y-0.5 overflow-y-auto px-3">
+      <nav className="flex-1 space-y-0.5 overflow-y-auto px-3 pt-2">
         {mainNav.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.path);

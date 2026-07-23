@@ -70,7 +70,7 @@ export function Projects() {
   };
 
   return (
-    <div className="relative mx-auto max-w-6xl space-y-6 p-6 md:p-8">
+    <div className="relative w-full space-y-6 p-6 md:p-8">
       <div
         className={cn(
           "pointer-events-none absolute inset-x-0 top-0 -z-10 h-48 bg-gradient-to-b",

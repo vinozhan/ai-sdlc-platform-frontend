@@ -133,7 +133,7 @@ function ProjectShell({ children }: { children: React.ReactNode }) {
           isDark ? "border-white/[0.06] bg-[#070a12]/92" : "border-slate-200/80 bg-[#f4f5f7]/92"
         )}
       >
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3">
+        <div className="flex w-full flex-wrap items-center justify-between gap-3">
           <div className="min-w-0">
             <div className="flex items-center gap-2.5">
               <span
@@ -189,7 +189,7 @@ function ProjectShell({ children }: { children: React.ReactNode }) {
             })}
           </div>
         </div>
-        <div className="mx-auto mt-3 max-w-7xl">
+        <div className="mt-3 w-full">
           <div className={cn("h-1 overflow-hidden rounded-full", isDark ? "bg-white/10" : "bg-slate-200")}>
             <div
               className="h-full rounded-full bg-gradient-to-r from-violet-500 to-blue-500 transition-all duration-500"
@@ -223,7 +223,7 @@ function RequirementsInput({
   ];
 
   return (
-    <div className="mx-auto flex min-h-[70vh] max-w-3xl flex-col items-center justify-center px-6 py-12">
+    <div className="flex min-h-[70vh] w-full flex-col items-center justify-center px-6 py-12">
       <div className="mb-8 text-center">
         <div
           className={cn(
@@ -457,7 +457,7 @@ function RequirementsResults({ project }: { project: Project }) {
   }));
 
   return (
-    <div className="mx-auto max-w-7xl space-y-5 p-6 md:p-8">
+    <div className="w-full space-y-5 p-6 md:p-8">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h3 className={cn("text-xl font-semibold", isDark ? "text-white" : "text-slate-900")}>

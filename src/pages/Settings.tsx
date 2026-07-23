@@ -46,7 +46,7 @@ export function SettingsPage() {
   );
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6 p-6 md:p-8">
+    <div className="w-full space-y-6 p-6 md:p-8">
       <div>
         <h2 className={cn("text-2xl font-semibold tracking-tight", isDark ? "text-white" : "text-slate-900")}>
           Settings

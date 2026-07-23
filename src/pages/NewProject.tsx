@@ -22,7 +22,7 @@ export function NewProject() {
   };
 
   return (
-    <div className="mx-auto flex min-h-full max-w-xl flex-col justify-center px-6 py-12">
+    <div className="flex min-h-full w-full flex-col justify-center px-6 py-12">
       <button
         onClick={() => navigate(-1)}
         className={cn(

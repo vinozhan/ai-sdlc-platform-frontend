@@ -118,7 +118,7 @@ export function Home() {
         )}
       />
 
-      <div className="relative mx-auto max-w-5xl px-6 pb-12 pt-10 md:px-8 md:pt-14">
+      <div className="relative w-full px-6 pb-12 pt-10 md:px-8 md:pt-14">
         {/* Hero */}
         <div className="mx-auto max-w-2xl text-center">
           <div

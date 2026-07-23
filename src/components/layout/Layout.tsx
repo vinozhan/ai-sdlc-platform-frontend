@@ -1,5 +1,5 @@
 import { type ReactNode, useState } from "react";
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Home,
   FolderKanban,
@@ -13,10 +13,6 @@ import {
   Sparkles,
   Sun,
   Moon,
-  User,
-  GitBranch,
-  Cloud,
-  Brain,
 } from "lucide-react";
 import { useStore } from "@/store/useStore";
 import { cn } from "@/utils/cn";
@@ -24,13 +20,12 @@ import { cn } from "@/utils/cn";
 const mainNav = [
   { id: "home", label: "Home", icon: Home, path: "/" },
   { id: "projects", label: "Projects", icon: FolderKanban, path: "/projects" },
-  { id: "settings", label: "Settings", icon: Settings, path: "/settings" },
 ];
 
 function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { theme, projects, settings, setActiveProjectId } = useStore();
+  const { theme, projects, setActiveProjectId } = useStore();
   const isDark = theme === "dark";
   const recent = projects.slice(0, 5);
 
@@ -91,7 +86,7 @@ function Sidebar() {
                 isDark ? "text-slate-600" : "text-slate-400"
               )}
             >
-              Recent projects
+              Favourites
             </p>
             {recent.map((p) => {
               const active = location.pathname.includes(`/projects/${p.id}`);
@@ -125,35 +120,23 @@ function Sidebar() {
         )}
       </nav>
 
-      <div className={cn("space-y-2 border-t p-3", isDark ? "border-white/[0.06]" : "border-slate-100")}>
-        <Link
-          to="/settings"
+      <div className={cn("border-t p-3", isDark ? "border-white/[0.06]" : "border-slate-100")}>
+        <button
+          onClick={() => navigate("/settings")}
           className={cn(
-            "flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-[13px] transition-colors",
-            isDark ? "text-slate-400 hover:bg-white/[0.04]" : "text-slate-500 hover:bg-slate-50"
+            "flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-[13px] font-medium transition-all",
+            isActive("/settings")
+              ? isDark
+                ? "bg-white/[0.08] text-white shadow-sm"
+                : "bg-slate-100 text-slate-900 shadow-sm"
+              : isDark
+              ? "text-slate-400 hover:bg-white/[0.04] hover:text-slate-200"
+              : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
           )}
         >
-          <User className="h-4 w-4" />
-          Profile & integrations
-        </Link>
-        <div className={cn("space-y-1.5 rounded-xl px-3 py-2.5", isDark ? "bg-white/[0.03]" : "bg-slate-50")}>
-          <div className="flex items-center gap-2 text-[11px]">
-            <GitBranch className={cn("h-3 w-3", settings.git.connected ? "text-emerald-500" : "text-slate-400")} />
-            <span className={isDark ? "text-slate-300" : "text-slate-600"}>
-              Git {settings.git.connected ? "connected" : "not connected"}
-            </span>
-          </div>
-          <div className="flex items-center gap-2 text-[11px]">
-            <Cloud className={cn("h-3 w-3", settings.vercel.connected ? "text-emerald-500" : "text-slate-400")} />
-            <span className={isDark ? "text-slate-300" : "text-slate-600"}>
-              Vercel {settings.vercel.connected ? "connected" : "not connected"}
-            </span>
-          </div>
-          <div className="flex items-center gap-2 text-[11px]">
-            <Brain className="h-3 w-3 text-violet-500" />
-            <span className={isDark ? "text-slate-400" : "text-slate-500"}>{settings.ai.model}</span>
-          </div>
-        </div>
+          <Settings className={cn("h-4 w-4 shrink-0", isActive("/settings") && (isDark ? "text-violet-400" : "text-violet-600"))} />
+          <span className="truncate">Settings</span>
+        </button>
       </div>
     </aside>
   );

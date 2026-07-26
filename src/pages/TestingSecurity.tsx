@@ -41,7 +41,7 @@ import { cn } from "@/utils/cn";
 function TestDashboard() {
   const categories = [
     { name: "Unit Tests", data: { ...testResults.unit, failed: testResults.unit.failed, skipped: testResults.unit.skipped }, color: "#3b82f6", icon: "🧪" },
-    { name: "Integration Tests", data: { ...testResults.integration, failed: testResults.integration.failed, skipped: testResults.integration.skipped }, color: "#8b5cf6", icon: "🔗" },
+    { name: "Integration Tests", data: { ...testResults.integration, failed: testResults.integration.failed, skipped: testResults.integration.skipped }, color: "#2563eb", icon: "🔗" },
     { name: "Mutation Tests", data: { ...testResults.mutation, passed: testResults.mutation.killed, failed: testResults.mutation.survived, skipped: 0 }, color: "#f97316", icon: "🧬" },
   ];
 
@@ -84,7 +84,7 @@ function TestDashboard() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Activity className="h-4 w-4 text-violet-400" />
+              <Activity className="h-4 w-4 text-blue-400" />
               Coverage Trend
             </CardTitle>
           </CardHeader>
@@ -96,7 +96,7 @@ function TestDashboard() {
                   <XAxis dataKey="day" stroke="#64748b" fontSize={11} />
                   <YAxis stroke="#64748b" fontSize={11} domain={[70, 100]} />
                   <Tooltip contentStyle={{ background: "#0f172a", border: "1px solid #334155", borderRadius: 8 }} />
-                  <Line type="monotone" dataKey="coverage" stroke="#8b5cf6" strokeWidth={2} dot={{ fill: "#8b5cf6", r: 3 }} />
+                  <Line type="monotone" dataKey="coverage" stroke="#2563eb" strokeWidth={2} dot={{ fill: "#2563eb", r: 3 }} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -106,7 +106,7 @@ function TestDashboard() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <FileCheck className="h-4 w-4 text-violet-400" />
+              <FileCheck className="h-4 w-4 text-blue-400" />
               Coverage Heatmap
             </CardTitle>
           </CardHeader>
@@ -118,17 +118,17 @@ function TestDashboard() {
                   title={`Line ${cell.line}: ${cell.covered ? "covered" : "missed"}`}
                   className={cn(
                     "h-4 rounded-sm",
-                    cell.covered ? (cell.branch ? "bg-violet-500" : "bg-violet-500/40") : "bg-red-500/60"
+                    cell.covered ? (cell.branch ? "bg-blue-500" : "bg-blue-500/40") : "bg-red-500/60"
                   )}
                 />
               ))}
             </div>
             <div className="mt-3 flex items-center gap-4 text-xs text-slate-400">
               <span className="flex items-center gap-1">
-                <span className="h-3 w-3 rounded-sm bg-violet-500" /> Covered + Branch
+                <span className="h-3 w-3 rounded-sm bg-blue-500" /> Covered + Branch
               </span>
               <span className="flex items-center gap-1">
-                <span className="h-3 w-3 rounded-sm bg-violet-500/40" /> Covered
+                <span className="h-3 w-3 rounded-sm bg-blue-500/40" /> Covered
               </span>
               <span className="flex items-center gap-1">
                 <span className="h-3 w-3 rounded-sm bg-red-500/60" /> Missed
@@ -181,9 +181,9 @@ function SelfHealingRepair() {
             </div>
           </CardContent>
         </Card>
-        <Card className="border-violet-500/30">
+        <Card className="border-blue-500/30">
           <CardContent className="flex items-center gap-3 p-4">
-            <Sparkles className="h-8 w-8 text-violet-400" />
+            <Sparkles className="h-8 w-8 text-blue-400" />
             <div>
               <p className="text-2xl font-bold text-white">{approvalQueue.filter((a) => a.status === "pending").length}</p>
               <p className="text-xs text-slate-400">Awaiting Approval</p>
@@ -196,7 +196,7 @@ function SelfHealingRepair() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Bug className="h-4 w-4 text-violet-400" />
+              <Bug className="h-4 w-4 text-blue-400" />
               Failure Inbox
             </CardTitle>
           </CardHeader>
@@ -210,7 +210,7 @@ function SelfHealingRepair() {
                   onClick={() => setSelectedTest(test)}
                   className={cn(
                     "w-full rounded-lg border p-3 text-left transition-colors",
-                    selectedTest.id === test.id ? "border-violet-500/40 bg-violet-500/5" : "border-slate-800 hover:border-slate-700"
+                    selectedTest.id === test.id ? "border-blue-500/40 bg-blue-500/5" : "border-slate-800 hover:border-slate-700"
                   )}
                 >
                   <div className="flex items-center gap-2">
@@ -257,8 +257,8 @@ function SelfHealingRepair() {
                   </div>
                 </div>
 
-                <div className="rounded-lg border border-violet-500/30 bg-violet-500/5 p-3">
-                  <p className="mb-2 text-xs font-semibold text-violet-300">🛡️ Honesty Guard Status</p>
+                <div className="rounded-lg border border-blue-500/30 bg-blue-500/5 p-3">
+                  <p className="mb-2 text-xs font-semibold text-blue-300">🛡️ Honesty Guard Status</p>
                   <div className="space-y-1.5">
                     <div className="flex items-center gap-2 text-xs">
                       {guard.passesUnchanged ? (
@@ -352,7 +352,7 @@ function SelfHealingRepair() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <CheckCheck className="h-4 w-4 text-violet-400" />
+              <CheckCheck className="h-4 w-4 text-blue-400" />
               Approval Workflow
             </CardTitle>
           </CardHeader>
@@ -376,7 +376,7 @@ function SelfHealingRepair() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Activity className="h-4 w-4 text-violet-400" />
+              <Activity className="h-4 w-4 text-blue-400" />
               Mutation Testing Results
             </CardTitle>
           </CardHeader>
@@ -394,9 +394,9 @@ function SelfHealingRepair() {
             <div className="mt-3">
               <div className="mb-1 flex justify-between text-xs">
                 <span className="text-slate-400">Mutation Score</span>
-                <span className="text-violet-400">{testResults.mutation.coverage}%</span>
+                <span className="text-blue-400">{testResults.mutation.coverage}%</span>
               </div>
-              <Progress value={testResults.mutation.coverage} color="#8b5cf6" />
+              <Progress value={testResults.mutation.coverage} color="#2563eb" />
             </div>
             <div className="mt-3 flex items-center justify-between rounded-lg border border-slate-800 p-2">
               <span className="text-xs text-slate-400">PIT/Stryker Integration</span>
@@ -447,7 +447,7 @@ function SecurityScanning() {
         <Card className="col-span-2">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <ShieldAlert className="h-4 w-4 text-violet-400" />
+              <ShieldAlert className="h-4 w-4 text-blue-400" />
               Vulnerability Dashboard
             </CardTitle>
           </CardHeader>
@@ -468,7 +468,7 @@ function SecurityScanning() {
                   <tr
                     key={v.id}
                     onClick={() => setSelectedVuln(v)}
-                    className={cn("cursor-pointer", selectedVuln.id === v.id && "bg-violet-500/5")}
+                    className={cn("cursor-pointer", selectedVuln.id === v.id && "bg-blue-500/5")}
                   >
                     <Td className="font-mono text-xs">{v.cwe}</Td>
                     <Td className="text-xs">{v.name}</Td>
@@ -492,7 +492,7 @@ function SecurityScanning() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <ShieldCheck className="h-4 w-4 text-violet-400" />
+              <ShieldCheck className="h-4 w-4 text-blue-400" />
               CVSS Radar
             </CardTitle>
           </CardHeader>
@@ -503,7 +503,7 @@ function SecurityScanning() {
                   <PolarGrid stroke="#334155" />
                   <PolarAngleAxis dataKey="axis" tick={{ fill: "#64748b", fontSize: 9 }} />
                   <PolarRadiusAxis angle={90} domain={[0, 10]} tick={{ fill: "#475569", fontSize: 8 }} />
-                  <Radar name="CVSS" dataKey="value" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.3} />
+                  <Radar name="CVSS" dataKey="value" stroke="#2563eb" fill="#2563eb" fillOpacity={0.3} />
                 </RadarChart>
               </ResponsiveContainer>
             </div>
@@ -515,7 +515,7 @@ function SecurityScanning() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2">
-              <Lock className="h-4 w-4 text-violet-400" />
+              <Lock className="h-4 w-4 text-blue-400" />
               Remediation Panel — {selectedVuln.cwe}
             </CardTitle>
             <Badge variant={selectedVuln.severity === "critical" ? "error" : selectedVuln.severity === "high" ? "warning" : "info"}>
@@ -535,15 +535,15 @@ function SecurityScanning() {
               <p className="mt-1 text-sm text-white">Precision: {(selectedVuln.precision - 0.05).toFixed(2)}</p>
               <p className="text-xs text-slate-500">Recall: {(selectedVuln.recall - 0.03).toFixed(2)}</p>
             </div>
-            <div className="rounded-lg border border-violet-500/30 bg-violet-500/5 p-3">
-              <p className="text-xs font-semibold text-violet-300">Combined</p>
+            <div className="rounded-lg border border-blue-500/30 bg-blue-500/5 p-3">
+              <p className="text-xs font-semibold text-blue-300">Combined</p>
               <p className="mt-1 text-sm text-white">Precision: {(selectedVuln.precision + 0.03).toFixed(2)}</p>
               <p className="text-xs text-slate-500">Recall: {(selectedVuln.recall + 0.02).toFixed(2)}</p>
             </div>
           </div>
 
-          <div className="rounded-lg border border-violet-500/30 bg-violet-500/5 p-3">
-            <p className="mb-1 text-xs font-semibold text-violet-300">🤖 AI-Generated Fix</p>
+          <div className="rounded-lg border border-blue-500/30 bg-blue-500/5 p-3">
+            <p className="mb-1 text-xs font-semibold text-blue-300">🤖 AI-Generated Fix</p>
             <p className="text-xs text-slate-300">
               Add parameterized query to prevent SQL injection. Use prepared statements with JPA repository
               methods instead of native string concatenation.
@@ -593,7 +593,7 @@ function GovernanceAudit() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <ShieldCheck className="h-4 w-4 text-violet-400" />
+            <ShieldCheck className="h-4 w-4 text-blue-400" />
             Approval Gates
           </CardTitle>
         </CardHeader>
@@ -607,13 +607,13 @@ function GovernanceAudit() {
                     className={cn(
                       "flex flex-1 items-center gap-2 rounded-lg border p-3",
                       gate.status === "complete" && "border-emerald-500/30 bg-emerald-500/5",
-                      gate.status === "active" && "border-violet-500/30 bg-violet-500/5",
+                      gate.status === "active" && "border-blue-500/30 bg-blue-500/5",
                       gate.status === "pending" && "border-slate-800 bg-slate-900/50"
                     )}
                   >
                     <Icon
                       className="h-5 w-5"
-                      style={{ color: gate.status === "complete" ? "#10b981" : gate.status === "active" ? "#8b5cf6" : "#475569" }}
+                      style={{ color: gate.status === "complete" ? "#10b981" : gate.status === "active" ? "#2563eb" : "#475569" }}
                     />
                     <div>
                       <p className="text-xs font-medium text-white">{gate.name}</p>
@@ -634,7 +634,7 @@ function GovernanceAudit() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2">
-              <ScrollText className="h-4 w-4 text-violet-400" />
+              <ScrollText className="h-4 w-4 text-blue-400" />
               Audit Log
             </CardTitle>
             <Button size="sm" variant="outline">

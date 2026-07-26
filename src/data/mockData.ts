@@ -244,7 +244,7 @@ export const architecturePatterns = [
     explanation: "Excellent for testability and dependency rule enforcement across services.",
     pros: ["Testability", "Framework independence", "Clear boundaries"],
     cons: ["More boilerplate", "Steeper learning curve"],
-    color: "#8b5cf6",
+    color: "#2563eb",
   },
   {
     id: "layered",
@@ -800,7 +800,7 @@ export const traceabilityLinks = [
 export const componentHealth = [
   { id: "c1", name: "Requirements & Design", color: "#22c55e", load: 62, status: "optimal", artifacts: 48 },
   { id: "c2", name: "Code Generation", color: "#3b82f6", load: 78, status: "busy", artifacts: 124 },
-  { id: "c3", name: "Testing & Security", color: "#8b5cf6", load: 85, status: "critical", artifacts: 312 },
+  { id: "c3", name: "Testing & Security", color: "#2563eb", load: 85, status: "critical", artifacts: 312 },
   { id: "c4", name: "Deployment & Dependency", color: "#f97316", load: 45, status: "optimal", artifacts: 56 },
 ];
 

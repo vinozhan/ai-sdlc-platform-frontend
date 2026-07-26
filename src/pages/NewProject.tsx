@@ -38,7 +38,7 @@ export function NewProject() {
         <div
           className={cn(
             "mb-4 flex h-12 w-12 items-center justify-center rounded-2xl",
-            isDark ? "bg-violet-500/15 text-violet-300" : "bg-violet-50 text-violet-600"
+            isDark ? "bg-blue-500/15 text-blue-300" : "bg-blue-50 text-blue-600"
           )}
         >
           <FolderPlus className="h-6 w-6" />
@@ -66,7 +66,7 @@ export function NewProject() {
               }}
               placeholder="e.g. PayFlow Checkout Service"
               className={cn(
-                "h-11 w-full rounded-xl border px-3.5 text-sm outline-none transition-colors focus:ring-2 focus:ring-violet-500/30",
+                "h-11 w-full rounded-xl border px-3.5 text-sm outline-none transition-colors focus:ring-2 focus:ring-blue-500/30",
                 isDark
                   ? "border-white/10 bg-white/[0.03] text-white placeholder:text-slate-500"
                   : "border-slate-200 bg-white text-slate-900 placeholder:text-slate-400"
@@ -84,7 +84,7 @@ export function NewProject() {
               rows={3}
               placeholder="Short summary of what this project should deliver"
               className={cn(
-                "w-full resize-none rounded-xl border px-3.5 py-3 text-sm outline-none transition-colors focus:ring-2 focus:ring-violet-500/30",
+                "w-full resize-none rounded-xl border px-3.5 py-3 text-sm outline-none transition-colors focus:ring-2 focus:ring-blue-500/30",
                 isDark
                   ? "border-white/10 bg-white/[0.03] text-white placeholder:text-slate-500"
                   : "border-slate-200 bg-white text-slate-900 placeholder:text-slate-400"
@@ -95,10 +95,10 @@ export function NewProject() {
           <div
             className={cn(
               "flex items-start gap-3 rounded-xl border p-3",
-              isDark ? "border-violet-500/20 bg-violet-500/5" : "border-violet-100 bg-violet-50"
+              isDark ? "border-blue-500/20 bg-blue-500/5" : "border-blue-100 bg-blue-50"
             )}
           >
-            <Sparkles className={cn("mt-0.5 h-4 w-4 shrink-0", isDark ? "text-violet-300" : "text-violet-600")} />
+            <Sparkles className={cn("mt-0.5 h-4 w-4 shrink-0", isDark ? "text-blue-300" : "text-blue-600")} />
             <p className={cn("text-xs leading-relaxed", isDark ? "text-slate-300" : "text-slate-600")}>
               After you continue, you’ll land on <strong>Requirements</strong>. Paste natural language, user stories, or
               SRS content — the design phases will run automatically.

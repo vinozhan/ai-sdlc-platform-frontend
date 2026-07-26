@@ -83,7 +83,7 @@ function SprintScope() {
               <div className="space-y-2">
                 {["Payment Service", "KYC Service", "API Gateway", "User Entity"].map((s) => (
                   <div key={s} className="flex items-center gap-2 rounded bg-slate-900 p-2">
-                    <div className="h-2 w-2 rounded-full bg-violet-400" />
+                    <div className="h-2 w-2 rounded-full bg-blue-400" />
                     <span className="text-xs text-slate-300">{s}</span>
                   </div>
                 ))}

@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #1e3a5f;
+  --color-primary: #2563eb;
   --color-c1: #22c55e;
   --color-c2: #3b82f6;
-  --color-c3: #8b5cf6;
+  --color-c3: #2563eb;
   --color-c4: #f97316;
   --color-success: #10b981;
   --color-warning: #f59e0b;
@@ -17,16 +17,19 @@
 @layer base {
   :root {
     --bg-primary: #ffffff;
-    --bg-secondary: #f8fafc;
-    --bg-tertiary: #f1f5f9;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #f8fafc;
     --bg-surface: #ffffff;
-    --bg-elevated: #f8fafc;
+    --bg-elevated: #ffffff;
     --border-primary: #e2e8f0;
     --border-secondary: #cbd5e1;
     --text-primary: #0f172a;
     --text-secondary: #334155;
     --text-tertiary: #64748b;
     --text-muted: #94a3b8;
+    --accent-primary: #2563eb;
+    --accent-primary-hover: #1d4ed8;
+    --accent-primary-light: #eff6ff;
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
@@ -160,5 +163,9 @@
     100% {
       background-position: 200% 0;
     }
+  }
+
+  .landing-page {
+    scroll-behavior: smooth;
   }
 }

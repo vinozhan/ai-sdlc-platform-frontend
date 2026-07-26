@@ -74,7 +74,7 @@ const phaseMeta: { id: ReqPhase; label: string }[] = [
 const nodeColors: Record<string, string> = {
   actor: "#22c55e",
   entity: "#3b82f6",
-  module: "#8b5cf6",
+  module: "#2563eb",
   constraint: "#f97316",
 };
 
@@ -130,7 +130,7 @@ function ProjectShell({ children }: { children: React.ReactNode }) {
       <div
         className={cn(
           "sticky top-0 z-20 border-b px-6 py-3 backdrop-blur-xl",
-          isDark ? "border-white/[0.06] bg-[#070a12]/92" : "border-slate-200/80 bg-[#f4f5f7]/92"
+          isDark ? "border-white/[0.06] bg-[#071018]/92" : "border-slate-200/80 bg-[#ffffff]/92"
         )}
       >
         <div className="flex w-full flex-wrap items-center justify-between gap-3">
@@ -192,7 +192,7 @@ function ProjectShell({ children }: { children: React.ReactNode }) {
         <div className="mt-3 w-full">
           <div className={cn("h-1 overflow-hidden rounded-full", isDark ? "bg-white/10" : "bg-slate-200")}>
             <div
-              className="h-full rounded-full bg-gradient-to-r from-violet-500 to-blue-500 transition-all duration-500"
+              className="h-full rounded-full bg-gradient-to-r from-blue-500 to-blue-500 transition-all duration-500"
               style={{ width: `${project.progress}%` }}
             />
           </div>
@@ -228,7 +228,7 @@ function RequirementsInput({
         <div
           className={cn(
             "mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl",
-            isDark ? "bg-violet-500/15 text-violet-300" : "bg-violet-50 text-violet-600"
+            isDark ? "bg-blue-500/15 text-blue-300" : "bg-blue-50 text-blue-600"
           )}
         >
           <FileText className="h-6 w-6" />
@@ -245,7 +245,7 @@ function RequirementsInput({
         className={cn(
           "w-full rounded-2xl border-2 p-4 shadow-sm transition-all focus-within:shadow-md",
           isDark
-            ? "border-violet-500/40 bg-[#121826]/80 focus-within:border-violet-400"
+            ? "border-blue-500/40 bg-[#0f1d32]/80 focus-within:border-blue-400"
             : "border-blue-400 bg-white focus-within:border-blue-500"
         )}
       >
@@ -333,7 +333,7 @@ function RequirementsInput({
               onClick={() => text.trim() && onSubmit(text.trim(), files)}
               className={cn(
                 "flex h-9 items-center gap-2 rounded-xl px-4 text-sm font-medium text-white transition-colors disabled:opacity-40",
-                "bg-violet-500 hover:bg-violet-400"
+                "bg-blue-500 hover:bg-blue-400"
               )}
             >
               Analyze
@@ -394,7 +394,7 @@ function PhaseStepper({ phase }: { phase: ReqPhase }) {
             className={cn(
               "flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium",
               done && !active && (isDark ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300" : "border-emerald-200 bg-emerald-50 text-emerald-700"),
-              active && (isDark ? "border-violet-500/40 bg-violet-500/15 text-violet-200" : "border-violet-200 bg-violet-50 text-violet-700"),
+              active && (isDark ? "border-blue-500/40 bg-blue-500/15 text-blue-200" : "border-blue-200 bg-blue-50 text-blue-700"),
               !done && !active && (isDark ? "border-white/10 text-slate-500" : "border-slate-200 text-slate-400")
             )}
           >
@@ -474,7 +474,7 @@ function RequirementsResults({ project }: { project: Project }) {
             <span className={isDark ? "text-slate-500" : "text-slate-400"}>Progress</span>
             <span className={isDark ? "text-white" : "text-slate-900"}>{project.progress}%</span>
           </div>
-          <Progress value={project.progress} color="#8b5cf6" />
+          <Progress value={project.progress} color="#2563eb" />
         </div>
       </div>
 
@@ -510,7 +510,7 @@ function RequirementsResults({ project }: { project: Project }) {
               {[
                 { title: "Actors", items: extractedEntities.actors, color: "#22c55e" },
                 { title: "Entities", items: extractedEntities.entities, color: "#3b82f6" },
-                { title: "Actions", items: extractedEntities.actions, color: "#8b5cf6" },
+                { title: "Actions", items: extractedEntities.actions, color: "#2563eb" },
                 { title: "Relationships", items: extractedEntities.relationships, color: "#f97316" },
               ].map((col) => (
                 <Card key={col.title}>
@@ -564,7 +564,7 @@ function RequirementsResults({ project }: { project: Project }) {
           {view === "architecture" && (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
               {architecturePatterns.slice(0, 3).map((p) => (
-                <Card key={p.id} className={p.id === "microservices" ? "ring-2 ring-violet-500/40" : undefined}>
+                <Card key={p.id} className={p.id === "microservices" ? "ring-2 ring-blue-500/40" : undefined}>
                   <CardContent className="space-y-3 p-5">
                     <div className="flex items-center justify-between">
                       <h4 className={cn("font-semibold", isDark ? "text-white" : "text-slate-900")}>{p.name}</h4>
@@ -678,10 +678,10 @@ function RequirementsResults({ project }: { project: Project }) {
         <div
           className={cn(
             "fixed bottom-6 left-1/2 z-30 flex -translate-x-1/2 items-center gap-3 rounded-2xl border px-4 py-3 shadow-2xl",
-            isDark ? "border-white/10 bg-[#121826]" : "border-slate-200 bg-white"
+            isDark ? "border-white/10 bg-[#0f1d32]" : "border-slate-200 bg-white"
           )}
         >
-          <Loader2 className="h-4 w-4 animate-spin text-violet-500" />
+          <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
           <span className={cn("text-sm font-medium", isDark ? "text-slate-200" : "text-slate-700")}>
             Running design pipeline…
           </span>

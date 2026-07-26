@@ -23,7 +23,7 @@ const stageConfig = [
   { type: "requirement", label: "Requirements", icon: FileText, color: "#22c55e", x: 0 },
   { type: "design", label: "Design", icon: Pencil, color: "#22c55e", x: 200 },
   { type: "development", label: "Development", icon: Code2, color: "#3b82f6", x: 400 },
-  { type: "testing", label: "Testing", icon: FlaskConical, color: "#8b5cf6", x: 600 },
+  { type: "testing", label: "Testing", icon: FlaskConical, color: "#2563eb", x: 600 },
   { type: "deployment", label: "Deployment", icon: Rocket, color: "#f97316", x: 800 },
   { type: "improvement", label: "Continuous Improvement", icon: TrendingUp, color: "#06b6d4", x: 1000 },
 ];
@@ -31,7 +31,7 @@ const stageConfig = [
 const statusColors: Record<string, string> = {
   approved: "#22c55e",
   validated: "#3b82f6",
-  generated: "#8b5cf6",
+  generated: "#2563eb",
   passing: "#22c55e",
   failing: "#ef4444",
   findings: "#f59e0b",
@@ -329,7 +329,7 @@ export function Traceability() {
           <div className="grid grid-cols-2 gap-4">
             <div className="rounded-lg border border-cyan-500/30 bg-cyan-500/5 p-4">
               <div className="flex items-center gap-2">
-                <FlaskConical className="h-5 w-5 text-violet-400" />
+                <FlaskConical className="h-5 w-5 text-blue-400" />
                 <ArrowRight className="h-4 w-4 text-cyan-400" />
                 <Code2 className="h-5 w-5 text-blue-400" />
               </div>

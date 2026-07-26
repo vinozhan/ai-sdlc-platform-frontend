@@ -70,24 +70,15 @@ export function Projects() {
   };
 
   return (
-    <div className="relative w-full space-y-6 p-6 md:p-8">
-      <div
-        className={cn(
-          "pointer-events-none absolute inset-x-0 top-0 -z-10 h-48 bg-gradient-to-b",
-          isDark ? "from-violet-500/[0.05] to-transparent" : "from-violet-50 to-transparent"
-        )}
-      />
+    <div className="w-full space-y-6 p-6 md:p-8">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="mb-1 flex items-center gap-2">
-            <FolderKanban className={cn("h-5 w-5", isDark ? "text-violet-400" : "text-violet-600")} />
+            <FolderKanban className={cn("h-5 w-5", isDark ? "text-blue-400" : "text-blue-600")} />
             <h2 className={cn("text-2xl font-semibold tracking-tight", isDark ? "text-white" : "text-slate-900")}>
               Projects
             </h2>
           </div>
-          <p className={cn("text-sm", isDark ? "text-slate-400" : "text-slate-500")}>
-            {projects.length} project{projects.length === 1 ? "" : "s"} · requirements through deployment
-          </p>
         </div>
         <Button variant="primary" onClick={() => navigate("/projects/new")}>
           <Plus className="h-4 w-4" />
@@ -212,7 +203,7 @@ export function Projects() {
                     <Badge variant={st.variant}>{st.label}</Badge>
                   </div>
                   <div className="h-1.5 overflow-hidden rounded-full bg-slate-100 dark:bg-white/10">
-                    <div className="h-full rounded-full bg-violet-500 transition-all" style={{ width: `${p.progress}%` }} />
+                    <div className="h-full rounded-full bg-blue-500 transition-all" style={{ width: `${p.progress}%` }} />
                   </div>
                   <div className="flex items-center justify-between">
                     <span className={cn("flex items-center gap-1 text-[11px]", isDark ? "text-slate-500" : "text-slate-400")}>
@@ -233,7 +224,7 @@ export function Projects() {
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </button>
-                      <span className={cn("flex items-center gap-1 text-xs font-medium", isDark ? "text-violet-300" : "text-violet-600")}>
+                      <span className={cn("flex items-center gap-1 text-xs font-medium", isDark ? "text-blue-300" : "text-blue-600")}>
                         Open <ArrowRight className="h-3 w-3" />
                       </span>
                     </div>

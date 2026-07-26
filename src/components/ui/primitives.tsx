@@ -11,7 +11,7 @@ export function Card({ className, children, ...props }: HTMLAttributes<HTMLDivEl
       className={cn(
         "rounded-2xl border transition-colors",
         isDark
-          ? "border-white/[0.06] bg-[#121826]/80"
+          ? "border-white/[0.06] bg-[#0f1d32]/80"
           : "border-slate-200/80 bg-white shadow-sm shadow-slate-200/40",
         className
       )}
@@ -61,7 +61,7 @@ const badgeVariants: Record<BadgeVariant, string> = {
   info: "bg-blue-50 text-blue-700 border-blue-200/80 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20",
   c1: "bg-green-50 text-green-700 border-green-200/80 dark:bg-green-500/10 dark:text-green-400 dark:border-green-500/20",
   c2: "bg-blue-50 text-blue-700 border-blue-200/80 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20",
-  c3: "bg-violet-50 text-violet-700 border-violet-200/80 dark:bg-violet-500/10 dark:text-violet-400 dark:border-violet-500/20",
+  c3: "bg-blue-50 text-blue-700 border-blue-200/80 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20",
   c4: "bg-orange-50 text-orange-700 border-orange-200/80 dark:bg-orange-500/10 dark:text-orange-400 dark:border-orange-500/20",
 };
 
@@ -93,10 +93,10 @@ const buttonVariants: Record<ButtonVariant, string> = {
   default: "bg-slate-100 text-slate-700 hover:bg-slate-200 border-slate-200 dark:bg-white/5 dark:text-slate-100 dark:hover:bg-white/10 dark:border-white/10",
   outline: "bg-transparent text-slate-600 hover:bg-slate-100 border-slate-200 dark:text-slate-300 dark:hover:bg-white/5 dark:border-white/10",
   ghost: "bg-transparent text-slate-600 hover:bg-slate-100 border-transparent dark:text-slate-300 dark:hover:bg-white/5 dark:border-transparent",
-  primary: "bg-violet-500 text-white hover:bg-violet-400 border-violet-500 shadow-lg shadow-violet-500/20",
+  primary: "bg-blue-600 text-white hover:bg-blue-500 border-blue-600 shadow-lg shadow-blue-500/20",
   c1: "bg-green-600 text-white hover:bg-green-500 border-green-600",
   c2: "bg-blue-600 text-white hover:bg-blue-500 border-blue-600",
-  c3: "bg-violet-600 text-white hover:bg-violet-500 border-violet-600",
+  c3: "bg-blue-600 text-white hover:bg-blue-500 border-blue-600",
   c4: "bg-orange-600 text-white hover:bg-orange-500 border-orange-600",
   error: "bg-red-600 text-white hover:bg-red-500 border-red-600",
   success: "bg-emerald-600 text-white hover:bg-emerald-500 border-emerald-600",
@@ -121,7 +121,7 @@ export function Button({
     <button
       disabled={disabled}
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-xl border font-medium transition-all focus:outline-none focus:ring-2 focus:ring-violet-500/30 disabled:pointer-events-none disabled:opacity-50",
+        "inline-flex items-center justify-center gap-2 rounded-xl border font-medium transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/30 disabled:pointer-events-none disabled:opacity-50",
         buttonVariants[variant],
         buttonSizes[size],
         className
@@ -134,7 +134,7 @@ export function Button({
 }
 
 // ===== Progress =====
-export function Progress({ value, className, color = "#8b5cf6" }: { value: number; className?: string; color?: string }) {
+export function Progress({ value, className, color = "#2563eb" }: { value: number; className?: string; color?: string }) {
   const { theme } = useStore();
   const isDark = theme === "dark";
   return (
@@ -214,7 +214,7 @@ export function RingProgress({
   value,
   size = 120,
   strokeWidth = 10,
-  color = "#8b5cf6",
+  color = "#2563eb",
   label,
   sublabel,
 }: {

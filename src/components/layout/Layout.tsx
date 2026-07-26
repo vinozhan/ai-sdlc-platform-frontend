@@ -18,7 +18,7 @@ import { useStore } from "@/store/useStore";
 import { cn } from "@/utils/cn";
 
 const mainNav = [
-  { id: "home", label: "Home", icon: Home, path: "/" },
+  { id: "home", label: "Home", icon: Home, path: "/workspace" },
   { id: "projects", label: "Projects", icon: FolderKanban, path: "/projects" },
 ];
 
@@ -30,7 +30,7 @@ function Sidebar() {
   const recent = projects.slice(0, 5);
 
   const isActive = (path: string) => {
-    if (path === "/") return location.pathname === "/";
+    if (path === "/workspace") return location.pathname === "/workspace";
     return location.pathname === path || location.pathname.startsWith(path + "/");
   };
 
@@ -38,11 +38,11 @@ function Sidebar() {
     <aside
       className={cn(
         "flex w-[252px] shrink-0 flex-col border-r transition-colors",
-        isDark ? "border-white/[0.06] bg-[#0a0e18]" : "border-slate-200/90 bg-white"
+        isDark ? "border-white/[0.06] bg-[#0a1628]" : "border-slate-200/90 bg-white"
       )}
     >
       <div className="flex h-14 items-center gap-2.5 px-4">
-        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 via-blue-500 to-cyan-400 shadow-lg shadow-violet-500/25">
+        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-blue-400 shadow-lg shadow-blue-500/25">
           <Sparkles className="h-4 w-4 text-white" />
         </div>
         <div className="min-w-0">
@@ -66,13 +66,13 @@ function Sidebar() {
                 active
                   ? isDark
                     ? "bg-white/[0.08] text-white shadow-sm"
-                    : "bg-slate-100 text-slate-900 shadow-sm"
+                    : "bg-blue-50 text-blue-900 shadow-sm"
                   : isDark
                   ? "text-slate-400 hover:bg-white/[0.04] hover:text-slate-200"
-                  : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
+                  : "text-slate-500 hover:bg-blue-50/50 hover:text-slate-800"
               )}
             >
-              <Icon className={cn("h-4 w-4 shrink-0", active && (isDark ? "text-violet-400" : "text-violet-600"))} />
+              <Icon className={cn("h-4 w-4 shrink-0", active && (isDark ? "text-blue-400" : "text-blue-600"))} />
               <span className="truncate">{item.label}</span>
             </button>
           );
@@ -102,10 +102,10 @@ function Sidebar() {
                     active
                       ? isDark
                         ? "bg-white/[0.06] text-white"
-                        : "bg-slate-100 text-slate-900"
+                        : "bg-blue-50 text-blue-900"
                       : isDark
                       ? "text-slate-400 hover:bg-white/[0.04]"
-                      : "text-slate-500 hover:bg-slate-50"
+                      : "text-slate-500 hover:bg-blue-50/50"
                   )}
                 >
                   <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: p.color }} />
@@ -128,13 +128,13 @@ function Sidebar() {
             isActive("/settings")
               ? isDark
                 ? "bg-white/[0.08] text-white shadow-sm"
-                : "bg-slate-100 text-slate-900 shadow-sm"
+                : "bg-blue-50 text-blue-900 shadow-sm"
               : isDark
               ? "text-slate-400 hover:bg-white/[0.04] hover:text-slate-200"
-              : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
+              : "text-slate-500 hover:bg-blue-50/50 hover:text-slate-800"
           )}
         >
-          <Settings className={cn("h-4 w-4 shrink-0", isActive("/settings") && (isDark ? "text-violet-400" : "text-violet-600"))} />
+          <Settings className={cn("h-4 w-4 shrink-0", isActive("/settings") && (isDark ? "text-blue-400" : "text-blue-600"))} />
           <span className="truncate">Settings</span>
         </button>
       </div>
@@ -150,7 +150,7 @@ function TopBar() {
   const location = useLocation();
 
   const title = (() => {
-    if (location.pathname === "/") return "Home";
+    if (location.pathname === "/workspace") return "Home";
     if (location.pathname.startsWith("/projects/new")) return "New project";
     if (location.pathname.startsWith("/projects/") && location.pathname.includes("/requirements"))
       return "Requirements & Design";
@@ -182,7 +182,7 @@ function TopBar() {
     <header
       className={cn(
         "flex h-14 shrink-0 items-center gap-3 border-b px-6 backdrop-blur-xl",
-        isDark ? "border-white/[0.06] bg-[#0a0e18]/85" : "border-slate-200/80 bg-white/85"
+        isDark ? "border-white/[0.06] bg-[#0a1628]/85" : "border-slate-200/80 bg-white/95"
       )}
     >
       <h1 className={cn("truncate text-[15px] font-semibold tracking-tight", isDark ? "text-white" : "text-slate-900")}>
@@ -195,7 +195,7 @@ function TopBar() {
           "ml-auto flex h-9 w-64 items-center gap-2 rounded-full border px-3.5 text-[13px] transition-all",
           isDark
             ? "border-white/10 bg-white/[0.04] text-slate-500 hover:border-white/15"
-            : "border-slate-200 bg-slate-50 text-slate-400 hover:border-slate-300 hover:bg-white"
+            : "border-slate-200 bg-white text-slate-400 hover:border-blue-200 hover:bg-blue-50/30"
         )}
       >
         <Search className="h-3.5 w-3.5" />
@@ -216,7 +216,7 @@ function TopBar() {
           "flex h-9 w-9 items-center justify-center rounded-full border transition-colors",
           isDark
             ? "border-white/10 bg-white/[0.04] text-slate-400 hover:text-amber-300"
-            : "border-slate-200 bg-slate-50 text-slate-500 hover:text-violet-600"
+            : "border-slate-200 bg-white text-slate-500 hover:text-blue-600"
         )}
       >
         {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
@@ -231,7 +231,7 @@ function TopBar() {
           )}
         >
           <Bell className="h-4 w-4" />
-          <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-violet-500 px-1 text-[9px] font-bold text-white">
+          <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-blue-600 px-1 text-[9px] font-bold text-white">
             {alerts.length}
           </span>
         </button>
@@ -239,7 +239,7 @@ function TopBar() {
           <div
             className={cn(
               "absolute right-0 top-11 z-50 w-80 overflow-hidden rounded-2xl border shadow-2xl",
-              isDark ? "border-white/10 bg-[#121826]" : "border-slate-200 bg-white"
+              isDark ? "border-white/10 bg-[#0f1d32]" : "border-slate-200 bg-white"
             )}
           >
             <div
@@ -290,7 +290,7 @@ function TopBar() {
           isDark ? "border-white/10 bg-white/[0.04] hover:bg-white/[0.06]" : "border-slate-200 bg-slate-50 hover:bg-white"
         )}
       >
-        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-violet-500 text-[10px] font-bold text-white">
+        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-blue-400 text-[10px] font-bold text-white">
           {settings.profile.name
             .split(" ")
             .map((n) => n[0])
@@ -311,11 +311,19 @@ export function Layout({ children }: { children: ReactNode }) {
   const isDark = theme === "dark";
 
   return (
-    <div className={cn("flex h-screen overflow-hidden transition-colors", isDark ? "bg-[#070a12]" : "bg-[#f4f5f7]")}>
+    <div className={cn("flex h-screen overflow-hidden transition-colors", isDark ? "bg-[#071018]" : "bg-white")}>
       <Sidebar />
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         <TopBar />
-        <main className="flex-1 overflow-auto">{children}</main>
+        <main className="relative flex-1 overflow-auto">
+          <div
+            className={cn(
+              "pointer-events-none absolute inset-x-0 top-0 z-0 h-72 bg-gradient-to-b",
+              isDark ? "from-blue-500/[0.07] to-transparent" : "from-blue-100/60 to-transparent"
+            )}
+          />
+          <div className="relative z-[1] min-h-full">{children}</div>
+        </main>
       </div>
     </div>
   );

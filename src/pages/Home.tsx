@@ -76,7 +76,7 @@ function stageColors(progress: number) {
   const filled = Math.max(1, Math.min(4, Math.ceil(progress / 25)));
   return Array.from({ length: 4 }, (_, i) => {
     if (i < filled - 1) return "#22c55e";
-    if (i === filled - 1) return progress >= 100 ? "#22c55e" : "#8b5cf6";
+    if (i === filled - 1) return progress >= 100 ? "#22c55e" : "#2563eb";
     return undefined;
   });
 }
@@ -109,16 +109,7 @@ export function Home() {
   };
 
   return (
-    <div className="relative min-h-full">
-      {/* subtle background wash */}
-      <div
-        className={cn(
-          "pointer-events-none absolute inset-x-0 top-0 h-72 bg-gradient-to-b",
-          isDark ? "from-violet-500/[0.07] to-transparent" : "from-violet-100/60 to-transparent"
-        )}
-      />
-
-      <div className="relative w-full px-6 pb-12 pt-10 md:px-8 md:pt-14">
+    <div className="relative w-full px-6 pb-12 pt-10 md:px-8 md:pt-14">
         {/* Hero */}
         <div className="mx-auto max-w-2xl text-center">
           <div
@@ -127,7 +118,7 @@ export function Home() {
               isDark ? "border-white/10 bg-white/[0.04] text-slate-300" : "border-slate-200 bg-white text-slate-600 shadow-sm"
             )}
           >
-            <Sparkles className="h-3.5 w-3.5 text-violet-500" />
+            <Sparkles className="h-3.5 w-3.5 text-blue-500" />
             AI-assisted SDLC from requirements to release
           </div>
           <h1
@@ -148,8 +139,8 @@ export function Home() {
           className={cn(
             "mx-auto mt-8 w-full max-w-2xl rounded-2xl border p-4 shadow-lg transition-all focus-within:shadow-xl",
             isDark
-              ? "border-white/10 bg-[#121826]/90 shadow-black/30 focus-within:border-violet-500/40"
-              : "border-slate-200/80 bg-white shadow-slate-200/50 focus-within:border-violet-400"
+              ? "border-white/10 bg-[#0f1d32]/90 shadow-black/30 focus-within:border-blue-500/40"
+              : "border-slate-200/80 bg-white shadow-slate-200/50 focus-within:border-blue-400"
           )}
         >
           <textarea
@@ -218,7 +209,7 @@ export function Home() {
                 className={cn(
                   "flex h-9 w-9 items-center justify-center rounded-xl text-white transition-all",
                   prompt.trim()
-                    ? "bg-violet-500 shadow-md shadow-violet-500/25 hover:bg-violet-400"
+                    ? "bg-blue-500 shadow-md shadow-blue-500/25 hover:bg-blue-400"
                     : isDark
                     ? "bg-white/10 text-slate-500"
                     : "bg-slate-200 text-slate-400"
@@ -385,23 +376,16 @@ export function Home() {
         </div>
 
         {/* Quick actions */}
-        <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex flex-wrap gap-2">
-            <Button variant="outline" size="sm" onClick={() => navigate("/projects")}>
-              <FolderKanban className="h-3.5 w-3.5" />
-              All projects ({projects.length})
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => navigate("/settings")}>
-              <Settings className="h-3.5 w-3.5" />
-              Settings
-            </Button>
-          </div>
-          <Button variant="primary" size="sm" onClick={() => navigate("/projects/new")}>
-            <Plus className="h-3.5 w-3.5" />
-            New project
+        <div className="mt-8 flex flex-wrap gap-2">
+          <Button variant="outline" size="sm" onClick={() => navigate("/projects")}>
+            <FolderKanban className="h-3.5 w-3.5" />
+            All projects ({projects.length})
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => navigate("/settings")}>
+            <Settings className="h-3.5 w-3.5" />
+            Settings
           </Button>
         </div>
-      </div>
     </div>
   );
 }

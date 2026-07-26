@@ -12,7 +12,7 @@ export function CommandPalette() {
   const [selected, setSelected] = useState(0);
 
   const commands = [
-    { id: "home", label: "Go to Home", path: "/", category: "Navigation" },
+    { id: "home", label: "Go to Home", path: "/workspace", category: "Navigation" },
     { id: "projects", label: "Projects", path: "/projects", category: "Navigation" },
     { id: "new", label: "Create new project", path: "/projects/new", category: "Action" },
     { id: "settings", label: "Settings", path: "/settings", category: "Navigation" },
@@ -72,7 +72,7 @@ export function CommandPalette() {
       <div
         className={cn(
           "w-full max-w-xl rounded-2xl border shadow-2xl",
-          isDark ? "border-white/10 bg-[#121826]" : "border-slate-200 bg-white"
+          isDark ? "border-white/10 bg-[#0f1d32]" : "border-slate-200 bg-white"
         )}
         onClick={(e) => e.stopPropagation()}
       >
@@ -160,7 +160,7 @@ export function Toasts() {
             key={toast.id}
             className={cn(
               "flex w-80 items-start gap-3 rounded-2xl border p-3 shadow-2xl",
-              isDark ? "border-white/10 bg-[#121826]" : "border-slate-200 bg-white"
+              isDark ? "border-white/10 bg-[#0f1d32]" : "border-slate-200 bg-white"
             )}
           >
             <Icon className={cn("mt-0.5 h-5 w-5 shrink-0", color)} />

@@ -200,7 +200,7 @@ function BreakingChangePrediction() {
             </div>
             <div className="rounded-lg border border-slate-800 p-3 text-center">
               <p className="text-xs text-slate-500">LLM Reasoning</p>
-              <p className="text-xl font-bold text-violet-400">{selectedUpdate.llmScore}%</p>
+              <p className="text-xl font-bold text-blue-400">{selectedUpdate.llmScore}%</p>
             </div>
             <div className="rounded-lg border border-orange-500/30 bg-orange-500/5 p-3 text-center">
               <p className="text-xs text-orange-300">Fused Score</p>
@@ -481,7 +481,7 @@ function DeploymentMonitor() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <p className="text-xs text-slate-400">Active Pods</p>
-              <Cpu className="h-4 w-4 text-violet-400" />
+              <Cpu className="h-4 w-4 text-blue-400" />
             </div>
             <p className="mt-1 text-2xl font-bold text-white">12/12</p>
             <p className="text-xs text-slate-500">All healthy</p>

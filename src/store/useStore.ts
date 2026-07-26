@@ -52,7 +52,7 @@ export interface Toast {
   message?: string;
 }
 
-const PROJECT_COLORS = ["#f97316", "#8b5cf6", "#3b82f6", "#22c55e", "#ec4899", "#06b6d4"];
+const PROJECT_COLORS = ["#f97316", "#2563eb", "#3b82f6", "#22c55e", "#ec4899", "#06b6d4"];
 
 const defaultSettings: SettingsState = {
   git: { provider: "github", token: "", defaultOrg: "acme-labs", connected: true },
@@ -77,7 +77,7 @@ export const MOCK_PROJECTS: Project[] = [
     reqPhase: "done",
     progress: 72,
     techStack: ["React", "Spring Boot", "PostgreSQL", "Kubernetes"],
-    color: "#8b5cf6",
+    color: "#2563eb",
   },
   {
     id: "p2",

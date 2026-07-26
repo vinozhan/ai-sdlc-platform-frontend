@@ -71,19 +71,13 @@ export function Projects() {
 
   return (
     <div className="w-full space-y-6 p-6 md:p-8">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <div className="mb-1 flex items-center gap-2">
-            <FolderKanban className={cn("h-5 w-5", isDark ? "text-blue-400" : "text-blue-600")} />
-            <h2 className={cn("text-2xl font-semibold tracking-tight", isDark ? "text-white" : "text-slate-900")}>
-              Projects
-            </h2>
-          </div>
+      <div>
+        <div className="mb-1 flex items-center gap-2">
+          <FolderKanban className={cn("h-5 w-5", isDark ? "text-blue-400" : "text-blue-600")} />
+          <h2 className={cn("text-2xl font-semibold tracking-tight", isDark ? "text-white" : "text-slate-900")}>
+            Projects
+          </h2>
         </div>
-        <Button variant="primary" onClick={() => navigate("/projects/new")}>
-          <Plus className="h-4 w-4" />
-          New project
-        </Button>
       </div>
 
       <div className="flex flex-wrap items-center gap-3">

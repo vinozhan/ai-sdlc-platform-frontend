@@ -13,6 +13,7 @@ import {
   Sparkles,
   Sun,
   Moon,
+  Plus,
 } from "lucide-react";
 import { useStore } from "@/store/useStore";
 import { cn } from "@/utils/cn";
@@ -53,7 +54,20 @@ function Sidebar() {
         </div>
       </div>
 
-      <nav className="flex-1 space-y-0.5 overflow-y-auto px-3 pt-2">
+      <div className="px-3 pb-2">
+        <button
+          onClick={() => navigate("/projects/new")}
+          className={cn(
+            "flex w-full items-center justify-center gap-2 rounded-full border-2 border-blue-600 bg-white px-3 py-2.5 text-[13px] font-semibold text-blue-600 transition-all hover:bg-blue-50",
+            isDark && "hover:bg-blue-600/10"
+          )}
+        >
+          <Plus className="h-4 w-4 shrink-0" />
+          <span className="truncate">New project</span>
+        </button>
+      </div>
+
+      <nav className="flex-1 space-y-0.5 overflow-y-auto px-3 pt-1">
         {mainNav.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.path);

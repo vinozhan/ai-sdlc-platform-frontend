@@ -168,4 +168,104 @@
   .landing-page {
     scroll-behavior: smooth;
   }
+
+  .landing-orb {
+    animation: landing-drift 18s ease-in-out infinite;
+  }
+
+  .landing-orb-delay {
+    animation: landing-drift 22s ease-in-out infinite reverse;
+  }
+
+  .landing-node {
+    animation: landing-pulse 3s ease-in-out infinite;
+  }
+
+  .landing-node-delay {
+    animation: landing-pulse 3s ease-in-out infinite 1.5s;
+  }
+
+  .landing-flow-line {
+    animation: landing-dash 3s linear infinite;
+  }
+
+  .landing-flow-line-reverse {
+    animation: landing-dash 4s linear infinite reverse;
+  }
+
+  .landing-float {
+    animation: landing-float 5s ease-in-out infinite;
+  }
+
+  .landing-float-delay {
+    animation: landing-float 5s ease-in-out infinite 2s;
+  }
+
+  .landing-fade-up {
+    animation: landing-fade-up 0.6s ease-out both;
+  }
+
+  .landing-sparkle {
+    animation: landing-sparkle 2s ease-in-out infinite;
+  }
+
+  .landing-pulse-dot {
+    animation: landing-pulse 2s ease-in-out infinite;
+  }
+
+  .landing-pulse-glow {
+    animation: landing-glow 4s ease-in-out infinite;
+  }
+
+  .landing-scan-bar {
+    animation: landing-scan 2.5s ease-in-out infinite;
+  }
+
+  .landing-progress-grow {
+    animation: landing-grow 2s ease-out forwards;
+  }
+
+  @keyframes landing-drift {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(20px, -15px) scale(1.05); }
+  }
+
+  @keyframes landing-dash {
+    to { stroke-dashoffset: -24; }
+  }
+
+  @keyframes landing-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  @keyframes landing-fade-up {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes landing-sparkle {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.1); }
+  }
+
+  @keyframes landing-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  @keyframes landing-glow {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.08); }
+  }
+
+  @keyframes landing-scan {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(400%); }
+  }
+
+  @keyframes landing-grow {
+    from { width: 0; }
+    to { width: 90px; }
+  }
 }

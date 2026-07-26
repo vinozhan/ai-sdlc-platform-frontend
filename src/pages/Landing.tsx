@@ -6,7 +6,6 @@ import {
   LogIn,
   ArrowRight,
   ChevronDown,
-  FileText,
   Brain,
   Code2,
   Database,
@@ -22,6 +21,15 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/utils/cn";
+import { LandingBackground } from "@/components/landing/LandingBackground";
+import { HeroVisual } from "@/components/landing/HeroVisual";
+import {
+  FeaturesBanner,
+  WorkflowPipeline,
+  SolutionsVisual,
+  TestimonialsPattern,
+  CtaVisual,
+} from "@/components/landing/LandingVisuals";
 
 const navLinks = [
   { label: "Home", href: "#home" },
@@ -201,7 +209,8 @@ function GlassCard({ className, children }: { className?: string; children: Reac
   return (
     <div
       className={cn(
-        "rounded-2xl border border-white/60 bg-white/70 shadow-xl shadow-blue-900/[0.04] backdrop-blur-xl",
+        "group rounded-2xl border border-white/60 bg-white/70 shadow-xl shadow-blue-900/[0.04] backdrop-blur-xl",
+        "transition-all duration-300 hover:border-blue-200/60 hover:shadow-2xl hover:shadow-blue-900/[0.06]",
         className
       )}
     >
@@ -232,12 +241,7 @@ export function Landing() {
 
   return (
     <div className="landing-page min-h-screen bg-white text-slate-900">
-      {/* Background mesh */}
-      <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="absolute -left-40 top-0 h-[600px] w-[600px] rounded-full bg-blue-400/20 blur-[120px]" />
-        <div className="absolute -right-20 top-40 h-[500px] w-[500px] rounded-full bg-cyan-300/15 blur-[100px]" />
-        <div className="absolute bottom-0 left-1/3 h-[400px] w-[400px] rounded-full bg-blue-600/10 blur-[100px]" />
-      </div>
+      <LandingBackground />
 
       {/* Navbar */}
       <header className="fixed inset-x-0 top-0 z-50 border-b border-white/40 bg-white/70 backdrop-blur-xl">
@@ -355,43 +359,8 @@ export function Landing() {
           </div>
 
           {/* Hero visual */}
-          <div className="relative hidden lg:block">
-            <GlassCard className="p-6">
-              <div className="mb-4 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="h-3 w-3 rounded-full bg-red-400" />
-                  <div className="h-3 w-3 rounded-full bg-amber-400" />
-                  <div className="h-3 w-3 rounded-full bg-emerald-400" />
-                </div>
-                <span className="text-xs font-medium text-slate-400">AI Workspace Preview</span>
-              </div>
-              <div className="space-y-3">
-                <div className="flex items-center gap-3 rounded-xl border border-blue-100 bg-blue-50/50 p-4">
-                  <FileText className="h-8 w-8 text-blue-600" />
-                  <div>
-                    <p className="text-sm font-medium text-slate-900">payment-gateway-srs.pdf</p>
-                    <p className="text-xs text-slate-500">Analyzing 847 requirements…</p>
-                  </div>
-                  <div className="ml-auto h-2 w-2 animate-pulse rounded-full bg-blue-500" />
-                </div>
-                {["Architecture diagram generated", "API layer · 42 endpoints", "Database schema · 18 tables", "React frontend scaffold"].map(
-                  (item, i) => (
-                    <div
-                      key={item}
-                      className="flex items-center gap-3 rounded-xl border border-slate-100 bg-white/80 px-4 py-3"
-                      style={{ animationDelay: `${i * 100}ms` }}
-                    >
-                      <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                      <span className="text-sm text-slate-700">{item}</span>
-                    </div>
-                  )
-                )}
-              </div>
-            </GlassCard>
-            <div className="absolute -bottom-6 -left-6 rounded-2xl border border-white/60 bg-white/80 px-4 py-3 shadow-xl backdrop-blur-xl">
-              <p className="text-2xl font-bold text-blue-600">12 min</p>
-              <p className="text-xs text-slate-500">Avg. generation time</p>
-            </div>
+          <div className="relative mt-12 lg:mt-0">
+            <HeroVisual />
           </div>
         </div>
       </section>
@@ -408,10 +377,12 @@ export function Landing() {
               Enterprise-grade AI capabilities designed for teams that can't compromise on quality or speed.
             </p>
           </div>
+          <FeaturesBanner />
           <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {features.map((f) => (
-              <GlassCard key={f.title} className="p-6 transition-all hover:-translate-y-1 hover:shadow-2xl">
-                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600/10">
+              <GlassCard key={f.title} className="relative overflow-hidden p-6 transition-all hover:-translate-y-1">
+                <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-blue-500/0 to-transparent transition-all group-hover:via-blue-500/80" />
+                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600/10 to-blue-400/5 ring-1 ring-blue-100">
                   <f.icon className="h-5 w-5 text-blue-600" />
                 </div>
                 <h3 className="font-semibold text-slate-900">{f.title}</h3>
@@ -429,6 +400,7 @@ export function Landing() {
             <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">Solutions</p>
             <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-900">Built for how you deliver software</h2>
           </div>
+          <SolutionsVisual />
           <div className="mt-14 grid gap-8 md:grid-cols-3">
             {solutions.map((s) => (
               <GlassCard key={s.title} className="p-8 text-center">
@@ -450,6 +422,7 @@ export function Landing() {
             <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">How it works</p>
             <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-900">Three steps to a complete solution</h2>
           </div>
+          <WorkflowPipeline />
           <div className="relative mt-16 grid gap-8 md:grid-cols-3">
             <div className="absolute left-0 right-0 top-16 hidden h-px bg-gradient-to-r from-transparent via-blue-200 to-transparent md:block" />
             {steps.map((s) => (
@@ -467,7 +440,8 @@ export function Landing() {
       </section>
 
       {/* Testimonials */}
-      <section className="relative bg-gradient-to-b from-blue-600 to-blue-700 px-6 py-24 lg:px-8">
+      <section className="relative overflow-hidden bg-gradient-to-b from-blue-600 to-[#1e3a8a] px-6 py-24 lg:px-8">
+        <TestimonialsPattern />
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-semibold tracking-tight text-white md:text-4xl">
@@ -562,7 +536,8 @@ export function Landing() {
 
       {/* CTA */}
       <section className="relative px-6 py-24 lg:px-8">
-        <GlassCard className="mx-auto max-w-4xl bg-gradient-to-br from-blue-600 to-blue-700 p-12 text-center border-0">
+        <GlassCard className="relative mx-auto max-w-4xl overflow-hidden border-0 bg-gradient-to-br from-blue-600 to-[#1e3a8a] p-12 text-center">
+          <CtaVisual />
           <h2 className="text-3xl font-semibold text-white md:text-4xl">Ready to transform your delivery pipeline?</h2>
           <p className="mx-auto mt-4 max-w-xl text-blue-100">
             Upload your first SRS today and see a complete application generated in minutes.

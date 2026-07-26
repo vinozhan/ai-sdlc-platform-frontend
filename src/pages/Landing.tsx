@@ -265,7 +265,7 @@ export function Landing() {
 
           <div className="hidden items-center gap-3 lg:flex">
             <button
-              onClick={() => navigate("/workspace")}
+              onClick={() => navigate("/login")}
               className="rounded-xl px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:text-blue-600"
             >
               Log In
@@ -298,7 +298,7 @@ export function Landing() {
                 </a>
               ))}
               <hr className="border-slate-200" />
-              <button onClick={() => navigate("/workspace")} className="text-left text-sm font-medium text-slate-700">
+              <button onClick={() => navigate("/login")} className="text-left text-sm font-medium text-slate-700">
                 Log In
               </button>
               <button
@@ -342,7 +342,7 @@ export function Landing() {
                 <ArrowRight className="h-4 w-4" />
               </button>
               <button
-                onClick={() => navigate("/workspace")}
+                onClick={() => navigate("/login")}
                 className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white/80 px-6 py-3.5 text-sm font-semibold text-slate-800 shadow-sm backdrop-blur-sm transition-all hover:border-blue-200 hover:bg-blue-50/50"
               >
                 <LogIn className="h-4 w-4" />
@@ -576,7 +576,7 @@ export function Landing() {
               Upload SRS
             </button>
             <button
-              onClick={() => navigate("/workspace")}
+              onClick={() => navigate("/login")}
               className="inline-flex items-center gap-2 rounded-xl border border-white/30 px-6 py-3.5 text-sm font-semibold text-white transition-all hover:bg-white/10"
             >
               Log In

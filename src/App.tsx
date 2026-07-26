@@ -1,7 +1,8 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { CommandPalette, Toasts } from "@/components/layout/Overlays";
 import { Landing } from "@/pages/Landing";
+import { Login } from "@/pages/Login";
 import { Home } from "@/pages/Home";
 import { Projects } from "@/pages/Projects";
 import { NewProject } from "@/pages/NewProject";
@@ -31,6 +32,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Landing />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/*" element={<AppShell />} />
       </Routes>
     </BrowserRouter>

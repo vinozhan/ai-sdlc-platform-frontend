@@ -2,14 +2,17 @@ import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Sparkles, LogIn, Mail, Lock, ArrowLeft } from "lucide-react";
 import { cn } from "@/utils/cn";
+import { useStore } from "@/store/useStore";
 
 export function Login() {
   const navigate = useNavigate();
+  const login = useStore((s) => s.login);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+    login();
     navigate("/workspace");
   };
 

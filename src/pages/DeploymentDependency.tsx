@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { useParams } from "react-router-dom";
+import type { ProjectStatus } from "@/store/useStore";
 import {
   GitBranch,
   Package,
@@ -35,10 +37,29 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { Card, CardContent, CardHeader, CardTitle, Badge, Button, Tabs } from "@/components/ui/primitives";
+import { Card, CardContent, CardHeader, CardTitle, Badge, Button } from "@/components/ui/primitives";
+import { ChevronStepper } from "@/components/ui/ChevronStepper";
 import { repositories, dependencyTree, dependencyUpdates, pipelineStages, deploymentTargets, productionMetrics } from "@/data/mockData";
 import { useStore } from "@/store/useStore";
 import { cn } from "@/utils/cn";
+
+const deploymentPhaseSteps = [
+  { id: "repos", label: "Repositories" },
+  { id: "prediction", label: "Dependencies" },
+  { id: "pipeline", label: "Pipeline" },
+  { id: "monitor", label: "Monitor" },
+];
+
+function getDeploymentProgressId(status: ProjectStatus): string {
+  switch (status) {
+    case "complete":
+      return "done";
+    case "deploy":
+      return "monitor";
+    default:
+      return "repos";
+  }
+}
 
 interface DepTreeNode {
   name: string;
@@ -589,18 +610,38 @@ function DeploymentMonitor() {
 }
 
 export function DeploymentDependency() {
+  const { projectId } = useParams();
+  const { theme, projects, activeProjectId } = useStore();
+  const isDark = theme === "dark";
   const [activeTab, setActiveTab] = useState("repos");
 
-  const tabs = [
-    { id: "repos", label: "Repositories", icon: <Archive className="h-3.5 w-3.5" /> },
-    { id: "prediction", label: "Dependencies", icon: <AlertTriangle className="h-3.5 w-3.5" /> },
-    { id: "pipeline", label: "Pipeline", icon: <Rocket className="h-3.5 w-3.5" /> },
-    { id: "monitor", label: "Monitor", icon: <Activity className="h-3.5 w-3.5" /> },
-  ];
+  const project = useMemo(
+    () => projects.find((p) => p.id === (activeProjectId ?? projectId)),
+    [projects, activeProjectId, projectId]
+  );
+
+  const progressId = project ? getDeploymentProgressId(project.status) : activeTab;
 
   return (
-    <div className="space-y-5 p-4 md:p-6">
-      <Tabs tabs={tabs} active={activeTab} onChange={setActiveTab} />
+    <div className="w-full space-y-5 p-6 md:p-8">
+      <div>
+        <h3 className={cn("text-xl font-semibold", isDark ? "text-white" : "text-slate-900")}>
+          Deployment & Dependencies
+        </h3>
+        <p className={cn("mt-1 text-sm", isDark ? "text-slate-400" : "text-slate-500")}>
+          {project?.status === "complete"
+            ? "All deployment stages complete — browse any step below"
+            : "Repository management, dependency updates, CI/CD pipeline, and production monitoring"}
+        </p>
+      </div>
+
+      <ChevronStepper
+        steps={deploymentPhaseSteps}
+        progressId={progressId}
+        selectedId={activeTab}
+        isDark={isDark}
+        onStepClick={setActiveTab}
+      />
 
       {activeTab === "repos" && <RepositoryManager />}
       {activeTab === "prediction" && <BreakingChangePrediction />}

@@ -19,14 +19,21 @@ const statusStyles: Record<StepStatus, string> = {
 export function ChevronStepper({
   steps,
   currentId,
+  progressId,
+  selectedId,
   isDark = false,
+  onStepClick,
 }: {
   steps: { id: string; label: string }[];
-  currentId: string;
+  currentId?: string;
+  progressId?: string;
+  selectedId?: string | null;
   isDark?: boolean;
+  onStepClick?: (id: string) => void;
 }) {
-  const currentIdx = steps.findIndex((s) => s.id === currentId);
-  const allComplete = currentId === "done";
+  const progress = progressId ?? currentId ?? steps[0]?.id ?? "";
+  const currentIdx = steps.findIndex((s) => s.id === progress);
+  const allComplete = progress === "done";
 
   const getStatus = (index: number): StepStatus => {
     if (allComplete) return "complete";
@@ -49,14 +56,21 @@ export function ChevronStepper({
         const status = getStatus(i);
 
         return (
-          <div
+          <button
             key={step.id}
+            type="button"
+            onClick={() => onStepClick?.(step.id)}
+            disabled={!onStepClick || status === "future"}
             className={cn(
-              "flex min-w-[88px] flex-1 items-center justify-center whitespace-nowrap px-4 py-2.5 text-xs font-semibold tracking-wide",
+              "flex min-w-[88px] flex-1 items-center justify-center whitespace-nowrap px-4 py-2.5 text-xs font-semibold tracking-wide transition-opacity",
               statusStyles[status],
               isDark && status === "future" && "bg-slate-700/60 text-slate-400",
               isDark && status === "complete" && "bg-emerald-600 text-white",
-              isDark && status === "pending" && "bg-amber-500 text-white"
+              isDark && status === "pending" && "bg-amber-500 text-white",
+              onStepClick && status !== "future" && "cursor-pointer hover:opacity-90",
+              !onStepClick && "cursor-default",
+              selectedId === step.id && "ring-2 ring-blue-500 ring-offset-1",
+              isDark && selectedId === step.id && "ring-offset-[#071018]"
             )}
             style={{
               clipPath: chevronClip(isFirst, isLast),
@@ -64,7 +78,7 @@ export function ChevronStepper({
             }}
           >
             {step.label}
-          </div>
+          </button>
         );
       })}
     </div>

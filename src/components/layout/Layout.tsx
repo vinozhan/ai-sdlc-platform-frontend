@@ -170,7 +170,7 @@ function Sidebar({ collapsed }: { collapsed: boolean }) {
 
 function TopBar() {
   const navigate = useNavigate();
-  const { setCommandPaletteOpen, addToast, theme, toggleTheme, settings, projects } = useStore();
+  const { setCommandPaletteOpen, addToast, theme, toggleTheme, settings, projects, logout } = useStore();
   const [showNotifications, setShowNotifications] = useState(false);
   const isDark = theme === "dark";
   const location = useLocation();
@@ -310,7 +310,13 @@ function TopBar() {
       </div>
 
       <button
-        onClick={() => navigate("/settings")}
+        type="button"
+        title="Log out"
+        onClick={() => {
+          logout();
+          addToast({ type: "info", title: "Signed out", message: "You have been logged out successfully" });
+          navigate("/login");
+        }}
         className={cn(
           "flex h-9 items-center gap-2 rounded-full border pl-1 pr-3 transition-colors",
           isDark ? "border-white/10 bg-white/[0.04] hover:bg-white/[0.06]" : "border-slate-200 bg-slate-50 hover:bg-white"

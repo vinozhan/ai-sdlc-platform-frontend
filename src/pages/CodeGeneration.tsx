@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useCallback, useMemo } from "react";
+import { useParams } from "react-router-dom";
+import type { ProjectStatus } from "@/store/useStore";
 import {
   FileCode2,
   Server,
@@ -10,14 +12,76 @@ import {
   Cpu,
   Database,
   Layers,
-  Eye,
   Sparkles,
   RefreshCw,
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle, Badge, Button, Tabs, Progress, CodeBlock, Table, Th, Td } from "@/components/ui/primitives";
-import { apiContracts, frontendCode, backendCode, buildStatus, backlog } from "@/data/mockData";
+import { Card, CardContent, CardHeader, CardTitle, Badge, Button, Progress, CodeBlock, Table, Th, Td } from "@/components/ui/primitives";
+import { ChevronStepper } from "@/components/ui/ChevronStepper";
+import {
+  apiContracts,
+  frontendCode,
+  backendCode,
+  frontendFileContents,
+  backendFileContents,
+  buildStatus,
+  backlog,
+} from "@/data/mockData";
 import { useStore } from "@/store/useStore";
 import { cn } from "@/utils/cn";
+import { VSCodeFileTree } from "@/components/code/VSCodeFileTree";
+import { VSCodeEditor, type EditorTab } from "@/components/code/VSCodeEditor";
+import { LivePreviewPanel } from "@/components/code/LivePreviewPanel";
+import { TechStackTab } from "@/components/code/TechStackTab";
+
+const codePhaseSteps = [
+  { id: "scope", label: "Backlog" },
+  { id: "techstack", label: "Tech Stack" },
+  { id: "contract", label: "API Contracts" },
+  { id: "frontend", label: "Frontend" },
+  { id: "backend", label: "Backend" },
+  { id: "build", label: "Build" },
+];
+
+function getCodeProgressId(status: ProjectStatus): string {
+  switch (status) {
+    case "complete":
+    case "deploy":
+    case "testing":
+      return "done";
+    case "code":
+      return "build";
+    case "design":
+      return "techstack";
+    case "analyzing":
+      return "scope";
+    default:
+      return "scope";
+  }
+}
+
+function useEditorTabs(defaultPath: string) {
+  const [tabs, setTabs] = useState<EditorTab[]>([{ path: defaultPath }]);
+  const [activePath, setActivePath] = useState(defaultPath);
+
+  const openFile = useCallback((path: string) => {
+    setTabs((prev) => (prev.some((t) => t.path === path) ? prev : [...prev, { path }]));
+    setActivePath(path);
+  }, []);
+
+  const closeTab = useCallback(
+    (path: string) => {
+      setTabs((prev) => {
+        const next = prev.filter((t) => t.path !== path);
+        if (next.length === 0) return prev;
+        if (activePath === path) setActivePath(next[next.length - 1].path);
+        return next;
+      });
+    },
+    [activePath]
+  );
+
+  return { tabs, activePath, openFile, closeTab, setActivePath };
+}
 
 function SprintScope() {
   const [selected, setSelected] = useState<string[]>(["US-101", "US-102", "US-103"]);
@@ -239,145 +303,62 @@ function ContractDesigner() {
 }
 
 function FrontendStudio() {
-  const [framework, setFramework] = useState<"react" | "angular">("react");
-  const [selectedFile, setSelectedFile] = useState(frontendCode.files[0]);
+  const defaultPath = frontendCode.files[0].path;
+  const { tabs, activePath, openFile, closeTab, setActivePath } = useEditorTabs(defaultPath);
 
   return (
-    <div className="grid grid-cols-4 gap-4">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <FileCode2 className="h-4 w-4 text-blue-400" />
-            File Tree
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-1">
-          <div className="mb-2 flex gap-1 rounded-lg bg-slate-950 p-1">
-            <button
-              onClick={() => setFramework("react")}
-              className={cn("flex-1 rounded py-1 text-xs", framework === "react" ? "bg-slate-700 text-white" : "text-slate-400")}
-            >
-              React
-            </button>
-            <button
-              onClick={() => setFramework("angular")}
-              className={cn("flex-1 rounded py-1 text-xs", framework === "angular" ? "bg-slate-700 text-white" : "text-slate-400")}
-            >
-              Angular
-            </button>
-          </div>
-          {frontendCode.files.map((f) => (
-            <button
-              key={f.path}
-              onClick={() => setSelectedFile(f)}
-              className={cn(
-                "flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs",
-                selectedFile.path === f.path ? "bg-blue-500/10 text-blue-300" : "text-slate-400 hover:bg-slate-800"
-              )}
-            >
-              <FileCode2 className="h-3 w-3" />
-              <span className="truncate">{f.path.split("/").pop()}</span>
-              <span className="ml-auto text-[10px] text-slate-600">{f.lines}</span>
-            </button>
-          ))}
-        </CardContent>
-      </Card>
+    <div className="grid h-[560px] grid-cols-3 gap-4">
+      <VSCodeFileTree
+        title="Explorer"
+        files={frontendCode.files}
+        selectedPath={activePath}
+        onSelect={openFile}
+      />
 
-      <Card className="col-span-2">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="font-mono text-xs">{selectedFile.path}</CardTitle>
-            <Badge variant="c2">{selectedFile.type}</Badge>
-          </div>
-        </CardHeader>
-        <CardContent className="p-0">
-          <CodeBlock code={frontendCode.code} language="typescript" className="max-h-[400px] rounded-none border-0" />
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Eye className="h-4 w-4 text-blue-400" />
-            Live Preview
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="rounded-lg border border-slate-800 bg-slate-100 p-4">
-            <div className="mb-3 rounded bg-slate-700 px-3 py-2 text-center text-xs font-medium text-white">
-              Payment Form
-            </div>
-            <div className="space-y-2">
-              <input className="w-full rounded border border-slate-300 px-2 py-1.5 text-xs text-slate-700" placeholder="Card number" defaultValue="4242 4242 4242 4242" />
-              <div className="flex gap-2">
-                <input className="w-1/2 rounded border border-slate-300 px-2 py-1.5 text-xs text-slate-700" placeholder="MM/YY" />
-                <input className="w-1/2 rounded border border-slate-300 px-2 py-1.5 text-xs text-slate-700" placeholder="CVC" />
-              </div>
-              <button className="w-full rounded bg-blue-600 py-2 text-xs font-medium text-white">
-                Pay $149.99
-              </button>
-            </div>
-          </div>
-          <p className="mt-2 text-center text-[10px] text-slate-500">Click wireframe element to map code</p>
-        </CardContent>
-      </Card>
+      <div className="col-span-2 min-h-0">
+        <VSCodeEditor
+          tabs={tabs}
+          activePath={activePath}
+          contents={frontendFileContents}
+          onSelectTab={setActivePath}
+          onCloseTab={closeTab}
+        />
+      </div>
     </div>
   );
 }
 
 function BackendStudio() {
-  const [framework, setFramework] = useState<"spring" | "node">("spring");
-  const [selectedFile, setSelectedFile] = useState(backendCode.files[0]);
+  const defaultPath = backendCode.files[0].path;
+  const { tabs, activePath, openFile, closeTab, setActivePath } = useEditorTabs(defaultPath);
+
+  const mappings = [
+    { entity: "Payment", table: "payments", fields: 18 },
+    { entity: "User", table: "users", fields: 12 },
+    { entity: "KYC Record", table: "kyc_records", fields: 9 },
+    { entity: "Transaction", table: "transactions", fields: 18 },
+  ];
 
   return (
-    <div className="grid grid-cols-4 gap-4">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Server className="h-4 w-4 text-blue-400" />
-            Backend Files
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-1">
-          <div className="mb-2 flex gap-1 rounded-lg bg-slate-950 p-1">
-            <button
-              onClick={() => setFramework("spring")}
-              className={cn("flex-1 rounded py-1 text-xs", framework === "spring" ? "bg-slate-700 text-white" : "text-slate-400")}
-            >
-              Spring Boot
-            </button>
-            <button
-              onClick={() => setFramework("node")}
-              className={cn("flex-1 rounded py-1 text-xs", framework === "node" ? "bg-slate-700 text-white" : "text-slate-400")}
-            >
-              Node.js
-            </button>
-          </div>
-          {backendCode.files.map((f) => (
-            <button
-              key={f.path}
-              onClick={() => setSelectedFile(f)}
-              className={cn(
-                "flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs",
-                selectedFile.path === f.path ? "bg-blue-500/10 text-blue-300" : "text-slate-400 hover:bg-slate-800"
-              )}
-            >
-              <Server className="h-3 w-3" />
-              <span className="truncate">{f.path.split("/").pop()}</span>
-              <Badge variant="default" className="ml-auto">{f.type}</Badge>
-            </button>
-          ))}
-        </CardContent>
-      </Card>
+    <div className="space-y-4">
+      <div className="grid h-[560px] grid-cols-3 gap-4">
+        <VSCodeFileTree
+          title="Backend Files"
+          files={backendCode.files}
+          selectedPath={activePath}
+          onSelect={openFile}
+        />
 
-      <Card className="col-span-2">
-        <CardHeader>
-          <CardTitle className="font-mono text-xs">{selectedFile.path}</CardTitle>
-        </CardHeader>
-        <CardContent className="p-0">
-          <CodeBlock code={backendCode.code} language="java" className="max-h-[400px] rounded-none border-0" />
-        </CardContent>
-      </Card>
+        <div className="col-span-2 min-h-0">
+          <VSCodeEditor
+            tabs={tabs}
+            activePath={activePath}
+            contents={backendFileContents}
+            onSelectTab={setActivePath}
+            onCloseTab={closeTab}
+          />
+        </div>
+      </div>
 
       <Card>
         <CardHeader>
@@ -386,22 +367,21 @@ function BackendStudio() {
             DB Mapping
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-2">
-          {[
-            { entity: "Payment", table: "payments", fields: 18 },
-            { entity: "User", table: "users", fields: 12 },
-            { entity: "KYC Record", table: "kyc_records", fields: 9 },
-            { entity: "Transaction", table: "transactions", fields: 18 },
-          ].map((m) => (
-            <div key={m.entity} className="rounded-lg border border-slate-800 p-2">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-medium text-slate-200">{m.entity}</span>
-                <Database className="h-3 w-3 text-blue-400" />
+        <CardContent>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {mappings.map((m) => (
+              <div key={m.entity} className="rounded-lg border border-slate-800 p-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium text-slate-200">{m.entity}</span>
+                  <Database className="h-3 w-3 text-blue-400" />
+                </div>
+                <p className="mt-1 font-mono text-[10px] text-slate-500">
+                  {m.table} · {m.fields} fields
+                </p>
               </div>
-              <p className="mt-1 font-mono text-[10px] text-slate-500">{m.table} · {m.fields} fields</p>
-            </div>
-          ))}
-          <div className="rounded-lg border border-blue-500/30 bg-blue-500/5 p-2">
+            ))}
+          </div>
+          <div className="mt-3 rounded-lg border border-blue-500/30 bg-blue-500/5 p-3">
             <p className="text-xs font-semibold text-blue-300">API Endpoints</p>
             <p className="mt-1 text-xs text-slate-300">4 endpoints generated · 3 validated</p>
           </div>
@@ -415,7 +395,7 @@ function BuildValidation() {
   const { addToast } = useStore();
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -474,6 +454,10 @@ function BuildValidation() {
             </p>
           </CardContent>
         </Card>
+      </div>
+
+      <div className="min-h-[360px]">
+        <LivePreviewPanel status="synced" />
       </div>
 
       <Card>
@@ -561,21 +545,41 @@ function BuildValidation() {
 }
 
 export function CodeGeneration() {
+  const { projectId } = useParams();
+  const { theme, projects, activeProjectId } = useStore();
+  const isDark = theme === "dark";
   const [activeTab, setActiveTab] = useState("scope");
 
-  const tabs = [
-    { id: "scope", label: "Backlog", icon: <Layers className="h-3.5 w-3.5" /> },
-    { id: "contract", label: "API Contracts", icon: <FileJson className="h-3.5 w-3.5" /> },
-    { id: "frontend", label: "Frontend", icon: <FileCode2 className="h-3.5 w-3.5" /> },
-    { id: "backend", label: "Backend", icon: <Server className="h-3.5 w-3.5" /> },
-    { id: "build", label: "Build", icon: <Terminal className="h-3.5 w-3.5" /> },
-  ];
+  const project = useMemo(
+    () => projects.find((p) => p.id === (activeProjectId ?? projectId)),
+    [projects, activeProjectId, projectId]
+  );
+
+  const progressId = project ? getCodeProgressId(project.status) : activeTab;
 
   return (
-    <div className="space-y-5 p-4 md:p-6">
-      <Tabs tabs={tabs} active={activeTab} onChange={setActiveTab} />
+    <div className="w-full space-y-5 p-6 md:p-8">
+      <div>
+        <h3 className={cn("text-xl font-semibold", isDark ? "text-white" : "text-slate-900")}>
+          Code Generation
+        </h3>
+        <p className={cn("mt-1 text-sm", isDark ? "text-slate-400" : "text-slate-500")}>
+          {project && ["deploy", "complete", "testing"].includes(project.status)
+            ? "All code generation stages complete — browse any step below"
+            : "AI-generated frontend, backend, and build artifacts from your requirements"}
+        </p>
+      </div>
+
+      <ChevronStepper
+        steps={codePhaseSteps}
+        progressId={progressId}
+        selectedId={activeTab}
+        isDark={isDark}
+        onStepClick={setActiveTab}
+      />
 
       {activeTab === "scope" && <SprintScope />}
+      {activeTab === "techstack" && <TechStackTab />}
       {activeTab === "contract" && <ContractDesigner />}
       {activeTab === "frontend" && <FrontendStudio />}
       {activeTab === "backend" && <BackendStudio />}

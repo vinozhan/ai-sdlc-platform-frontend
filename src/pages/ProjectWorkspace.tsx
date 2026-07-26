@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, Navigate, Route, Routes, useParams, useLocation } from "react-router-dom";
 import {
   ArrowUp,
@@ -14,24 +14,17 @@ import {
   Upload,
   Network,
   Layers,
-  LayoutGrid,
   Calendar,
-  User,
-  Database,
-  Box,
-  AlertCircle,
 } from "lucide-react";
 import ReactFlow, {
   Background,
   Controls,
   MiniMap,
-  Handle,
-  Position,
   type Node,
   type Edge,
-  type NodeProps,
 } from "reactflow";
 import "reactflow/dist/style.css";
+import { sagNodeTypes, sagNodeColors } from "@/components/sag/SAGNode";
 import { useStore, type Project, type ReqPhase } from "@/store/useStore";
 import {
   extractedEntities,
@@ -51,13 +44,13 @@ import {
   CardTitle,
   CodeBlock,
   Progress,
-  Tabs,
 } from "@/components/ui/primitives";
 import { ChevronStepper } from "@/components/ui/ChevronStepper";
 import { CodeGeneration } from "@/pages/CodeGeneration";
 import { TestingSecurity } from "@/pages/TestingSecurity";
 import { DeploymentDependency } from "@/pages/DeploymentDependency";
 import { Traceability } from "@/pages/Traceability";
+import { WireframesPanel } from "@/components/wireframes/WireframesPanel";
 
 const phaseMeta: { id: ReqPhase; label: string }[] = [
   { id: "input", label: "Input" },
@@ -70,37 +63,6 @@ const phaseMeta: { id: ReqPhase; label: string }[] = [
   { id: "sprint", label: "Sprint" },
   { id: "done", label: "Done" },
 ];
-
-const nodeColors: Record<string, string> = {
-  actor: "#22c55e",
-  entity: "#3b82f6",
-  module: "#2563eb",
-  constraint: "#f97316",
-};
-
-const nodeIcons: Record<string, typeof User> = {
-  actor: User,
-  entity: Database,
-  module: Box,
-  constraint: AlertCircle,
-};
-
-function SAGNodeComponent({ data }: NodeProps) {
-  const Icon = nodeIcons[data.type as string] ?? Box;
-  const color = nodeColors[data.type as string] ?? "#64748b";
-  return (
-    <div className="rounded-lg border-2 bg-slate-900 px-3 py-2 shadow-lg" style={{ borderColor: color, minWidth: 110 }}>
-      <Handle type="target" position={Position.Left} style={{ background: color }} />
-      <div className="flex items-center gap-2">
-        <Icon className="h-3.5 w-3.5" style={{ color }} />
-        <span className="text-xs font-medium text-white">{data.label}</span>
-      </div>
-      <Handle type="source" position={Position.Right} style={{ background: color }} />
-    </div>
-  );
-}
-
-const nodeTypes = { sag: SAGNodeComponent };
 
 function statusBadge(status: Project["status"]) {
   switch (status) {
@@ -192,19 +154,14 @@ function ProjectShell({ children }: { children: React.ReactNode }) {
         </div>
       </div>
 
-      {/* Component tabs */}
+      {/* Phase navigation */}
       <div
         className={cn(
-          "sticky top-0 z-20 border-b px-6 py-2 backdrop-blur-xl md:px-8",
+          "sticky top-0 z-20 border-b backdrop-blur-xl md:px-8",
           isDark ? "border-white/[0.06] bg-[#071018]/95" : "border-slate-200/80 bg-white/95"
         )}
       >
-        <div
-          className={cn(
-            "inline-flex max-w-full gap-1 overflow-x-auto rounded-2xl p-1",
-            isDark ? "bg-white/[0.04] ring-1 ring-white/[0.06]" : "border border-slate-200 bg-slate-50/80"
-          )}
-        >
+        <nav className="-mb-px flex gap-0 overflow-x-auto px-4 md:px-0">
           {tabs.map((t) => {
             const Icon = t.icon;
             const active = locationPath.includes(`/${t.id}`);
@@ -213,22 +170,35 @@ function ProjectShell({ children }: { children: React.ReactNode }) {
                 key={t.id}
                 to={t.path}
                 className={cn(
-                  "flex shrink-0 items-center gap-2 rounded-xl px-3.5 py-2 text-[13px] font-medium transition-all",
+                  "group relative flex shrink-0 items-center gap-2.5 border-b-2 px-4 py-3.5 text-[13px] font-medium transition-all",
                   active
                     ? isDark
-                      ? "bg-white/10 text-white shadow-sm"
-                      : "bg-white text-slate-900 shadow-sm ring-1 ring-slate-200/80"
+                      ? "border-blue-500 text-blue-400"
+                      : "border-blue-600 text-blue-700"
                     : isDark
-                    ? "text-slate-400 hover:bg-white/[0.04] hover:text-slate-200"
-                    : "text-slate-500 hover:bg-white/60 hover:text-slate-800"
+                    ? "border-transparent text-slate-500 hover:border-white/10 hover:text-slate-300"
+                    : "border-transparent text-slate-500 hover:border-slate-200 hover:text-slate-800"
                 )}
               >
-                <Icon className={cn("h-4 w-4 shrink-0", active && (isDark ? "text-blue-400" : "text-blue-600"))} />
-                <span>{t.label}</span>
+                <span
+                  className={cn(
+                    "flex h-7 w-7 items-center justify-center rounded-lg transition-colors",
+                    active
+                      ? isDark
+                        ? "bg-blue-500/15 text-blue-400"
+                        : "bg-blue-50 text-blue-600"
+                      : isDark
+                      ? "text-slate-500 group-hover:bg-white/[0.04] group-hover:text-slate-400"
+                      : "text-slate-400 group-hover:bg-slate-100 group-hover:text-slate-600"
+                  )}
+                >
+                  <Icon className="h-3.5 w-3.5" />
+                </span>
+                <span className={cn(active && "font-semibold")}>{t.label}</span>
               </Link>
             );
           })}
-        </div>
+        </nav>
       </div>
 
       <div className="flex-1">{children}</div>
@@ -411,46 +381,15 @@ function RequirementsInput({
   );
 }
 
-function PhaseStepper({ phase }: { phase: ReqPhase }) {
-  const { theme } = useStore();
-  const isDark = theme === "dark";
-  const steps = phaseMeta.filter((p) => p.id !== "input");
-
-  return <ChevronStepper steps={steps} currentId={phase} isDark={isDark} />;
-}
-
 function RequirementsResults({ project }: { project: Project }) {
-  const { theme, pipelineRunning } = useStore();
+  const { theme, pipelineRunning, updateProject, addToast } = useStore();
   const isDark = theme === "dark";
-  const [view, setView] = useState("entities");
+  const [selectedStep, setSelectedStep] = useState<string | null>(null);
 
-  const unlocked = useMemo(() => {
-    const order = ["entities", "sag", "architecture", "uml", "wireframes", "sprint"];
-    const phaseMap: Record<string, ReqPhase[]> = {
-      entities: ["entities", "sag", "architecture", "uml", "wireframes", "sprint", "done"],
-      sag: ["sag", "architecture", "uml", "wireframes", "sprint", "done"],
-      architecture: ["architecture", "uml", "wireframes", "sprint", "done"],
-      uml: ["uml", "wireframes", "sprint", "done"],
-      wireframes: ["wireframes", "sprint", "done"],
-      sprint: ["sprint", "done"],
-    };
-    return order.filter((id) => phaseMap[id]?.includes(project.reqPhase));
-  }, [project.reqPhase]);
-
-  useEffect(() => {
-    if (unlocked.length && !unlocked.includes(view)) {
-      setView(unlocked[unlocked.length - 1]);
-    }
-  }, [unlocked, view]);
-
-  const tabs = [
-    { id: "entities", label: "Entities", icon: <Sparkles className="h-3.5 w-3.5" /> },
-    { id: "sag", label: "SAG Graph", icon: <Network className="h-3.5 w-3.5" /> },
-    { id: "architecture", label: "Architecture", icon: <Layers className="h-3.5 w-3.5" /> },
-    { id: "uml", label: "UML Diagrams", icon: <FileText className="h-3.5 w-3.5" /> },
-    { id: "wireframes", label: "Wireframes", icon: <LayoutGrid className="h-3.5 w-3.5" /> },
-    { id: "sprint", label: "Sprint Plan", icon: <Calendar className="h-3.5 w-3.5" /> },
-  ].filter((t) => unlocked.includes(t.id));
+  const steps = phaseMeta.filter((p) => p.id !== "input");
+  const progressId = project.reqPhase === "done" ? "done" : project.reqPhase;
+  const isPipelineComplete = project.reqPhase === "done";
+  const activeStep = selectedStep ?? (isPipelineComplete ? "done" : null);
 
   const nodes: Node[] = sagNodes.map((n) => ({
     id: n.id,
@@ -490,7 +429,13 @@ function RequirementsResults({ project }: { project: Project }) {
         </div>
       </div>
 
-      <PhaseStepper phase={project.reqPhase} />
+      <ChevronStepper
+        steps={steps}
+        progressId={progressId}
+        selectedId={activeStep}
+        isDark={isDark}
+        onStepClick={setSelectedStep}
+      />
 
       <Card>
         <CardContent className="p-4">
@@ -513,11 +458,47 @@ function RequirementsResults({ project }: { project: Project }) {
         </CardContent>
       </Card>
 
-      {tabs.length > 0 && (
-        <>
-          <Tabs tabs={tabs} active={view} onChange={setView} />
+      {!activeStep && (
+        <div
+          className={cn(
+            "rounded-xl border border-dashed px-6 py-10 text-center",
+            isDark ? "border-white/10 text-slate-500" : "border-slate-200 text-slate-400"
+          )}
+        >
+          <Sparkles className="mx-auto mb-2 h-5 w-5 text-blue-400" />
+          <p className="text-sm">Select a step above to view generated artifacts</p>
+        </div>
+      )}
 
-          {view === "entities" && (
+      {activeStep === "parsing" && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="h-4 w-4 text-blue-400" />
+              Parsed Requirements
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <p className={cn("text-sm", isDark ? "text-slate-300" : "text-slate-600")}>
+              Requirements document parsed successfully. Identified scope, actors, and core entities from your input.
+            </p>
+            <div className="grid grid-cols-3 gap-3">
+              {[
+                { label: "Sections parsed", value: "12" },
+                { label: "Requirements found", value: "28" },
+                { label: "Confidence", value: "96%" },
+              ].map((s) => (
+                <div key={s.label} className={cn("rounded-lg border p-3", isDark ? "border-white/10" : "border-slate-200")}>
+                  <p className={cn("text-xs", isDark ? "text-slate-500" : "text-slate-400")}>{s.label}</p>
+                  <p className={cn("mt-1 text-lg font-semibold", isDark ? "text-white" : "text-slate-900")}>{s.value}</p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {activeStep === "entities" && (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
               {[
                 { title: "Actors", items: extractedEntities.actors, color: "#22c55e" },
@@ -548,9 +529,9 @@ function RequirementsResults({ project }: { project: Project }) {
                 </Card>
               ))}
             </div>
-          )}
+      )}
 
-          {view === "sag" && (
+      {activeStep === "sag" && (
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -560,20 +541,20 @@ function RequirementsResults({ project }: { project: Project }) {
               </CardHeader>
               <CardContent className="p-0">
                 <div className={cn("h-[480px] w-full", isDark ? "bg-[#0a0e17]" : "bg-slate-50")}>
-                  <ReactFlow nodes={nodes} edges={edges} nodeTypes={nodeTypes} fitView fitViewOptions={{ padding: 0.2 }}>
+                  <ReactFlow nodes={nodes} edges={edges} nodeTypes={sagNodeTypes} fitView fitViewOptions={{ padding: 0.2 }}>
                     <Background color={isDark ? "#1e293b" : "#cbd5e1"} gap={20} />
                     <Controls />
                     <MiniMap
-                      nodeColor={(n) => nodeColors[n.data?.type as string] ?? "#64748b"}
+                      nodeColor={(n) => sagNodeColors[n.data?.type as string] ?? "#64748b"}
                       maskColor={isDark ? "rgba(15,23,42,0.7)" : "rgba(248,250,252,0.7)"}
                     />
                   </ReactFlow>
                 </div>
               </CardContent>
             </Card>
-          )}
+      )}
 
-          {view === "architecture" && (
+      {activeStep === "architecture" && (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
               {architecturePatterns.slice(0, 3).map((p) => (
                 <Card key={p.id} className={p.id === "microservices" ? "ring-2 ring-blue-500/40" : undefined}>
@@ -596,9 +577,9 @@ function RequirementsResults({ project }: { project: Project }) {
                 </Card>
               ))}
             </div>
-          )}
+      )}
 
-          {view === "uml" && (
+      {activeStep === "uml" && (
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
               {Object.entries(umlDiagrams)
                 .slice(0, 4)
@@ -613,30 +594,28 @@ function RequirementsResults({ project }: { project: Project }) {
                   </Card>
                 ))}
             </div>
-          )}
+      )}
 
-          {view === "wireframes" && (
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-              {["Login", "Dashboard", "Payment Form", "KYC Upload", "Confirmation", "Admin Review"].map((screen) => (
-                <Card key={screen}>
-                  <CardContent className="p-4">
-                    <div
-                      className={cn(
-                        "mb-3 flex h-36 items-center justify-center rounded-xl border border-dashed",
-                        isDark ? "border-white/10 bg-white/[0.02]" : "border-slate-200 bg-slate-50"
-                      )}
-                    >
-                      <LayoutGrid className={cn("h-8 w-8", isDark ? "text-slate-600" : "text-slate-300")} />
-                    </div>
-                    <p className={cn("text-sm font-medium", isDark ? "text-white" : "text-slate-900")}>{screen}</p>
-                    <p className={cn("text-xs", isDark ? "text-slate-500" : "text-slate-400")}>Auto-generated wireframe</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
+      {activeStep === "wireframes" && (
+        <WireframesPanel
+          isDark={isDark}
+          onApprove={() => setSelectedStep("sprint")}
+          onRequestRefinement={(feedback, wireframeName) => {
+            const entry = `[Wireframe refinement — ${wireframeName}]\n${feedback}`;
+            updateProject(project.id, {
+              requirementText: `${project.requirementText.trim()}\n\n${entry}`,
+            });
+            addToast({
+              type: "info",
+              title: "Refinement submitted",
+              message: `Feedback for "${wireframeName}" added to requirements. AI will regenerate wireframes.`,
+            });
+            setSelectedStep("parsing");
+          }}
+        />
+      )}
 
-          {view === "sprint" && (
+      {activeStep === "sprint" && (
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                 {[
@@ -682,8 +661,22 @@ function RequirementsResults({ project }: { project: Project }) {
                 </CardContent>
               </Card>
             </div>
-          )}
-        </>
+      )}
+
+      {activeStep === "done" && (
+        <Card>
+          <CardContent className="flex flex-col items-center px-6 py-14 text-center">
+            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/10">
+              <Sparkles className="h-7 w-7 text-emerald-500" />
+            </div>
+            <h4 className={cn("text-lg font-semibold tracking-tight", isDark ? "text-white" : "text-slate-900")}>
+              Design pipeline complete
+            </h4>
+            <p className={cn("mt-2 max-w-md text-sm leading-relaxed", isDark ? "text-slate-400" : "text-slate-500")}>
+              All requirements & design artifacts have been generated. Proceed to Code Generation to continue.
+            </p>
+          </CardContent>
+        </Card>
       )}
 
       {pipelineRunning && (

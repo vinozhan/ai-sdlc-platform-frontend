@@ -131,6 +131,10 @@ interface AppState {
   toggleTheme: () => void;
   setTheme: (theme: Theme) => void;
 
+  isAuthenticated: boolean;
+  login: () => void;
+  logout: () => void;
+
   projects: Project[];
   activeProjectId: string | null;
   setActiveProjectId: (id: string | null) => void;
@@ -201,6 +205,10 @@ export const useStore = create<AppState>()(
         applyTheme(theme);
         set({ theme });
       },
+
+      isAuthenticated: false,
+      login: () => set({ isAuthenticated: true }),
+      logout: () => set({ isAuthenticated: false, activeProjectId: null }),
 
       projects: MOCK_PROJECTS,
       activeProjectId: "p1",
@@ -320,6 +328,7 @@ export const useStore = create<AppState>()(
         activeProjectId: s.activeProjectId,
         settings: s.settings,
         theme: s.theme,
+        isAuthenticated: s.isAuthenticated,
       }),
       onRehydrateStorage: () => (state) => {
         if (state?.theme) applyTheme(state.theme);

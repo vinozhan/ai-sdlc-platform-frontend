@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { useParams } from "react-router-dom";
+import type { ProjectStatus } from "@/store/useStore";
 import {
   RadarChart,
   PolarGrid,
@@ -33,10 +35,30 @@ import {
   Sparkles,
   Eye,
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle, Badge, Button, Tabs, Progress, CodeBlock, Table, Th, Td } from "@/components/ui/primitives";
+import { Card, CardContent, CardHeader, CardTitle, Badge, Button, Progress, CodeBlock, Table, Th, Td } from "@/components/ui/primitives";
+import { ChevronStepper } from "@/components/ui/ChevronStepper";
 import { testResults, failingTests, approvalQueue, auditLog, vulnerabilities, cvssRadar } from "@/data/mockData";
 import { useStore } from "@/store/useStore";
 import { cn } from "@/utils/cn";
+
+const testingPhaseSteps = [
+  { id: "dashboard", label: "Tests" },
+  { id: "healing", label: "Self-Healing" },
+  { id: "security", label: "Security" },
+  { id: "governance", label: "Governance" },
+];
+
+function getTestingProgressId(status: ProjectStatus): string {
+  switch (status) {
+    case "complete":
+    case "deploy":
+      return "done";
+    case "testing":
+      return "governance";
+    default:
+      return "dashboard";
+  }
+}
 
 function TestDashboard() {
   const categories = [
@@ -692,18 +714,38 @@ function GovernanceAudit() {
 }
 
 export function TestingSecurity() {
+  const { projectId } = useParams();
+  const { theme, projects, activeProjectId } = useStore();
+  const isDark = theme === "dark";
   const [activeTab, setActiveTab] = useState("dashboard");
 
-  const tabs = [
-    { id: "dashboard", label: "Tests", icon: <Activity className="h-3.5 w-3.5" /> },
-    { id: "healing", label: "Self-Healing", icon: <Wrench className="h-3.5 w-3.5" /> },
-    { id: "security", label: "Security", icon: <ShieldAlert className="h-3.5 w-3.5" /> },
-    { id: "governance", label: "Governance", icon: <ScrollText className="h-3.5 w-3.5" /> },
-  ];
+  const project = useMemo(
+    () => projects.find((p) => p.id === (activeProjectId ?? projectId)),
+    [projects, activeProjectId, projectId]
+  );
+
+  const progressId = project ? getTestingProgressId(project.status) : activeTab;
 
   return (
-    <div className="space-y-5 p-4 md:p-6">
-      <Tabs tabs={tabs} active={activeTab} onChange={setActiveTab} />
+    <div className="w-full space-y-5 p-6 md:p-8">
+      <div>
+        <h3 className={cn("text-xl font-semibold", isDark ? "text-white" : "text-slate-900")}>
+          Testing & Security
+        </h3>
+        <p className={cn("mt-1 text-sm", isDark ? "text-slate-400" : "text-slate-500")}>
+          {project && ["deploy", "complete"].includes(project.status)
+            ? "All testing and security stages complete — browse any step below"
+            : "Automated tests, self-healing repairs, vulnerability scanning, and governance"}
+        </p>
+      </div>
+
+      <ChevronStepper
+        steps={testingPhaseSteps}
+        progressId={progressId}
+        selectedId={activeTab}
+        isDark={isDark}
+        onStepClick={setActiveTab}
+      />
 
       {activeTab === "dashboard" && <TestDashboard />}
       {activeTab === "healing" && <SelfHealingRepair />}

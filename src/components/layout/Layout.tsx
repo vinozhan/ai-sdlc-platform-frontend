@@ -14,6 +14,8 @@ import {
   Sun,
   Moon,
   Plus,
+  ChevronsLeft,
+  ChevronsRight,
 } from "lucide-react";
 import { useStore } from "@/store/useStore";
 import { cn } from "@/utils/cn";
@@ -23,7 +25,7 @@ const mainNav = [
   { id: "projects", label: "Projects", icon: FolderKanban, path: "/projects" },
 ];
 
-function Sidebar() {
+function Sidebar({ collapsed }: { collapsed: boolean }) {
   const navigate = useNavigate();
   const location = useLocation();
   const { theme, projects, setActiveProjectId } = useStore();
@@ -38,36 +40,42 @@ function Sidebar() {
   return (
     <aside
       className={cn(
-        "flex w-[252px] shrink-0 flex-col border-r transition-colors",
+        "flex shrink-0 flex-col border-r transition-all duration-300 ease-in-out",
+        collapsed ? "w-[68px]" : "w-[252px]",
         isDark ? "border-white/[0.06] bg-[#0a1628]" : "border-slate-200/90 bg-white"
       )}
     >
-      <div className="flex h-14 items-center gap-2.5 px-4">
-        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-blue-400 shadow-lg shadow-blue-500/25">
+      <div className={cn("flex h-14 shrink-0 items-center border-b", collapsed ? "justify-center px-2" : "gap-2.5 px-4", isDark ? "border-white/[0.06]" : "border-slate-200/80")}>
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-blue-400 shadow-lg shadow-blue-500/25">
           <Sparkles className="h-4 w-4 text-white" />
         </div>
-        <div className="min-w-0">
-          <p className={cn("truncate text-sm font-semibold tracking-tight", isDark ? "text-white" : "text-slate-900")}>
-            SDLC AI
-          </p>
-          <p className={cn("truncate text-[10px]", isDark ? "text-slate-500" : "text-slate-400")}>Orchestrator</p>
-        </div>
+        {!collapsed && (
+          <div className="min-w-0">
+            <p className={cn("truncate text-sm font-semibold tracking-tight", isDark ? "text-white" : "text-slate-900")}>
+              SDLC AI
+            </p>
+            <p className={cn("truncate text-[10px]", isDark ? "text-slate-500" : "text-slate-400")}>Orchestrator</p>
+          </div>
+        )}
       </div>
 
-      <div className="px-3 pb-2">
+      <div className={cn("pb-3 pt-4", collapsed ? "px-2" : "px-3")}>
         <button
           onClick={() => navigate("/projects/new")}
+          title="New project"
           className={cn(
-            "flex w-full items-center justify-center gap-2 rounded-full border-2 border-blue-600 bg-white px-3 py-2.5 text-[13px] font-semibold text-blue-600 transition-all hover:bg-blue-50",
-            isDark && "hover:bg-blue-600/10"
+            "flex items-center justify-center border-2 border-blue-600 bg-white font-semibold text-blue-600 transition-all",
+            collapsed
+              ? "mx-auto h-10 w-10 rounded-full"
+              : "w-full gap-2 rounded-full px-3 py-2.5 text-[13px]"
           )}
         >
           <Plus className="h-4 w-4 shrink-0" />
-          <span className="truncate">New project</span>
+          {!collapsed && <span className="truncate">New project</span>}
         </button>
       </div>
 
-      <nav className="flex-1 space-y-0.5 overflow-y-auto px-3 pt-1">
+      <nav className={cn("flex-1 space-y-0.5 overflow-y-auto pt-2", collapsed ? "px-2" : "px-3")}>
         {mainNav.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.path);
@@ -75,8 +83,10 @@ function Sidebar() {
             <button
               key={item.id}
               onClick={() => navigate(item.path)}
+              title={item.label}
               className={cn(
-                "flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-[13px] font-medium transition-all",
+                "flex w-full items-center rounded-xl py-2 text-[13px] font-medium transition-all",
+                collapsed ? "justify-center px-0" : "gap-2.5 px-3",
                 active
                   ? isDark
                     ? "bg-white/[0.08] text-white shadow-sm"
@@ -87,12 +97,12 @@ function Sidebar() {
               )}
             >
               <Icon className={cn("h-4 w-4 shrink-0", active && (isDark ? "text-blue-400" : "text-blue-600"))} />
-              <span className="truncate">{item.label}</span>
+              {!collapsed && <span className="truncate">{item.label}</span>}
             </button>
           );
         })}
 
-        {recent.length > 0 && (
+        {recent.length > 0 && !collapsed && (
           <div className="pt-5">
             <p
               className={cn(
@@ -134,11 +144,13 @@ function Sidebar() {
         )}
       </nav>
 
-      <div className={cn("border-t p-3", isDark ? "border-white/[0.06]" : "border-slate-100")}>
+      <div className={cn("border-t p-3", isDark ? "border-white/[0.06]" : "border-slate-100", collapsed && "px-2")}>
         <button
           onClick={() => navigate("/settings")}
+          title="Settings"
           className={cn(
-            "flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-[13px] font-medium transition-all",
+            "flex w-full items-center rounded-xl py-2 text-[13px] font-medium transition-all",
+            collapsed ? "justify-center px-0" : "gap-2.5 px-3",
             isActive("/settings")
               ? isDark
                 ? "bg-white/[0.08] text-white shadow-sm"
@@ -149,7 +161,7 @@ function Sidebar() {
           )}
         >
           <Settings className={cn("h-4 w-4 shrink-0", isActive("/settings") && (isDark ? "text-blue-400" : "text-blue-600"))} />
-          <span className="truncate">Settings</span>
+          {!collapsed && <span className="truncate">Settings</span>}
         </button>
       </div>
     </aside>
@@ -323,10 +335,24 @@ function TopBar() {
 export function Layout({ children }: { children: ReactNode }) {
   const { theme } = useStore();
   const isDark = theme === "dark";
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   return (
-    <div className={cn("flex h-screen overflow-hidden transition-colors", isDark ? "bg-[#071018]" : "bg-white")}>
-      <Sidebar />
+    <div className={cn("relative flex h-screen overflow-hidden transition-colors", isDark ? "bg-[#071018]" : "bg-white")}>
+      <Sidebar collapsed={sidebarCollapsed} />
+
+      <button
+        type="button"
+        onClick={() => setSidebarCollapsed((prev) => !prev)}
+        aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+        className={cn(
+          "absolute top-4 z-40 flex h-6 w-6 -translate-x-1/2 items-center justify-center rounded-full border border-blue-600 bg-blue-600 text-white shadow-md shadow-blue-500/25 transition-all duration-300 ease-in-out hover:bg-blue-500",
+          sidebarCollapsed ? "left-[68px]" : "left-[252px]"
+        )}
+      >
+        {sidebarCollapsed ? <ChevronsRight className="h-3.5 w-3.5" /> : <ChevronsLeft className="h-3.5 w-3.5" />}
+      </button>
+
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         <TopBar />
         <main className="relative flex-1 overflow-auto">

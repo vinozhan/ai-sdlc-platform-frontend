@@ -1,0 +1,72 @@
+import { cn } from "@/utils/cn";
+
+type StepStatus = "complete" | "pending" | "future";
+
+function chevronClip(isFirst: boolean, isLast: boolean) {
+  const tip = 10;
+  if (isFirst && isLast) return undefined;
+  if (isFirst) return `polygon(0 0, calc(100% - ${tip}px) 0, 100% 50%, calc(100% - ${tip}px) 100%, 0 100%)`;
+  if (isLast) return `polygon(0 0, 100% 0, 100% 100%, 0 100%, ${tip}px 50%)`;
+  return `polygon(0 0, calc(100% - ${tip}px) 0, 100% 50%, calc(100% - ${tip}px) 100%, 0 100%, ${tip}px 50%)`;
+}
+
+const statusStyles: Record<StepStatus, string> = {
+  complete: "bg-emerald-500 text-white",
+  pending: "bg-amber-400 text-white",
+  future: "bg-slate-200 text-slate-500",
+};
+
+export function ChevronStepper({
+  steps,
+  currentId,
+  isDark = false,
+}: {
+  steps: { id: string; label: string }[];
+  currentId: string;
+  isDark?: boolean;
+}) {
+  const currentIdx = steps.findIndex((s) => s.id === currentId);
+  const allComplete = currentId === "done";
+
+  const getStatus = (index: number): StepStatus => {
+    if (allComplete) return "complete";
+    if (currentIdx === -1) return "future";
+    if (index < currentIdx) return "complete";
+    if (index === currentIdx) return "pending";
+    return "future";
+  };
+
+  return (
+    <div
+      className={cn(
+        "flex gap-1 overflow-x-auto rounded-xl border p-2",
+        isDark ? "border-white/10 bg-white/[0.03]" : "border-slate-200/80 bg-white shadow-sm"
+      )}
+    >
+      {steps.map((step, i) => {
+        const isFirst = i === 0;
+        const isLast = i === steps.length - 1;
+        const status = getStatus(i);
+
+        return (
+          <div
+            key={step.id}
+            className={cn(
+              "flex min-w-[88px] flex-1 items-center justify-center whitespace-nowrap px-4 py-2.5 text-xs font-semibold tracking-wide",
+              statusStyles[status],
+              isDark && status === "future" && "bg-slate-700/60 text-slate-400",
+              isDark && status === "complete" && "bg-emerald-600 text-white",
+              isDark && status === "pending" && "bg-amber-500 text-white"
+            )}
+            style={{
+              clipPath: chevronClip(isFirst, isLast),
+              zIndex: steps.length - i,
+            }}
+          >
+            {step.label}
+          </div>
+        );
+      })}
+    </div>
+  );
+}

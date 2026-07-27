@@ -8,6 +8,12 @@ import {
   PolarRadiusAxis,
   Radar,
   ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
 } from "recharts";
 import {
   ShieldAlert,
@@ -17,6 +23,7 @@ import {
   XCircle,
   Bug,
   Activity,
+  FileCheck,
   ScrollText,
   ShieldCheck,
   Lock,
@@ -29,12 +36,10 @@ import {
   Eye,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, Badge, Button, Progress, CodeBlock, Table, Th, Td } from "@/components/ui/primitives";
-import { PhaseSectionHeader, getPhaseProgress } from "@/components/project/PhaseSectionHeader";
 import { ChevronStepper } from "@/components/ui/ChevronStepper";
 import { testResults, failingTests, approvalQueue, auditLog, vulnerabilities, cvssRadar } from "@/data/mockData";
 import { useStore } from "@/store/useStore";
 import { cn } from "@/utils/cn";
-import { TestTabPanel } from "@/components/testing/TestTabPanel";
 
 const testingPhaseSteps = [
   { id: "dashboard", label: "Tests" },
@@ -53,6 +58,109 @@ function getTestingProgressId(status: ProjectStatus): string {
     default:
       return "dashboard";
   }
+}
+
+function TestDashboard() {
+  const categories = [
+    { name: "Unit Tests", data: { ...testResults.unit, failed: testResults.unit.failed, skipped: testResults.unit.skipped }, color: "#3b82f6", icon: "🧪" },
+    { name: "Integration Tests", data: { ...testResults.integration, failed: testResults.integration.failed, skipped: testResults.integration.skipped }, color: "#2563eb", icon: "🔗" },
+    { name: "Mutation Tests", data: { ...testResults.mutation, passed: testResults.mutation.killed, failed: testResults.mutation.survived, skipped: 0 }, color: "#f97316", icon: "🧬" },
+  ];
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-3 gap-4">
+        {categories.map((cat) => (
+          <Card key={cat.name}>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <span>{cat.icon}</span>
+                {cat.name}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex items-end justify-between">
+                <div>
+                  <p className="text-2xl font-bold text-white">{cat.data.passed}</p>
+                  <p className="text-xs text-slate-500">of {cat.data.total} passed</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-2xl font-bold" style={{ color: cat.color }}>
+                    {cat.data.coverage}%
+                  </p>
+                  <p className="text-xs text-slate-500">coverage</p>
+                </div>
+              </div>
+              <Progress value={(cat.data.passed / cat.data.total) * 100} color={cat.color} />
+              <div className="flex gap-2 text-xs">
+                <Badge variant="success">{cat.data.passed} passed</Badge>
+                {cat.data.failed > 0 && <Badge variant="error">{cat.data.failed} failed</Badge>}
+                {cat.data.skipped > 0 && <Badge variant="default">{cat.data.skipped} skipped</Badge>}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Activity className="h-4 w-4 text-blue-400" />
+              Coverage Trend
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-48">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={testResults.coverageTrend}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+                  <XAxis dataKey="day" stroke="#64748b" fontSize={11} />
+                  <YAxis stroke="#64748b" fontSize={11} domain={[70, 100]} />
+                  <Tooltip contentStyle={{ background: "#0f172a", border: "1px solid #334155", borderRadius: 8 }} />
+                  <Line type="monotone" dataKey="coverage" stroke="#2563eb" strokeWidth={2} dot={{ fill: "#2563eb", r: 3 }} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <FileCheck className="h-4 w-4 text-blue-400" />
+              Coverage Heatmap
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-8 gap-1">
+              {testResults.coverageHeatmap.flat().map((cell, i) => (
+                <div
+                  key={i}
+                  title={`Line ${cell.line}: ${cell.covered ? "covered" : "missed"}`}
+                  className={cn(
+                    "h-4 rounded-sm",
+                    cell.covered ? (cell.branch ? "bg-blue-500" : "bg-blue-500/40") : "bg-red-500/60"
+                  )}
+                />
+              ))}
+            </div>
+            <div className="mt-3 flex items-center gap-4 text-xs text-slate-400">
+              <span className="flex items-center gap-1">
+                <span className="h-3 w-3 rounded-sm bg-blue-500" /> Covered + Branch
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="h-3 w-3 rounded-sm bg-blue-500/40" /> Covered
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="h-3 w-3 rounded-sm bg-red-500/60" /> Missed
+              </span>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
 }
 
 function SelfHealingRepair() {
@@ -607,9 +715,11 @@ function GovernanceAudit() {
 
 export function TestingSecurity() {
   const { projectId } = useParams();
-  const { theme, projects, activeProjectId } = useStore();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const { theme, projects, activeProjectId, settings, addToast, updateProject } = useStore();
   const isDark = theme === "dark";
-  const [activeTab, setActiveTab] = useState("dashboard");
+  const stamp = useStamp();
 
   const project = useMemo(
     () => projects.find((p) => p.id === (activeProjectId ?? projectId)),
@@ -620,16 +730,16 @@ export function TestingSecurity() {
 
   return (
     <div className="w-full space-y-5 p-6 md:p-8">
-      <PhaseSectionHeader
-        title="Testing & Security"
-        subtitle={
-          project && ["deploy", "complete"].includes(project.status)
+      <div>
+        <h3 className={cn("text-xl font-semibold", isDark ? "text-white" : "text-slate-900")}>
+          Testing & Security
+        </h3>
+        <p className={cn("mt-1 text-sm", isDark ? "text-slate-400" : "text-slate-500")}>
+          {project && ["deploy", "complete"].includes(project.status)
             ? "All testing and security stages complete — browse any step below"
-            : "Automated tests, self-healing repairs, vulnerability scanning, and governance"
-        }
-        progress={project ? getPhaseProgress(project, "testing") : 0}
-        isDark={isDark}
-      />
+            : "Automated tests, self-healing repairs, vulnerability scanning, and governance"}
+        </p>
+      </div>
 
       <ChevronStepper
         steps={testingPhaseSteps}
@@ -639,7 +749,7 @@ export function TestingSecurity() {
         onStepClick={setActiveTab}
       />
 
-      {activeTab === "dashboard" && <TestTabPanel />}
+      {activeTab === "dashboard" && <TestDashboard />}
       {activeTab === "healing" && <SelfHealingRepair />}
       {activeTab === "security" && <SecurityScanning />}
       {activeTab === "governance" && <GovernanceAudit />}

@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { cn } from "@/utils/cn";
 
 type StepStatus = "complete" | "pending" | "future";
@@ -24,7 +25,7 @@ export function ChevronStepper({
   isDark = false,
   onStepClick,
 }: {
-  steps: { id: string; label: string }[];
+  steps: { id: string; label: string; badge?: ReactNode }[];
   currentId?: string;
   progressId?: string;
   selectedId?: string | null;
@@ -78,6 +79,20 @@ export function ChevronStepper({
             }}
           >
             {step.label}
+            {step.badge != null && (
+              <span
+                className={cn(
+                  "ml-1.5 inline-flex min-w-[17px] items-center justify-center rounded-full px-1.5 py-px text-[10px] font-bold leading-4",
+                  status === "future"
+                    ? isDark
+                      ? "bg-white/10 text-slate-300"
+                      : "bg-slate-900/10 text-slate-600"
+                    : "bg-white/25 text-white"
+                )}
+              >
+                {step.badge}
+              </span>
+            )}
           </button>
         );
       })}

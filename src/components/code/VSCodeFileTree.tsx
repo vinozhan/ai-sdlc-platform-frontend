@@ -1,9 +1,22 @@
 import { useMemo, useState } from "react";
 import { ChevronDown, ChevronRight, Folder, FolderOpen } from "lucide-react";
 import { cn } from "@/utils/cn";
-import { buildFileTree, type FileEntry } from "@/components/code/buildFileTree";
+import { buildFileTree, type FileEntry, type FileTreeNode } from "@/components/code/buildFileTree";
 import { getFileIcon } from "@/components/code/fileIcons";
 import { useStore } from "@/store/useStore";
+
+function TypeBadge({ label, isDark }: { label: string; isDark: boolean }) {
+  return (
+    <span
+      className={cn(
+        "shrink-0 rounded px-1 py-0 text-[9px] uppercase tracking-wide",
+        isDark ? "bg-white/[0.06] text-slate-500" : "bg-slate-200/80 text-slate-500"
+      )}
+    >
+      {label}
+    </span>
+  );
+}
 
 function TreeNode({
   node,
@@ -12,13 +25,17 @@ function TreeNode({
   onSelect,
   expanded,
   toggle,
+  onTagClick,
+  tagTitle,
 }: {
-  node: ReturnType<typeof buildFileTree>[number];
+  node: FileTreeNode;
   depth: number;
   selectedPath: string;
   onSelect: (path: string) => void;
   expanded: Set<string>;
   toggle: (path: string) => void;
+  onTagClick?: (path: string, tag: string) => void;
+  tagTitle?: (tag: string) => string;
 }) {
   const { theme } = useStore();
   const isDark = theme === "dark";
@@ -52,6 +69,8 @@ function TreeNode({
               onSelect={onSelect}
               expanded={expanded}
               toggle={toggle}
+              onTagClick={onTagClick}
+              tagTitle={tagTitle}
             />
           ))}
       </div>
@@ -59,13 +78,12 @@ function TreeNode({
   }
 
   const { icon: Icon, color } = getFileIcon(node.path, node.file?.type);
+  const tags = node.file?.tags ?? [];
 
   return (
-    <button
-      type="button"
-      onClick={() => onSelect(node.path)}
+    <div
       className={cn(
-        "group flex w-full items-center gap-1.5 rounded py-0.5 pr-2 text-left text-[12px]",
+        "group flex w-full items-center gap-1.5 rounded pr-2 text-[12px]",
         isSelected
           ? isDark
             ? "bg-blue-500/15 text-blue-200"
@@ -74,21 +92,38 @@ function TreeNode({
           ? "text-slate-400 hover:bg-white/[0.04]"
           : "text-slate-600 hover:bg-slate-50"
       )}
-      style={{ paddingLeft: `${depth * 12 + 20}px` }}
     >
-      <Icon className="h-3.5 w-3.5 shrink-0" style={{ color }} />
-      <span className="min-w-0 flex-1 truncate">{node.name}</span>
-      {node.file?.type && (
-        <span
-          className={cn(
-            "ml-auto shrink-0 rounded px-1 py-0 text-[9px] uppercase tracking-wide",
-            isDark ? "bg-white/[0.06] text-slate-500" : "bg-slate-200/80 text-slate-500"
-          )}
-        >
-          {node.file.type}
-        </span>
+      <button
+        type="button"
+        onClick={() => onSelect(node.path)}
+        className="flex min-w-0 flex-1 items-center gap-1.5 py-0.5 text-left"
+        style={{ paddingLeft: `${depth * 12 + 20}px` }}
+      >
+        <Icon className="h-3.5 w-3.5 shrink-0" style={{ color }} />
+        <span className="min-w-0 flex-1 truncate">{node.name}</span>
+      </button>
+      {node.file?.type && <TypeBadge label={node.file.type} isDark={isDark} />}
+      {tags.map((tag) =>
+        onTagClick ? (
+          <button
+            key={tag}
+            type="button"
+            onClick={() => onTagClick(node.path, tag)}
+            title={tagTitle?.(tag)}
+            className={cn(
+              "shrink-0 rounded px-1 py-0 text-[9px] uppercase tracking-wide transition-colors",
+              isDark
+                ? "bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/25"
+                : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+            )}
+          >
+            {tag}
+          </button>
+        ) : (
+          <TypeBadge key={tag} label={tag} isDark={isDark} />
+        )
       )}
-    </button>
+    </div>
   );
 }
 
@@ -97,15 +132,23 @@ export function VSCodeFileTree({
   selectedPath,
   onSelect,
   title,
+  collapseChains,
+  onTagClick,
+  tagTitle,
+  footer,
 }: {
   files: FileEntry[];
   selectedPath: string;
   onSelect: (path: string) => void;
   title: string;
+  collapseChains?: boolean;
+  onTagClick?: (path: string, tag: string) => void;
+  tagTitle?: (tag: string) => string;
+  footer?: React.ReactNode;
 }) {
   const { theme } = useStore();
   const isDark = theme === "dark";
-  const tree = useMemo(() => buildFileTree(files), [files]);
+  const tree = useMemo(() => buildFileTree(files, { collapseChains }), [files, collapseChains]);
   const [expanded, setExpanded] = useState<Set<string>>(() => {
     const paths = new Set<string>();
     files.forEach((f) => {
@@ -142,9 +185,14 @@ export function VSCodeFileTree({
             onSelect={onSelect}
             expanded={expanded}
             toggle={toggle}
+            onTagClick={onTagClick}
+            tagTitle={tagTitle}
           />
         ))}
       </div>
+      {footer && (
+        <div className={cn("border-t px-3 py-2", isDark ? "border-white/10" : "border-slate-200")}>{footer}</div>
+      )}
     </div>
   );
 }

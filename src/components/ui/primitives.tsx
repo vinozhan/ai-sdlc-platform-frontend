@@ -1,4 +1,10 @@
-import { type ReactNode, type HTMLAttributes, forwardRef } from "react";
+import {
+  type ReactNode,
+  type HTMLAttributes,
+  type ThHTMLAttributes,
+  type TdHTMLAttributes,
+  forwardRef,
+} from "react";
 import { useStore } from "@/store/useStore";
 import { cn } from "@/utils/cn";
 
@@ -298,7 +304,7 @@ export function Table({ children, className }: { children: ReactNode; className?
   );
 }
 
-export function Th({ children, className, ...props }: HTMLAttributes<HTMLTableCellElement>) {
+export function Th({ children, className, ...props }: ThHTMLAttributes<HTMLTableCellElement>) {
   const { theme } = useStore();
   const isDark = theme === "dark";
   return (
@@ -315,7 +321,7 @@ export function Th({ children, className, ...props }: HTMLAttributes<HTMLTableCe
   );
 }
 
-export function Td({ children, className, ...props }: HTMLAttributes<HTMLTableCellElement>) {
+export function Td({ children, className, ...props }: TdHTMLAttributes<HTMLTableCellElement>) {
   const { theme } = useStore();
   const isDark = theme === "dark";
   return (

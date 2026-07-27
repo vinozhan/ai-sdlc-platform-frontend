@@ -583,115 +583,8 @@ export const buildStatus = {
 };
 
 // ===== TESTING & SECURITY DATA =====
-export const testResults = {
-  unit: { total: 184, passed: 178, failed: 4, skipped: 2, coverage: 87 },
-  integration: { total: 42, passed: 39, failed: 2, skipped: 1, coverage: 76 },
-  mutation: { total: 312, killed: 284, survived: 18, coverage: 91 },
-  coverageTrend: [
-    { day: "Mon", coverage: 78 },
-    { day: "Tue", coverage: 80 },
-    { day: "Wed", coverage: 82 },
-    { day: "Thu", coverage: 85 },
-    { day: "Fri", coverage: 87 },
-  ],
-  coverageHeatmap: Array.from({ length: 12 }, (_, i) =>
-    Array.from({ length: 8 }, (_, j) => ({
-      line: i * 8 + j + 1,
-      covered: Math.random() > 0.15,
-      branch: Math.random() > 0.4,
-    }))
-  ),
-};
-
-export const failingTests = [
-  {
-    id: "t1",
-    name: "PaymentServiceTest.shouldProcessRefund",
-    category: "integration",
-    status: "brittle",
-    error: "Expected status 200 but got 201",
-    lastRun: "2 min ago",
-    originalCode: `@Test
-void shouldProcessRefund() {
-    Payment payment = createTestPayment();
-    paymentService.refund(payment.getId());
-    assertEquals("REFUNDED", payment.getStatus());
-}`,
-    proposedCode: `@Test
-void shouldProcessRefund() {
-    Payment payment = createTestPayment();
-    String refundId = paymentService.refund(payment.getId());
-    Payment refunded = paymentService.findById(payment.getId());
-    assertEquals("REFUNDED", refunded.getStatus());
-    assertNotNull(refundId);
-}`,
-    honestyGuard: { passesUnchanged: true, killsMutant: true, integrity: true },
-    explanation: "The refund method now returns a refund ID. The test was stale — it checked the in-memory object instead of re-fetching. The repair re-fetches the payment and asserts the new return value.",
-  },
-  {
-    id: "t2",
-    name: "UserControllerTest.shouldReturn404ForMissingUser",
-    category: "unit",
-    status: "real-regression",
-    error: "Expected 404 but got 500",
-    lastRun: "5 min ago",
-    explanation: "This is a genuine regression — the controller throws an unhandled exception instead of returning 404. Route to developer.",
-  },
-  {
-    id: "t3",
-    name: "NotificationServiceTest.shouldSendEmail",
-    category: "unit",
-    status: "healed",
-    error: "Previously failing — repaired in Sprint 23",
-    lastRun: "1 day ago",
-    explanation: "Healed: email template path was updated. Repair verified and merged.",
-  },
-  {
-    id: "t4",
-    name: "KYCServiceTest.shouldVerifyDocument",
-    category: "integration",
-    status: "brittle",
-    error: "Mock response format changed",
-    lastRun: "8 min ago",
-    originalCode: `verify(mockVerifier).verify(doc);`,
-    proposedCode: `verify(mockVerifier).verify(doc, VerificationContext.DEFAULT);`,
-    honestyGuard: { passesUnchanged: true, killsMutant: true, integrity: false },
-    explanation: "The verify method signature changed to include a context parameter. The repair updates the mock call. NOTE: integrity check failed — the repair does not assert the returned verification result.",
-  },
-];
-
-export const approvalQueue = [
-  { id: "ap-1", testId: "t1", proposedBy: "AI-Healer", status: "pending", createdAt: "2 min ago", qaComment: "Stale test — method signature changed" },
-  { id: "ap-2", testId: "t4", proposedBy: "AI-Healer", status: "pending", createdAt: "8 min ago", qaComment: "Mock update needed" },
-  { id: "ap-3", testId: "t3", proposedBy: "AI-Healer", status: "approved", createdAt: "1 day ago", devComment: "Looks good, verified locally" },
-];
-
-export const auditLog = [
-  { id: "log-1", timestamp: "2025-01-20 14:32:11", actor: "AI-Healer", action: "PROPOSE_REPAIR", target: "PaymentServiceTest.shouldProcessRefund", details: "Proposed test repair for stale assertion" },
-  { id: "log-2", timestamp: "2025-01-20 14:35:42", actor: "S. Patel (QA)", action: "REVIEW", target: "ap-1", details: "Approved repair proposal" },
-  { id: "log-3", timestamp: "2025-01-20 14:38:01", actor: "M. Rodriguez (Dev)", action: "APPROVE", target: "ap-1", details: "Approved — verified locally" },
-  { id: "log-4", timestamp: "2025-01-20 14:40:15", actor: "System", action: "APPLY_REPAIR", target: "PaymentServiceTest", details: "Applied approved repair to main branch" },
-  { id: "log-5", timestamp: "2025-01-20 15:01:22", actor: "AI-Security", action: "SCAN_COMPLETE", target: "PaymentController", details: "Found 1 medium CWE-79 XSS in input validation" },
-  { id: "log-6", timestamp: "2025-01-20 15:05:30", actor: "AI-Healer", action: "PROPOSE_REPAIR", target: "KYCServiceTest.shouldVerifyDocument", details: "Mock signature update" },
-];
-
-export const vulnerabilities = [
-  { id: "v1", cwe: "CWE-79", name: "Cross-Site Scripting", severity: "high", cvss: 7.4, file: "PaymentController.java", line: 42, status: "open", precision: 0.92, recall: 0.88 },
-  { id: "v2", cwe: "CWE-89", name: "SQL Injection", severity: "critical", cvss: 9.1, file: "UserRepository.java", line: 88, status: "open", precision: 0.96, recall: 0.94 },
-  { id: "v3", cwe: "CWE-352", name: "CSRF", severity: "medium", cvss: 5.2, file: "AuthController.java", line: 31, status: "mitigated", precision: 0.85, recall: 0.80 },
-  { id: "v4", cwe: "CWE-200", name: "Information Exposure", severity: "medium", cvss: 4.8, file: "ErrorHandler.java", line: 15, status: "open", precision: 0.78, recall: 0.72 },
-  { id: "v5", cwe: "CWE-611", name: "XXE", severity: "low", cvss: 3.1, file: "XmlParser.java", line: 22, status: "open", precision: 0.70, recall: 0.65 },
-  { id: "v6", cwe: "CWE-502", name: "Deserialization", severity: "critical", cvss: 8.8, file: "SessionManager.java", line: 67, status: "open", precision: 0.94, recall: 0.91 },
-];
-
-export const cvssRadar = [
-  { axis: "Confidentiality", value: 8.5 },
-  { axis: "Integrity", value: 7.2 },
-  { axis: "Availability", value: 6.8 },
-  { axis: "Access Vector", value: 9.0 },
-  { axis: "Access Complexity", value: 4.5 },
-  { axis: "Authentication", value: 7.8 },
-];
+// Lives in src/data/testingData.ts — one coherent run, so the counts in the
+// suite table, the failure inbox and the report cannot disagree.
 
 // ===== DEPLOYMENT DATA =====
 export const repositories = [
@@ -845,7 +738,7 @@ export const alerts = [
   { id: "al1", type: "security", severity: "critical", title: "SQL Injection in UserRepository", component: "c3", message: "CWE-89 detected in UserRepository.java:88", time: "2 min ago" },
   { id: "al2", type: "test", severity: "warning", title: "Brittle test detected", component: "c3", message: "PaymentServiceTest.shouldProcessRefund marked for AI repair", time: "5 min ago" },
   { id: "al3", type: "deployment", severity: "high", title: "Breaking change predicted", component: "c4", message: "spring-security-crypto 7.0.0 — 88% probability of breaking changes", time: "12 min ago" },
-  { id: "al4", type: "approval", severity: "info", title: "Approval request", component: "c3", message: "2 test repair proposals awaiting developer approval", time: "15 min ago" },
+  { id: "al4", type: "approval", severity: "info", title: "Approval request", component: "c3", message: "3 test repairs awaiting your approval", time: "15 min ago" },
   { id: "al5", type: "test", severity: "error", title: "Integration test failed", component: "c3", message: "UserControllerTest.shouldReturn404 — real regression detected", time: "20 min ago" },
   { id: "al6", type: "deployment", severity: "warning", title: "Deployment in progress", component: "c4", message: "Deploy stage running — 65% complete", time: "1 min ago" },
 ];

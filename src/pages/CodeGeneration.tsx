@@ -31,6 +31,7 @@ import { cn } from "@/utils/cn";
 import { VSCodeFileTree } from "@/components/code/VSCodeFileTree";
 import { VSCodeEditor, type EditorTab } from "@/components/code/VSCodeEditor";
 import { LivePreviewPanel } from "@/components/code/LivePreviewPanel";
+import { PhaseSectionHeader, getPhaseProgress } from "@/components/project/PhaseSectionHeader";
 import { TechStackTab } from "@/components/code/TechStackTab";
 
 const codePhaseSteps = [
@@ -559,16 +560,16 @@ export function CodeGeneration() {
 
   return (
     <div className="w-full space-y-5 p-6 md:p-8">
-      <div>
-        <h3 className={cn("text-xl font-semibold", isDark ? "text-white" : "text-slate-900")}>
-          Code Generation
-        </h3>
-        <p className={cn("mt-1 text-sm", isDark ? "text-slate-400" : "text-slate-500")}>
-          {project && ["deploy", "complete", "testing"].includes(project.status)
+      <PhaseSectionHeader
+        title="Code Generation"
+        subtitle={
+          project && ["deploy", "complete", "testing"].includes(project.status)
             ? "All code generation stages complete — browse any step below"
-            : "AI-generated frontend, backend, and build artifacts from your requirements"}
-        </p>
-      </div>
+            : "AI-generated frontend, backend, and build artifacts from your requirements"
+        }
+        progress={project ? getPhaseProgress(project, "code") : 0}
+        isDark={isDark}
+      />
 
       <ChevronStepper
         steps={codePhaseSteps}

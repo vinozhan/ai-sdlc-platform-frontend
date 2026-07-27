@@ -38,6 +38,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle, Badge, Button } from "@/components/ui/primitives";
+import { PhaseSectionHeader, getPhaseProgress } from "@/components/project/PhaseSectionHeader";
 import { ChevronStepper } from "@/components/ui/ChevronStepper";
 import { repositories, dependencyTree, dependencyUpdates, pipelineStages, deploymentTargets, productionMetrics } from "@/data/mockData";
 import { useStore } from "@/store/useStore";
@@ -624,16 +625,16 @@ export function DeploymentDependency() {
 
   return (
     <div className="w-full space-y-5 p-6 md:p-8">
-      <div>
-        <h3 className={cn("text-xl font-semibold", isDark ? "text-white" : "text-slate-900")}>
-          Deployment & Dependencies
-        </h3>
-        <p className={cn("mt-1 text-sm", isDark ? "text-slate-400" : "text-slate-500")}>
-          {project?.status === "complete"
+      <PhaseSectionHeader
+        title="Deployment & Dependencies"
+        subtitle={
+          project?.status === "complete"
             ? "All deployment stages complete — browse any step below"
-            : "Repository management, dependency updates, CI/CD pipeline, and production monitoring"}
-        </p>
-      </div>
+            : "Repository management, dependency updates, CI/CD pipeline, and production monitoring"
+        }
+        progress={project ? getPhaseProgress(project, "deployment") : 0}
+        isDark={isDark}
+      />
 
       <ChevronStepper
         steps={deploymentPhaseSteps}

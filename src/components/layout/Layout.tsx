@@ -183,7 +183,7 @@ function TopBar() {
     if (location.pathname.startsWith("/projects/") && location.pathname.includes("/code")) return "Code Generation";
     if (location.pathname.startsWith("/projects/") && location.pathname.includes("/testing")) return "Testing & Security";
     if (location.pathname.startsWith("/projects/") && location.pathname.includes("/deployment")) return "Deployment";
-    if (location.pathname.startsWith("/projects/") && location.pathname.includes("/traceability")) return "Traceability";
+    if (location.pathname.startsWith("/projects/") && location.pathname.includes("/traceability")) return "Activity Log";
     if (location.pathname.startsWith("/projects")) return "Projects";
     if (location.pathname.startsWith("/settings")) return "Settings";
     return "SDLC AI";

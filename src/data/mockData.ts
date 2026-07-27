@@ -266,96 +266,8 @@ export const architecturePatterns = [
   },
 ];
 
-// ===== UML DIAGRAMS (Mermaid) =====
-export const umlDiagrams = {
-  class: `classDiagram
-    class User {
-      +String id
-      +String email
-      +String role
-      +authenticate()
-    }
-    class Transaction {
-      +String id
-      +Decimal amount
-      +String status
-      +process()
-    }
-    class KYC_Record {
-      +String id
-      +String status
-      +Date submittedAt
-      +verify()
-    }
-    class Payment_Service {
-      +charge()
-      +refund()
-    }
-    User "1" --> "*" Transaction : makes
-    User "1" --> "1" KYC_Record : has
-    Payment_Service --> Transaction : processes`,
-  er: `erDiagram
-    USER ||--o{ TRANSACTION : makes
-    USER ||--|| KYC_RECORD : has
-    USER ||--o{ SESSION : creates
-    TRANSACTION ||--o{ AUDIT_LOG : generates
-    PAYMENT_GATEWAY ||--o{ TRANSACTION : processes
-    USER {
-      string id PK
-      string email
-      string role
-    }
-    TRANSACTION {
-      string id PK
-      decimal amount
-      string status
-    }
-    KYC_RECORD {
-      string id PK
-      string status
-      date submitted_at
-    }`,
-  activity: `flowchart TD
-    A[Customer initiates payment] --> B{Authenticated?}
-    B -->|No| C[Redirect to login]
-    C --> A
-    B -->|Yes| D[Validate card details]
-    D --> E{Card valid?}
-    E -->|No| F[Show error]
-    E -->|Yes| G[Process via gateway]
-    G --> H{Payment success?}
-    H -->|No| I[Retry or fail]
-    H -->|Yes| J[Record transaction]
-    J --> K[Send confirmation]
-    K --> L[Update audit log]`,
-  sequence: `sequenceDiagram
-    participant C as Customer
-    participant FE as Frontend
-    participant GW as API Gateway
-    participant PS as Payment Service
-    participant PG as Payment Gateway
-    C->>FE: Click "Pay Now"
-    FE->>GW: POST /payments
-    GW->>PS: Forward request
-    PS->>PG: Charge request
-    PG-->>PS: Authorization code
-    PS-->>GW: Payment confirmed
-    GW-->>FE: 200 OK
-    FE-->>C: Show receipt`,
-  object: `classDiagram
-    class activeTransaction {
-      id = "TXN-9001"
-      amount = 149.99
-      status = "PENDING"
-      currency = "USD"
-    }
-    class activeUser {
-      id = "USR-4521"
-      email = "user@example.com"
-      role = "CUSTOMER"
-    }
-    activeUser --> activeTransaction : making`,
-};
+// ===== UML DIAGRAMS (Mermaid) — see src/data/umlDiagrams.ts =====
+export { umlDiagramList, umlDiagrams } from "@/data/umlDiagrams";
 
 // ===== CODE GENERATION DATA =====
 export const apiContracts = [
@@ -936,6 +848,182 @@ export const alerts = [
   { id: "al4", type: "approval", severity: "info", title: "Approval request", component: "c3", message: "2 test repair proposals awaiting developer approval", time: "15 min ago" },
   { id: "al5", type: "test", severity: "error", title: "Integration test failed", component: "c3", message: "UserControllerTest.shouldReturn404 — real regression detected", time: "20 min ago" },
   { id: "al6", type: "deployment", severity: "warning", title: "Deployment in progress", component: "c4", message: "Deploy stage running — 65% complete", time: "1 min ago" },
+];
+
+// ===== ACTIVITY LOG =====
+export type ActivityLogCategory =
+  | "requirement"
+  | "design"
+  | "code"
+  | "test"
+  | "security"
+  | "deploy"
+  | "approval";
+
+export type ActivityLogEntry = {
+  id: string;
+  timestamp: string;
+  displayDate: string;
+  title: string;
+  description: string;
+  actor: string;
+  category: ActivityLogCategory;
+  metric?: string;
+  metricTone?: "success" | "neutral" | "warning" | "error";
+  artifactRef?: string;
+};
+
+export const activityLogEntries: ActivityLogEntry[] = [
+  {
+    id: "act-1",
+    timestamp: "2026-01-20T15:05:30",
+    displayDate: "Jan 20, 2026",
+    title: "Test repair applied",
+    description: "PaymentServiceTest.shouldProcessRefund — approved repair merged to main",
+    actor: "System",
+    category: "approval",
+    metric: "1 test healed",
+    metricTone: "success",
+    artifactRef: "PaymentServiceTest",
+  },
+  {
+    id: "act-2",
+    timestamp: "2026-01-20T15:01:22",
+    displayDate: "Jan 20, 2026",
+    title: "Security scan completed",
+    description: "PaymentController scanned — 1 medium CWE-79 XSS in input validation",
+    actor: "AI-Security",
+    category: "security",
+    metric: "CVSS 7.4 · High",
+    metricTone: "warning",
+    artifactRef: "PaymentController.java:42",
+  },
+  {
+    id: "act-3",
+    timestamp: "2026-01-20T14:40:15",
+    displayDate: "Jan 20, 2026",
+    title: "Developer approved repair",
+    description: "Repair proposal ap-1 verified locally by M. Rodriguez",
+    actor: "M. Rodriguez (Dev)",
+    category: "approval",
+    artifactRef: "ap-1",
+  },
+  {
+    id: "act-4",
+    timestamp: "2026-01-20T14:35:42",
+    displayDate: "Jan 20, 2026",
+    title: "QA review completed",
+    description: "Brittle test repair proposal approved for PaymentServiceTest",
+    actor: "S. Patel (QA)",
+    category: "approval",
+    artifactRef: "PaymentServiceTest.shouldProcessRefund",
+  },
+  {
+    id: "act-5",
+    timestamp: "2026-01-20T14:32:11",
+    displayDate: "Jan 20, 2026",
+    title: "AI proposed test repair",
+    description: "Stale assertion detected — proposed fix for refund status code",
+    actor: "AI-Healer",
+    category: "test",
+    metric: "1 brittle test",
+    metricTone: "warning",
+    artifactRef: "PaymentServiceTest.shouldProcessRefund",
+  },
+  {
+    id: "act-6",
+    timestamp: "2026-01-18T11:22:00",
+    displayDate: "Jan 18, 2026",
+    title: "Production deployment healthy",
+    description: "Frontend (Vercel) and Backend (Azure AKS) targets reporting healthy",
+    actor: "CI/CD Pipeline",
+    category: "deploy",
+    metric: "99.97% uptime",
+    metricTone: "success",
+    artifactRef: "dep-2",
+  },
+  {
+    id: "act-7",
+    timestamp: "2026-01-18T10:45:00",
+    displayDate: "Jan 18, 2026",
+    title: "Build validation completed",
+    description: "Frontend and backend builds succeeded; 1 integration test failed",
+    actor: "Build Agent",
+    category: "test",
+    metric: "11/12 tests passed",
+    metricTone: "warning",
+    artifactRef: "testPaymentRefund",
+  },
+  {
+    id: "act-8",
+    timestamp: "2026-01-17T16:30:00",
+    displayDate: "Jan 17, 2026",
+    title: "Backend code generated",
+    description: "PaymentController, PaymentService, KYC Controller, and REST API contract created",
+    actor: "AI Agent",
+    category: "code",
+    metric: "4 endpoints · 28 files",
+    metricTone: "neutral",
+    artifactRef: "code-1",
+  },
+  {
+    id: "act-9",
+    timestamp: "2026-01-17T14:10:00",
+    displayDate: "Jan 17, 2026",
+    title: "Frontend code generated",
+    description: "React components including PaymentForm.tsx generated from wireframes",
+    actor: "AI Agent",
+    category: "code",
+    metric: "42 source files",
+    metricTone: "neutral",
+    artifactRef: "PaymentForm.tsx",
+  },
+  {
+    id: "act-10",
+    timestamp: "2026-01-16T09:00:00",
+    displayDate: "Jan 16, 2026",
+    title: "Wireframe design approved",
+    description: "Payment Form checkout flow approved after mockup review",
+    actor: "Alex Chen",
+    category: "design",
+    metric: "4 screens · Sprint 2",
+    metricTone: "success",
+    artifactRef: "wire-1",
+  },
+  {
+    id: "act-11",
+    timestamp: "2026-01-15T11:45:00",
+    displayDate: "Jan 15, 2026",
+    title: "Architecture validated",
+    description: "Semantic Architecture Graph and UML class diagram validated at 94% confidence",
+    actor: "AI Agent",
+    category: "design",
+    metric: "Microservices · 94%",
+    metricTone: "success",
+    artifactRef: "sag-1",
+  },
+  {
+    id: "act-12",
+    timestamp: "2026-01-14T08:30:00",
+    displayDate: "Jan 14, 2026",
+    title: "Requirements parsed",
+    description: "28 requirements extracted from payment-gateway-srs.pdf across 12 sections",
+    actor: "AI Agent",
+    category: "requirement",
+    metric: "96% confidence",
+    metricTone: "success",
+    artifactRef: "req-1",
+  },
+  {
+    id: "act-13",
+    timestamp: "2026-01-14T08:00:00",
+    displayDate: "Jan 14, 2026",
+    title: "Project created",
+    description: "Payment Processing and KYC Verification scope initialized from SRS upload",
+    actor: "Alex Chen",
+    category: "requirement",
+    artifactRef: "payment-gateway-srs.pdf",
+  },
 ];
 
 // ===== TRACEABILITY GRAPH =====

@@ -29,7 +29,6 @@ import { useStore, type Project, type ReqPhase } from "@/store/useStore";
 import {
   extractedEntities,
   architecturePatterns,
-  umlDiagrams,
   sagNodes,
   sagEdges,
   backlog,
@@ -42,15 +41,15 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  CodeBlock,
-  Progress,
 } from "@/components/ui/primitives";
 import { ChevronStepper } from "@/components/ui/ChevronStepper";
 import { CodeGeneration } from "@/pages/CodeGeneration";
 import { TestingSecurity } from "@/pages/TestingSecurity";
 import { DeploymentDependency } from "@/pages/DeploymentDependency";
-import { Traceability } from "@/pages/Traceability";
+import { ActivityLog } from "@/pages/ActivityLog";
 import { WireframesPanel } from "@/components/wireframes/WireframesPanel";
+import { UMLPanel } from "@/components/uml/UMLPanel";
+import { PhaseSectionHeader, getPhaseProgress } from "@/components/project/PhaseSectionHeader";
 
 const phaseMeta: { id: ReqPhase; label: string }[] = [
   { id: "input", label: "Input" },
@@ -105,7 +104,7 @@ function ProjectShell({ children }: { children: React.ReactNode }) {
     { id: "code", label: "Code Generation", path: `/projects/${projectId}/code`, icon: Code2 },
     { id: "testing", label: "Testing & Security", path: `/projects/${projectId}/testing`, icon: FlaskConical },
     { id: "deployment", label: "Deployment", path: `/projects/${projectId}/deployment`, icon: Rocket },
-    { id: "traceability", label: "Traceability", path: `/projects/${projectId}/traceability`, icon: GitBranch },
+    { id: "traceability", label: "Activity Log", path: `/projects/${projectId}/traceability`, icon: GitBranch },
   ];
 
   const status = statusBadge(project.status);
@@ -409,25 +408,16 @@ function RequirementsResults({ project }: { project: Project }) {
 
   return (
     <div className="w-full space-y-5 p-6 md:p-8">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h3 className={cn("text-xl font-semibold", isDark ? "text-white" : "text-slate-900")}>
-            Requirements & Design
-          </h3>
-          <p className={cn("mt-1 text-sm", isDark ? "text-slate-400" : "text-slate-500")}>
-            {pipelineRunning
-              ? "AI is generating design artifacts from your requirements..."
-              : "Generated from your requirements input"}
-          </p>
-        </div>
-        <div className="w-48">
-          <div className="mb-1 flex justify-between text-xs">
-            <span className={isDark ? "text-slate-500" : "text-slate-400"}>Progress</span>
-            <span className={isDark ? "text-white" : "text-slate-900"}>{project.progress}%</span>
-          </div>
-          <Progress value={project.progress} color="#2563eb" />
-        </div>
-      </div>
+      <PhaseSectionHeader
+        title="Requirements & Design"
+        subtitle={
+          pipelineRunning
+            ? "AI is generating design artifacts from your requirements..."
+            : "Generated from your requirements input"
+        }
+        progress={getPhaseProgress(project, "requirements")}
+        isDark={isDark}
+      />
 
       <ChevronStepper
         steps={steps}
@@ -436,27 +426,6 @@ function RequirementsResults({ project }: { project: Project }) {
         isDark={isDark}
         onStepClick={setSelectedStep}
       />
-
-      <Card>
-        <CardContent className="p-4">
-          <p className={cn("mb-1 text-xs font-semibold uppercase tracking-wide", isDark ? "text-slate-500" : "text-slate-400")}>
-            Source requirements
-          </p>
-          <p className={cn("text-sm leading-relaxed", isDark ? "text-slate-300" : "text-slate-700")}>
-            {project.requirementText}
-          </p>
-          {project.files.length > 0 && (
-            <div className="mt-3 flex flex-wrap gap-2">
-              {project.files.map((f) => (
-                <Badge key={f} variant="default">
-                  <Upload className="h-3 w-3" />
-                  {f}
-                </Badge>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
 
       {!activeStep && (
         <div
@@ -471,7 +440,29 @@ function RequirementsResults({ project }: { project: Project }) {
       )}
 
       {activeStep === "parsing" && (
-        <Card>
+        <>
+          <Card>
+            <CardContent className="p-4">
+              <p className={cn("mb-1 text-xs font-semibold uppercase tracking-wide", isDark ? "text-slate-500" : "text-slate-400")}>
+                Source requirements
+              </p>
+              <p className={cn("text-sm leading-relaxed", isDark ? "text-slate-300" : "text-slate-700")}>
+                {project.requirementText}
+              </p>
+              {project.files.length > 0 && (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {project.files.map((f) => (
+                    <Badge key={f} variant="default">
+                      <Upload className="h-3 w-3" />
+                      {f}
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <FileText className="h-4 w-4 text-blue-400" />
@@ -496,6 +487,7 @@ function RequirementsResults({ project }: { project: Project }) {
             </div>
           </CardContent>
         </Card>
+        </>
       )}
 
       {activeStep === "entities" && (
@@ -579,22 +571,7 @@ function RequirementsResults({ project }: { project: Project }) {
             </div>
       )}
 
-      {activeStep === "uml" && (
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-              {Object.entries(umlDiagrams)
-                .slice(0, 4)
-                .map(([key, code]) => (
-                  <Card key={key}>
-                    <CardHeader>
-                      <CardTitle className="capitalize">{key} diagram</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <CodeBlock code={code} language="mermaid" className="max-h-64" />
-                    </CardContent>
-                  </Card>
-                ))}
-            </div>
-      )}
+      {activeStep === "uml" && <UMLPanel isDark={isDark} />}
 
       {activeStep === "wireframes" && (
         <WireframesPanel
@@ -764,7 +741,7 @@ export function ProjectWorkspace() {
         element={
           <ProjectShell>
             <div className="p-2">
-              <Traceability />
+              <ActivityLog />
             </div>
           </ProjectShell>
         }

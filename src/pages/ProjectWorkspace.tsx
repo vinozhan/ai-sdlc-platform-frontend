@@ -100,11 +100,11 @@ function ProjectShell({ children }: { children: React.ReactNode }) {
   if (!project) return <Navigate to="/projects" replace />;
 
   const tabs = [
-    { id: "requirements", label: "Requirements & Design", path: `/projects/${projectId}/requirements`, icon: FileText },
-    { id: "code", label: "Code Generation", path: `/projects/${projectId}/code`, icon: Code2 },
-    { id: "testing", label: "Testing & Security", path: `/projects/${projectId}/testing`, icon: FlaskConical },
-    { id: "deployment", label: "Deployment", path: `/projects/${projectId}/deployment`, icon: Rocket },
-    { id: "traceability", label: "Activity Log", path: `/projects/${projectId}/traceability`, icon: GitBranch },
+    { id: "requirements", label: "Requirements & Design", shortLabel: "Design", path: `/projects/${projectId}/requirements`, icon: FileText },
+    { id: "code", label: "Code Generation", shortLabel: "Code", path: `/projects/${projectId}/code`, icon: Code2 },
+    { id: "testing", label: "Testing & Security", shortLabel: "Testing", path: `/projects/${projectId}/testing`, icon: FlaskConical },
+    { id: "deployment", label: "Deployment", shortLabel: "Deploy", path: `/projects/${projectId}/deployment`, icon: Rocket },
+    { id: "traceability", label: "Activity Log", shortLabel: "Activity", path: `/projects/${projectId}/traceability`, icon: GitBranch },
   ];
 
   const status = statusBadge(project.status);
@@ -117,34 +117,45 @@ function ProjectShell({ children }: { children: React.ReactNode }) {
       {/* Main project header */}
       <div
         className={cn(
-          "border-b px-6 py-5 md:px-8",
+          "border-b px-4 py-4 sm:px-6 sm:py-5 md:px-8",
           isDark ? "border-white/[0.06] bg-[#0a1628]/40" : "border-slate-200/80 bg-white/80"
         )}
       >
-        <div className="flex flex-wrap items-start gap-4">
+        <div className="flex flex-wrap items-start gap-3 sm:gap-4">
           <span
-            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-sm font-bold text-white shadow-md"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-sm font-bold text-white shadow-md sm:h-12 sm:w-12"
             style={{ backgroundColor: project.color }}
           >
             {project.name.charAt(0)}
           </span>
           <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-3">
-              <h1 className={cn("text-xl font-semibold tracking-tight md:text-2xl", isDark ? "text-white" : "text-slate-900")}>
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+              <h1 className={cn("text-lg font-semibold tracking-tight sm:text-xl md:text-2xl", isDark ? "text-white" : "text-slate-900")}>
                 {project.name}
               </h1>
               <Badge variant={status.variant}>{status.label}</Badge>
+              <div
+                className={cn(
+                  "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 sm:hidden",
+                  isDark ? "border-white/10 bg-white/[0.04]" : "border-slate-200 bg-slate-50"
+                )}
+              >
+                <span className={cn("text-sm font-bold tabular-nums", isDark ? "text-white" : "text-slate-900")}>
+                  {project.progress}%
+                </span>
+                <span className={cn("text-[10px]", isDark ? "text-slate-500" : "text-slate-400")}>done</span>
+              </div>
             </div>
-            <p className={cn("mt-1.5 max-w-3xl text-sm leading-relaxed", isDark ? "text-slate-400" : "text-slate-600")}>
+            <p className={cn("mt-1.5 max-w-3xl text-sm leading-relaxed line-clamp-3 sm:line-clamp-none", isDark ? "text-slate-400" : "text-slate-600")}>
               {description}
             </p>
             {project.techStack.length > 0 && (
-              <p className={cn("mt-2 text-xs", isDark ? "text-slate-500" : "text-slate-400")}>
+              <p className={cn("mt-2 line-clamp-2 text-xs sm:line-clamp-none", isDark ? "text-slate-500" : "text-slate-400")}>
                 {project.techStack.join(" · ")}
               </p>
             )}
           </div>
-          <div className="text-right">
+          <div className="hidden text-right sm:block">
             <p className={cn("text-2xl font-bold tabular-nums", isDark ? "text-white" : "text-slate-900")}>
               {project.progress}%
             </p>
@@ -160,7 +171,7 @@ function ProjectShell({ children }: { children: React.ReactNode }) {
           isDark ? "border-white/[0.06] bg-[#071018]/95" : "border-slate-200/80 bg-white/95"
         )}
       >
-        <nav className="-mb-px flex gap-0 overflow-x-auto px-4 md:px-0">
+        <nav className="scroll-touch scrollbar-thin scroll-snap-x -mb-px flex gap-0 overflow-x-auto px-3 sm:px-4 md:px-0">
           {tabs.map((t) => {
             const Icon = t.icon;
             const active = locationPath.includes(`/${t.id}`);
@@ -169,7 +180,7 @@ function ProjectShell({ children }: { children: React.ReactNode }) {
                 key={t.id}
                 to={t.path}
                 className={cn(
-                  "group relative flex shrink-0 items-center gap-2.5 border-b-2 px-4 py-3.5 text-[13px] font-medium transition-all",
+                  "scroll-snap-start group relative flex shrink-0 items-center gap-2 border-b-2 px-3 py-3 text-[12px] font-medium transition-all sm:gap-2.5 sm:px-4 sm:py-3.5 sm:text-[13px]",
                   active
                     ? isDark
                       ? "border-blue-500 text-blue-400"
@@ -193,7 +204,8 @@ function ProjectShell({ children }: { children: React.ReactNode }) {
                 >
                   <Icon className="h-3.5 w-3.5" />
                 </span>
-                <span className={cn(active && "font-semibold")}>{t.label}</span>
+                <span className={cn("hidden sm:inline", active && "font-semibold")}>{t.label}</span>
+                <span className={cn("sm:hidden", active && "font-semibold")}>{t.shortLabel}</span>
               </Link>
             );
           })}
@@ -225,7 +237,7 @@ function RequirementsInput({
   ];
 
   return (
-    <div className="flex min-h-[70vh] w-full flex-col items-center justify-center px-6 py-12">
+    <div className="flex min-h-[70vh] w-full flex-col items-center justify-center px-4 py-8 sm:px-6 sm:py-12">
       <div className="mb-8 text-center">
         <div
           className={cn(
@@ -235,7 +247,7 @@ function RequirementsInput({
         >
           <FileText className="h-6 w-6" />
         </div>
-        <h3 className={cn("text-2xl font-semibold tracking-tight", isDark ? "text-white" : "text-slate-900")}>
+        <h3 className={cn("text-xl font-semibold tracking-tight sm:text-2xl", isDark ? "text-white" : "text-slate-900")}>
           What should {project.name} do?
         </h3>
         <p className={cn("mt-2 text-sm", isDark ? "text-slate-400" : "text-slate-500")}>
@@ -407,7 +419,7 @@ function RequirementsResults({ project }: { project: Project }) {
   }));
 
   return (
-    <div className="w-full space-y-5 p-6 md:p-8">
+    <div className="w-full space-y-5 p-4 sm:p-6 md:p-8">
       <PhaseSectionHeader
         title="Requirements & Design"
         subtitle={
@@ -473,7 +485,7 @@ function RequirementsResults({ project }: { project: Project }) {
             <p className={cn("text-sm", isDark ? "text-slate-300" : "text-slate-600")}>
               Requirements document parsed successfully. Identified scope, actors, and core entities from your input.
             </p>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
               {[
                 { label: "Sections parsed", value: "12" },
                 { label: "Requirements found", value: "28" },
@@ -532,7 +544,7 @@ function RequirementsResults({ project }: { project: Project }) {
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0">
-                <div className={cn("h-[480px] w-full", isDark ? "bg-[#0a0e17]" : "bg-slate-50")}>
+                <div className={cn("h-[280px] w-full sm:h-[360px] lg:h-[480px]", isDark ? "bg-[#0a0e17]" : "bg-slate-50")}>
                   <ReactFlow nodes={nodes} edges={edges} nodeTypes={sagNodeTypes} fitView fitViewOptions={{ padding: 0.2 }}>
                     <Background color={isDark ? "#1e293b" : "#cbd5e1"} gap={20} />
                     <Controls />
@@ -659,7 +671,7 @@ function RequirementsResults({ project }: { project: Project }) {
       {pipelineRunning && (
         <div
           className={cn(
-            "fixed bottom-6 left-1/2 z-30 flex -translate-x-1/2 items-center gap-3 rounded-2xl border px-4 py-3 shadow-2xl",
+            "fixed bottom-4 left-4 right-4 z-30 mx-auto flex max-w-sm items-center gap-3 rounded-2xl border px-4 py-3 shadow-2xl safe-bottom sm:bottom-6 sm:left-1/2 sm:right-auto sm:-translate-x-1/2",
             isDark ? "border-white/10 bg-[#0f1d32]" : "border-slate-200 bg-white"
           )}
         >
@@ -710,9 +722,7 @@ export function ProjectWorkspace() {
         path="code"
         element={
           <ProjectShell>
-            <div className="p-2">
-              <CodeGeneration />
-            </div>
+            <CodeGeneration />
           </ProjectShell>
         }
       />
@@ -720,9 +730,7 @@ export function ProjectWorkspace() {
         path="testing"
         element={
           <ProjectShell>
-            <div className="p-2">
-              <TestingSecurity />
-            </div>
+            <TestingSecurity />
           </ProjectShell>
         }
       />
@@ -730,9 +738,7 @@ export function ProjectWorkspace() {
         path="deployment"
         element={
           <ProjectShell>
-            <div className="p-2">
-              <DeploymentDependency />
-            </div>
+            <DeploymentDependency />
           </ProjectShell>
         }
       />
@@ -740,9 +746,7 @@ export function ProjectWorkspace() {
         path="traceability"
         element={
           <ProjectShell>
-            <div className="p-2">
-              <ActivityLog />
-            </div>
+            <ActivityLog />
           </ProjectShell>
         }
       />

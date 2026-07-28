@@ -57,11 +57,12 @@ export function ProjectCreatePrompt({
           )}
         >
           <Sparkles className="h-3.5 w-3.5 text-blue-500" />
-          AI-assisted SDLC from requirements to release
+          <span className="sm:hidden">AI-assisted SDLC</span>
+          <span className="hidden sm:inline">AI-assisted SDLC from requirements to release</span>
         </div>
         <h1
           className={cn(
-            "text-3xl font-semibold tracking-tight md:text-4xl",
+            "text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl",
             isDark ? "text-white" : "text-slate-900"
           )}
         >

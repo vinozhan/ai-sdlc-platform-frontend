@@ -150,7 +150,7 @@ export function ActivityLog() {
   ];
 
   return (
-    <div className="w-full space-y-5 p-6 md:p-8">
+    <div className="w-full space-y-5 p-4 sm:p-6 md:p-8">
       <PhaseSectionHeader
         title="Activity Log"
         subtitle="Complete project timeline from requirements through deployment"

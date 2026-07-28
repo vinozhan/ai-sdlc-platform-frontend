@@ -67,7 +67,7 @@ function SelfHealingRepair() {
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <Card className="border-red-500/30">
           <CardContent className="flex items-center gap-3 p-4">
             <XCircle className="h-8 w-8 text-red-400" />
@@ -106,7 +106,7 @@ function SelfHealingRepair() {
         </Card>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -144,7 +144,7 @@ function SelfHealingRepair() {
           </CardContent>
         </Card>
 
-        <Card className="col-span-2">
+        <Card className="lg:col-span-2">
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="font-mono text-xs">{selectedTest.name}</CardTitle>
@@ -160,7 +160,7 @@ function SelfHealingRepair() {
               const propCode = selectedTest.proposedCode ?? "";
               return (
               <>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                   <div>
                     <p className="mb-1 text-xs font-semibold text-red-300">Original Test</p>
                     <CodeBlock code={origCode} language="java" className="max-h-48 text-[10px]" />
@@ -209,7 +209,7 @@ function SelfHealingRepair() {
                   <p className="text-xs text-slate-300">{selectedTest.explanation}</p>
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   <Button
                     variant="c3"
                     size="sm"
@@ -262,7 +262,7 @@ function SelfHealingRepair() {
         </Card>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -295,7 +295,7 @@ function SelfHealingRepair() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-3 text-center">
                 <p className="text-3xl font-bold text-emerald-400">{testResults.mutation.killed}</p>
                 <p className="text-xs text-slate-400">Mutants Killed</p>
@@ -330,7 +330,7 @@ function SecurityScanning() {
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <Card className="border-red-500/30">
           <CardContent className="p-4">
             <p className="text-xs text-slate-400">Critical</p>
@@ -357,8 +357,8 @@ function SecurityScanning() {
         </Card>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
-        <Card className="col-span-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <ShieldAlert className="h-4 w-4 text-blue-400" />
@@ -438,7 +438,7 @@ function SecurityScanning() {
           </div>
         </CardHeader>
         <CardContent className="space-y-3">
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <div className="rounded-lg border border-slate-800 p-3">
               <p className="text-xs font-semibold text-slate-400">Trained Model</p>
               <p className="mt-1 text-sm text-white">Precision: {selectedVuln.precision}</p>
@@ -475,7 +475,7 @@ List<User> findByEmail(@Param("email") String email);`}
             />
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <Button variant="c3" size="sm">
               <Sparkles className="h-3 w-3" /> Apply Fix
             </Button>
@@ -512,7 +512,8 @@ function GovernanceAudit() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex items-center gap-2">
+          <div className="-mx-2 overflow-x-auto px-2 pb-1">
+            <div className="flex min-w-[640px] items-center gap-2">
             {gates.map((gate, i) => {
               const Icon = gate.icon;
               return (
@@ -540,6 +541,7 @@ function GovernanceAudit() {
                 </div>
               );
             })}
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -619,7 +621,7 @@ export function TestingSecurity() {
   const progressId = project ? getTestingProgressId(project.status) : activeTab;
 
   return (
-    <div className="w-full space-y-5 p-6 md:p-8">
+    <div className="w-full space-y-5 p-4 sm:p-6 md:p-8">
       <PhaseSectionHeader
         title="Testing & Security"
         subtitle={

@@ -46,7 +46,7 @@ export function ChevronStepper({
   return (
     <div
       className={cn(
-        "flex gap-1 overflow-x-auto rounded-xl border p-2",
+        "scroll-touch scrollbar-thin scroll-snap-x flex gap-1 overflow-x-auto rounded-xl border p-1.5 sm:p-2",
         isDark ? "border-white/10 bg-white/[0.03]" : "border-slate-200/80 bg-white shadow-sm"
       )}
     >
@@ -62,12 +62,12 @@ export function ChevronStepper({
             onClick={() => onStepClick?.(step.id)}
             disabled={!onStepClick || status === "future"}
             className={cn(
-              "flex min-w-[88px] flex-1 items-center justify-center whitespace-nowrap px-4 py-2.5 text-xs font-semibold tracking-wide transition-opacity",
+              "scroll-snap-start flex min-w-[96px] flex-1 items-center justify-center whitespace-nowrap px-3 py-2.5 text-[11px] font-semibold tracking-wide transition-opacity sm:min-w-[88px] sm:px-4 sm:text-xs",
               statusStyles[status],
               isDark && status === "future" && "bg-slate-700/60 text-slate-400",
               isDark && status === "complete" && "bg-emerald-600 text-white",
               isDark && status === "pending" && "bg-amber-500 text-white",
-              onStepClick && status !== "future" && "cursor-pointer hover:opacity-90",
+              onStepClick && status !== "future" && "cursor-pointer active:opacity-80 sm:hover:opacity-90",
               !onStepClick && "cursor-default",
               selectedId === step.id && "ring-2 ring-blue-500 ring-offset-1",
               isDark && selectedId === step.id && "ring-offset-[#071018]"

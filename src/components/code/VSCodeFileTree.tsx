@@ -97,11 +97,13 @@ export function VSCodeFileTree({
   selectedPath,
   onSelect,
   title,
+  className,
 }: {
   files: FileEntry[];
   selectedPath: string;
   onSelect: (path: string) => void;
   title: string;
+  className?: string;
 }) {
   const { theme } = useStore();
   const isDark = theme === "dark";
@@ -128,7 +130,7 @@ export function VSCodeFileTree({
   };
 
   return (
-    <div className={cn("flex h-full flex-col overflow-hidden rounded-xl border", isDark ? "border-white/10 bg-[#1e1e1e]" : "border-slate-200 bg-[#f3f3f3]")}>
+    <div className={cn("flex h-full flex-col overflow-hidden rounded-xl border", isDark ? "border-white/10 bg-[#1e1e1e]" : "border-slate-200 bg-[#f3f3f3]", className)}>
       <div className={cn("border-b px-3 py-2 text-[11px] font-semibold uppercase tracking-wide", isDark ? "border-white/10 text-slate-500" : "border-slate-200 text-slate-500")}>
         {title}
       </div>

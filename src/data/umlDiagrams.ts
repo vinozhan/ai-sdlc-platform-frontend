@@ -128,12 +128,12 @@ export const umlDiagramList: UMLDiagramDefinition[] = [
     J -->|No| K[Show payment failure]
     K --> L{Retry?}
     L -->|Yes| F
-    L -->|No| M([End — failed])
+    L -->|No| M([End - failed])
     J -->|Yes| N[Capture payment]
     N --> O[Persist transaction]
     O --> P[Write audit log]
     P --> Q[Send confirmation email]
-    Q --> R([End — success])`,
+    Q --> R([End - success])`,
   },
   {
     id: "sequence",

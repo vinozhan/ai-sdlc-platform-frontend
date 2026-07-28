@@ -2,6 +2,8 @@ export type FileEntry = {
   path: string;
   type: string;
   lines: number;
+  /** Extra uppercase badges on the tree row, e.g. ["healed"]. */
+  tags?: string[];
 };
 
 export type FileTreeNode = {
@@ -12,7 +14,35 @@ export type FileTreeNode = {
   file?: FileEntry;
 };
 
-export function buildFileTree(files: FileEntry[]): FileTreeNode[] {
+export type BuildFileTreeOptions = {
+  /**
+   * Fold a folder that holds nothing but one more folder into a single row,
+   * the way VS Code does: src/test/java/com/payflow. Roots are never folded,
+   * so frontend/ and backend/ stay legible as roots.
+   */
+  collapseChains?: boolean;
+};
+
+function collapse(nodes: FileTreeNode[]): FileTreeNode[] {
+  return nodes.map((node) => {
+    if (node.kind !== "folder" || !node.children) return node;
+
+    let current = node;
+    let name = node.name;
+    while (current.children && current.children.length === 1 && current.children[0].kind === "folder") {
+      current = current.children[0];
+      name = `${name}/${current.name}`;
+    }
+
+    return {
+      ...current,
+      name,
+      children: current.children ? collapse(current.children) : undefined,
+    };
+  });
+}
+
+export function buildFileTree(files: FileEntry[], options: BuildFileTreeOptions = {}): FileTreeNode[] {
   const root: FileTreeNode[] = [];
 
   for (const file of files) {
@@ -50,7 +80,13 @@ export function buildFileTree(files: FileEntry[]): FileTreeNode[] {
   };
 
   sortNodes(root);
-  return root;
+
+  if (!options.collapseChains) return root;
+
+  // Keep the top level intact, fold every chain underneath it.
+  return root.map((node) =>
+    node.kind === "folder" && node.children ? { ...node, children: collapse(node.children) } : node
+  );
 }
 
 export function breadcrumbParts(path: string) {

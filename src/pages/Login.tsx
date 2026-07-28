@@ -96,7 +96,7 @@ export function Login() {
           </form>
 
           <p className="mt-6 text-center text-xs text-slate-400">
-            Demo mode — any email and password will sign you in.
+            Demo mode - any email and password will sign you in.
           </p>
         </div>
       </div>

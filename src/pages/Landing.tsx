@@ -54,7 +54,7 @@ const features = [
   {
     icon: Layers,
     title: "Scalable architecture",
-    description: "Microservices, modular monolith, or serverless patterns — chosen and documented for your scale.",
+    description: "Microservices, modular monolith, or serverless patterns - chosen and documented for your scale.",
   },
   {
     icon: Shield,
@@ -64,7 +64,7 @@ const features = [
   {
     icon: Globe,
     title: "Multi-language support",
-    description: "TypeScript, Java, Python, Go, C#, and more — aligned to your team's stack and conventions.",
+    description: "TypeScript, Java, Python, Go, C#, and more - aligned to your team's stack and conventions.",
   },
   {
     icon: Rocket,
@@ -79,7 +79,7 @@ const features = [
   {
     icon: Zap,
     title: "Rapid delivery",
-    description: "Compress weeks of scaffolding into hours — review, refine, and ship with full traceability.",
+    description: "Compress weeks of scaffolding into hours - review, refine, and ship with full traceability.",
   },
 ];
 
@@ -105,7 +105,7 @@ const steps = [
   {
     step: "01",
     title: "Upload SRS",
-    description: "Drop your Software Requirements Specification — PDF, Word, or Markdown supported.",
+    description: "Drop your Software Requirements Specification - PDF, Word, or Markdown supported.",
     icon: Upload,
   },
   {
@@ -189,7 +189,7 @@ const faqs = [
   },
   {
     q: "How long does generation take?",
-    a: "Most projects complete initial architecture and code generation within 5–15 minutes, depending on document complexity and stack selection.",
+    a: "Most projects complete initial architecture and code generation within 5-15 minutes, depending on document complexity and stack selection.",
   },
   {
     q: "Can we review and edit before downloading?",
@@ -334,7 +334,7 @@ export function Landing() {
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-slate-600">
               Upload your Software Requirements Specification and let AI analyze, architect, and generate complete
-              applications — frontend, backend, database, APIs, and deployment-ready files — automatically.
+              applications - frontend, backend, database, APIs, and deployment-ready files - automatically.
             </p>
             <div className="mt-10 flex flex-wrap items-center gap-4">
               <button

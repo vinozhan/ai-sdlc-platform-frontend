@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+/* The app switches themes by putting .dark on <html> (see useStore.applyTheme).
+   Tailwind 4 points `dark:` at prefers-color-scheme by default, which left every
+   dark: utility in the codebase inert - Badge and Button were rendering their
+   light styles on dark surfaces. Point the variant at the class instead. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-primary: #2563eb;
   --color-c1: #22c55e;
@@ -105,7 +111,221 @@
   }
 }
 
+/* ===========================================================================
+   Testing & Security phase - one token set, both themes.
+   Values are the app's own: slate borders and surfaces, the Card background,
+   the Badge status colours, blue-600 as the accent. Nothing new is introduced
+   except one dark code surface (#0a0e17, the CodeBlock background), which the
+   run console, the repair diffs and the honesty guard all share because the
+   app has no light equivalent for a terminal.
+   =========================================================================== */
+@layer components {
+  .tp {
+    /* height of the phase tab bar this page sticks under */
+    --tp-nav: 57px;
+
+    --tp-ink: #0f172a;        /* slate-900 - app text-primary */
+    --tp-ink-2: #475569;      /* slate-600 */
+    --tp-muted: #94a3b8;      /* slate-400 - app muted label */
+    --tp-line: #e2e8f0;       /* slate-200 - app border-primary */
+    --tp-line-strong: #cbd5e1;/* slate-300 */
+    --tp-surface: #ffffff;
+    --tp-surface-2: #f8fafc;  /* slate-50 */
+    --tp-surface-3: #f1f5f9;  /* slate-100 */
+
+    /* Badge status colours, verbatim */
+    --tp-pass: #047857;
+    --tp-pass-bg: #ecfdf5;
+    --tp-pass-line: #a7f3d0;
+    --tp-fail: #b91c1c;
+    --tp-fail-bg: #fef2f2;
+    --tp-fail-line: #fecaca;
+    --tp-caution: #b45309;
+    --tp-caution-bg: #fffbeb;
+    --tp-caution-line: #fde68a;
+    --tp-info: #1d4ed8;
+    --tp-info-bg: #eff6ff;
+    --tp-info-line: #bfdbfe;
+
+    /* severity ramp - the hues the old page already used for these tiles */
+    --tp-crit: #ef4444;
+    --tp-high: #f97316;
+    --tp-med: #f59e0b;
+    --tp-low: #64748b;
+
+    /* the one dark surface: CodeBlock's background and border */
+    --tp-console: #0a0e17;
+    --tp-console-2: rgba(255, 255, 255, 0.03);
+    --tp-console-line: rgba(255, 255, 255, 0.06);
+    --tp-console-ink: #cbd5e1;
+    --tp-console-muted: #64748b;
+    --tp-console-pass: #34d399;
+    --tp-console-fail: #f87171;
+    --tp-console-caution: #fbbf24;
+
+    color: var(--tp-ink);
+  }
+
+  .dark .tp {
+    --tp-ink: #ffffff;
+    --tp-ink-2: #94a3b8;      /* slate-400 - app text-tertiary */
+    --tp-muted: #64748b;      /* slate-500 */
+    --tp-line: rgba(255, 255, 255, 0.06);
+    --tp-line-strong: rgba(255, 255, 255, 0.12);
+    --tp-surface: rgba(15, 29, 50, 0.8);   /* Card, dark */
+    --tp-surface-2: rgba(255, 255, 255, 0.02);
+    --tp-surface-3: rgba(255, 255, 255, 0.05);
+
+    --tp-pass: #34d399;
+    --tp-pass-bg: rgba(16, 185, 129, 0.1);
+    --tp-pass-line: rgba(16, 185, 129, 0.2);
+    --tp-fail: #f87171;
+    --tp-fail-bg: rgba(239, 68, 68, 0.1);
+    --tp-fail-line: rgba(239, 68, 68, 0.2);
+    --tp-caution: #fbbf24;
+    --tp-caution-bg: rgba(245, 158, 11, 0.1);
+    --tp-caution-line: rgba(245, 158, 11, 0.2);
+    --tp-info: #60a5fa;
+    --tp-info-bg: rgba(59, 130, 246, 0.1);
+    --tp-info-line: rgba(59, 130, 246, 0.2);
+
+    --tp-crit: #f87171;
+    --tp-high: #fb923c;
+    --tp-med: #fbbf24;
+    --tp-low: #94a3b8;
+  }
+
+  /* --- text: the app's sizes and weights ------------------------------- */
+  .tp-label {
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.3;
+    color: var(--tp-muted);
+  }
+
+  .tp-num {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+    color: var(--tp-ink);
+  }
+
+  .tp-den {
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+    color: var(--tp-muted);
+  }
+
+  .tp-mono {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .tp-prose {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--tp-ink-2);
+  }
+
+  /* --- surfaces: same radius, border and shadow as Card ---------------- */
+  .tp-card {
+    border: 1px solid var(--tp-line);
+    background: var(--tp-surface);
+    border-radius: 16px;
+  }
+
+  .light .tp-card {
+    border-color: rgba(226, 232, 240, 0.8);
+    box-shadow: 0 1px 2px 0 rgba(148, 163, 184, 0.16);
+  }
+
+  .tp-inset {
+    background: var(--tp-surface-2);
+  }
+
+  .tp-console {
+    background: var(--tp-console);
+    color: var(--tp-console-ink);
+    border: 1px solid var(--tp-console-line);
+  }
+
+  /* panel headers on the dark surface: the EXPLORER header style */
+  .tp-console-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--tp-console-muted);
+  }
+
+  /* --- focus: one visible ring everywhere ------------------------------ */
+  .tp :focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
 @layer utilities {
+  /* streaming console lines + the one pending pulse. Nothing else moves. */
+  .tp-stream {
+    animation: tp-stream 220ms ease-out both;
+  }
+
+  @keyframes tp-stream {
+    from {
+      opacity: 0;
+      transform: translateY(3px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .tp-caret {
+    animation: tp-caret 1.1s steps(2, start) infinite;
+  }
+
+  @keyframes tp-caret {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  .tp-pending-edge {
+    animation: tp-pending 3.2s ease-in-out infinite;
+  }
+
+  @keyframes tp-pending {
+    0%,
+    100% {
+      opacity: 0.35;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  .tp-spin {
+    animation: tp-spin 900ms linear infinite;
+  }
+
+  @keyframes tp-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tp-stream,
+    .tp-caret,
+    .tp-pending-edge,
+    .tp-spin {
+      animation: none !important;
+    }
+  }
+
   .scrollbar-thin::-webkit-scrollbar {
     width: 6px;
     height: 6px;

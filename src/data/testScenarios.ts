@@ -167,7 +167,7 @@ describe("PaymentForm", () => {
   });
 });`;
 
-const apiTestScript = `# API contract tests — Newman / REST Assured
+const apiTestScript = `# API contract tests - Newman / REST Assured
 # Run: npm run test:api
 
 describe("POST /api/v1/payments", () => {
@@ -263,7 +263,7 @@ export const testScenarios: TestScenario[] = [
   {
     id: "payment-refund",
     name: "Payment Refund",
-    description: "Refund API returns 201 — frontend and backend assertions synchronized",
+    description: "Refund API returns 201 - frontend and backend assertions synchronized",
     category: "integration",
     status: "fail",
     frontend: { status: "pass", duration: "2.1s", coverage: 76, passed: 1, failed: 0, skipped: 0, total: 1 },

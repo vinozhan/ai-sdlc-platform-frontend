@@ -590,7 +590,7 @@ function RequirementsResults({ project }: { project: Project }) {
           isDark={isDark}
           onApprove={() => setSelectedStep("sprint")}
           onRequestRefinement={(feedback, wireframeName) => {
-            const entry = `[Wireframe refinement — ${wireframeName}]\n${feedback}`;
+            const entry = `[Wireframe refinement - ${wireframeName}]\n${feedback}`;
             updateProject(project.id, {
               requirementText: `${project.requirementText.trim()}\n\n${entry}`,
             });

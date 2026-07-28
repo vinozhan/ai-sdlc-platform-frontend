@@ -70,7 +70,7 @@ export function Projects() {
   };
 
   return (
-    <div className="w-full space-y-6 p-4 sm:p-6 md:p-8">
+    <div className="w-full space-y-6 p-6 md:p-8">
       <div>
         <div className="mb-1 flex items-center gap-2">
           <FolderKanban className={cn("h-5 w-5", isDark ? "text-blue-400" : "text-blue-600")} />
@@ -204,7 +204,7 @@ export function Projects() {
                       <Clock className="h-3 w-3" />
                       {formatRelative(p.updatedAt)}
                     </span>
-                    <div className="flex items-center gap-1 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
+                    <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();

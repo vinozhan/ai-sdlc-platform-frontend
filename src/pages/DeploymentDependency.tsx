@@ -95,8 +95,8 @@ function RepositoryManager() {
   );
 
   return (
-    <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-      <Card className="lg:col-span-2">
+    <div className="grid grid-cols-3 gap-4">
+      <Card className="col-span-2">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Archive className="h-4 w-4 text-orange-400" />
@@ -162,7 +162,7 @@ function BreakingChangePrediction() {
   };
 
   return (
-    <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+    <div className="grid grid-cols-3 gap-4">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -205,9 +205,9 @@ function BreakingChangePrediction() {
         </CardContent>
       </Card>
 
-      <Card className="lg:col-span-2">
+      <Card className="col-span-2">
         <CardHeader>
-          <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center justify-between">
             <CardTitle className="font-mono text-sm">{selectedUpdate.package}</CardTitle>
             <Badge variant={selectedUpdate.risk === "high" ? "error" : selectedUpdate.risk === "medium" ? "warning" : "success"}>
               {selectedUpdate.risk.toUpperCase()} RISK
@@ -215,7 +215,7 @@ function BreakingChangePrediction() {
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <div className="grid grid-cols-3 gap-3">
             <div className="rounded-lg border border-slate-800 p-3 text-center">
               <p className="text-xs text-slate-500">Rule-Based</p>
               <p className="text-xl font-bold text-blue-400">{selectedUpdate.ruleScore}%</p>
@@ -302,8 +302,7 @@ function DeploymentPipeline() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="-mx-2 overflow-x-auto px-2 pb-1">
-          <div className="flex min-w-[560px] items-center gap-2">
+          <div className="flex items-center gap-2">
             {pipelineStages.map((stage, i) => {
               const Icon = stageIcons[stage.icon];
               return (
@@ -339,11 +338,10 @@ function DeploymentPipeline() {
               );
             })}
           </div>
-          </div>
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div className="grid grid-cols-2 gap-4">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -448,7 +446,7 @@ ENTRYPOINT ["java", "-jar", "app.jar"]`}
           <CardTitle>Pipeline Templates</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <div className="grid grid-cols-3 gap-3">
             {[
               { name: "Single Service", desc: "Single pipeline for monorepo", icon: Database },
               { name: "Frontend + Backend", desc: "Separate pipelines per layer", icon: GitCompare },
@@ -470,7 +468,7 @@ ENTRYPOINT ["java", "-jar", "app.jar"]`}
 function DeploymentMonitor() {
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-4 gap-4">
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -546,7 +544,7 @@ function DeploymentMonitor() {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div className="grid grid-cols-2 gap-4">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -626,7 +624,7 @@ export function DeploymentDependency() {
   const progressId = project ? getDeploymentProgressId(project.status) : activeTab;
 
   return (
-    <div className="w-full space-y-5 p-4 sm:p-6 md:p-8">
+    <div className="w-full space-y-5 p-6 md:p-8">
       <PhaseSectionHeader
         title="Deployment & Dependencies"
         subtitle={

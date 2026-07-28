@@ -90,7 +90,7 @@ function SprintScope() {
     setSelected((prev) => (prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]));
 
   return (
-    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+    <div className="grid grid-cols-2 gap-4">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -131,7 +131,7 @@ function SprintScope() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div className="grid grid-cols-2 gap-3">
             <div className="rounded-lg border border-slate-800 bg-slate-950 p-3">
               <p className="mb-2 text-xs font-semibold text-slate-400">Wireframe Screens</p>
               <div className="space-y-2">
@@ -172,7 +172,7 @@ function ContractDesigner() {
   const [validationMode, setValidationMode] = useState<"rule" | "llm">("rule");
 
   return (
-    <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+    <div className="grid grid-cols-3 gap-4">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -206,10 +206,10 @@ function ContractDesigner() {
         </CardContent>
       </Card>
 
-      <Card className="lg:col-span-2">
+      <Card className="col-span-2">
         <CardHeader>
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <CardTitle className="break-all">Contract Editor — {selectedContract.path}</CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle>Contract Editor - {selectedContract.path}</CardTitle>
             <div className="flex gap-1 rounded-lg bg-slate-950 p-1">
               <button
                 onClick={() => setValidationMode("rule")}
@@ -227,7 +227,7 @@ function ContractDesigner() {
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="grid grid-cols-2 gap-4">
             <div>
               <p className="mb-1 text-xs font-semibold text-slate-400">Request Schema</p>
               <CodeBlock
@@ -285,12 +285,12 @@ function ContractDesigner() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between rounded-lg border border-blue-500/30 bg-blue-500/5 p-3">
+          <div className="flex items-center justify-between rounded-lg border border-blue-500/30 bg-blue-500/5 p-3">
             <div>
               <p className="text-xs font-semibold text-blue-300">Contract Agreement Score</p>
               <p className="text-2xl font-bold text-white">{selectedContract.agreementScore}%</p>
             </div>
-            <div className="sm:text-right">
+            <div className="text-right">
               <p className="text-xs text-slate-400">Frontend-Backend Alignment</p>
               <Badge variant={selectedContract.agreementScore > 90 ? "success" : "warning"}>
                 {selectedContract.agreementScore > 90 ? "Excellent" : "Needs Work"}
@@ -308,16 +308,15 @@ function FrontendStudio() {
   const { tabs, activePath, openFile, closeTab, setActivePath } = useEditorTabs(defaultPath);
 
   return (
-    <div className="grid min-h-[360px] grid-cols-1 gap-4 lg:h-[560px] lg:grid-cols-3">
+    <div className="grid h-[560px] grid-cols-3 gap-4">
       <VSCodeFileTree
         title="Explorer"
         files={frontendCode.files}
         selectedPath={activePath}
         onSelect={openFile}
-        className="min-h-[200px] lg:min-h-0"
       />
 
-      <div className="min-h-[280px] lg:col-span-2 lg:min-h-0">
+      <div className="col-span-2 min-h-0">
         <VSCodeEditor
           tabs={tabs}
           activePath={activePath}
@@ -343,16 +342,15 @@ function BackendStudio() {
 
   return (
     <div className="space-y-4">
-      <div className="grid min-h-[360px] grid-cols-1 gap-4 lg:h-[560px] lg:grid-cols-3">
+      <div className="grid h-[560px] grid-cols-3 gap-4">
         <VSCodeFileTree
           title="Backend Files"
           files={backendCode.files}
           selectedPath={activePath}
           onSelect={openFile}
-          className="min-h-[200px] lg:min-h-0"
         />
 
-        <div className="min-h-[280px] lg:col-span-2 lg:min-h-0">
+        <div className="col-span-2 min-h-0">
           <VSCodeEditor
             tabs={tabs}
             activePath={activePath}
@@ -488,7 +486,7 @@ function BuildValidation() {
             <p className="text-red-400">[FAIL] IntegrationTest.testPaymentRefund - Expected 200, got 201</p>
             <p className="text-slate-500">
               <span className="inline-flex items-center gap-1">
-                <Sparkles className="h-3 w-3 text-blue-400" /> AI Fix: Update assertion to expect 201 (CREATED) — refund creates new record
+                <Sparkles className="h-3 w-3 text-blue-400" /> AI Fix: Update assertion to expect 201 (CREATED) - refund creates new record
               </span>
             </p>
           </div>
@@ -561,12 +559,12 @@ export function CodeGeneration() {
   const progressId = project ? getCodeProgressId(project.status) : activeTab;
 
   return (
-    <div className="w-full space-y-5 p-4 sm:p-6 md:p-8">
+    <div className="w-full space-y-5 p-6 md:p-8">
       <PhaseSectionHeader
         title="Code Generation"
         subtitle={
           project && ["deploy", "complete", "testing"].includes(project.status)
-            ? "All code generation stages complete — browse any step below"
+            ? "All code generation stages complete - browse any step below"
             : "AI-generated frontend, backend, and build artifacts from your requirements"
         }
         progress={project ? getPhaseProgress(project, "code") : 0}

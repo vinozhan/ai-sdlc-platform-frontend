@@ -149,13 +149,13 @@ export function SettingsPage() {
     .toUpperCase();
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 sm:py-8 md:px-8 md:py-10">
+    <div className="mx-auto w-full max-w-5xl px-6 py-8 md:px-8 md:py-10">
       <header className="mb-8">
         <div className="flex items-center gap-2 text-sm font-medium text-blue-600">
           <Sparkles className="h-4 w-4" />
           Workspace
         </div>
-        <h1 className={cn("mt-1 text-2xl font-semibold tracking-tight sm:text-3xl", isDark ? "text-white" : "text-slate-900")}>
+        <h1 className={cn("mt-1 text-3xl font-semibold tracking-tight", isDark ? "text-white" : "text-slate-900")}>
           Settings
         </h1>
       </header>

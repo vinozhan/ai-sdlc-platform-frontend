@@ -354,16 +354,15 @@ function TestSourceCode({ scenario, isDark }: { scenario: TestScenario; isDark: 
         </div>
       </div>
 
-      <div className="grid min-h-[360px] grid-cols-1 gap-4 lg:h-[560px] lg:grid-cols-3">
+      <div className="grid h-[560px] grid-cols-3 gap-4">
         <VSCodeFileTree
           title="Test Files"
           files={files}
           selectedPath={activePath}
           onSelect={openFile}
-          className="min-h-[200px] lg:min-h-0"
         />
 
-        <div className="min-h-[280px] lg:col-span-2 lg:min-h-0">
+        <div className="col-span-2 min-h-0">
           <VSCodeEditor
             tabs={tabs}
             activePath={activePath}

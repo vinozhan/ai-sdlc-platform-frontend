@@ -63,16 +63,18 @@ export function PhaseSectionHeader({
   return (
     <div className="flex flex-wrap items-start justify-between gap-4">
       <div className="min-w-0 flex-1">
-        <h3 className={cn("text-lg font-semibold sm:text-xl", isDark ? "text-white" : "text-slate-900")}>
+        <h3 className={cn("text-xl font-semibold", isDark ? "text-white" : "text-slate-900")}>
           {title}
         </h3>
         <p className={cn("mt-1 text-sm", isDark ? "text-slate-400" : "text-slate-500")}>
           {subtitle}
         </p>
       </div>
-      <div className="flex w-full shrink-0 items-start gap-3 sm:w-auto">
+      {/* Progress first, then any phase action underneath it, so every phase
+          header stacks the same way whether or not it has both. */}
+      <div className="flex shrink-0 flex-col items-end gap-3">
         {showProgress && (
-          <div className="w-full sm:w-48">
+          <div className="w-48">
             <div className="mb-1 flex justify-between text-xs">
               <span className={isDark ? "text-slate-500" : "text-slate-400"}>Progress</span>
               <span className={cn("tabular-nums font-medium", isDark ? "text-white" : "text-slate-900")}>

@@ -13,6 +13,7 @@ import {
   GitBranch,
 } from "lucide-react";
 import { cn } from "@/utils/cn";
+import nexusLogo from "@/assets/nexus-logo.png";
 
 const examples = [
   "Payment gateway with KYC verification",
@@ -56,7 +57,11 @@ export function ProjectCreatePrompt({
             isDark ? "border-white/10 bg-white/[0.04] text-slate-300" : "border-slate-200 bg-white text-slate-600 shadow-sm"
           )}
         >
-          <Sparkles className="h-3.5 w-3.5 text-blue-500" />
+          <img
+            src={nexusLogo}
+            alt=""
+            className="h-4 w-4 shrink-0 object-cover object-left"
+          />
           AI-assisted SDLC from requirements to release
         </div>
         <h1

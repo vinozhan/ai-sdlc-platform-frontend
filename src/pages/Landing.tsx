@@ -30,6 +30,7 @@ import {
   TestimonialsPattern,
   CtaVisual,
 } from "@/components/landing/LandingVisuals";
+import { NexusWordmark } from "@/components/brand/NexusWordmark";
 
 const navLinks = [
   { label: "Home", href: "#home" },
@@ -136,7 +137,7 @@ const testimonials = [
     company: "Vertex Software Labs",
   },
   {
-    quote: "Enterprise security was non-negotiable. SDLC AI met our compliance review while delivering faster than any internal tool we've built.",
+    quote: "Enterprise security was non-negotiable. Nexus met our compliance review while delivering faster than any internal tool we've built.",
     name: "Elena Vasquez",
     role: "Director of Platform",
     company: "Meridian Health Systems",
@@ -246,13 +247,8 @@ export function Landing() {
       {/* Navbar */}
       <header className="fixed inset-x-0 top-0 z-50 border-b border-white/40 bg-white/70 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 lg:px-8">
-          <Link to="/" className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-blue-500 shadow-lg shadow-blue-600/25">
-              <Sparkles className="h-4 w-4 text-white" />
-            </div>
-            <span className="text-lg font-semibold tracking-tight text-slate-900">
-              SDLC<span className="text-blue-600">AI</span>
-            </span>
+          <Link to="/" className="flex items-center">
+            <NexusWordmark className="h-9 max-w-[180px]" />
           </Link>
 
           <nav className="hidden items-center gap-8 lg:flex">
@@ -564,11 +560,8 @@ export function Landing() {
       <footer id="contact" className="border-t border-slate-200 bg-slate-900 px-6 py-16 text-slate-400 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-12 md:grid-cols-4">
           <div className="md:col-span-1">
-            <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600">
-                <Sparkles className="h-4 w-4 text-white" />
-              </div>
-              <span className="font-semibold text-white">SDLC AI</span>
+            <div className="flex items-center">
+              <NexusWordmark dark className="h-9 max-w-[180px]" />
             </div>
             <p className="mt-4 text-sm leading-relaxed">
               AI-powered software development from requirements to deployment-ready code.
@@ -606,7 +599,7 @@ export function Landing() {
           </div>
         </div>
         <div className="mx-auto mt-12 max-w-7xl border-t border-slate-800 pt-8 text-center text-sm">
-          © {new Date().getFullYear()} SDLC AI. All rights reserved.
+          © {new Date().getFullYear()} Nexus. All rights reserved.
         </div>
       </footer>
     </div>

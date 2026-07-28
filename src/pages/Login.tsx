@@ -17,7 +17,7 @@ export function Login() {
   };
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center bg-white px-4 py-10 sm:px-6 sm:py-12">
+    <div className="relative flex min-h-screen items-center justify-center bg-white px-6 py-12">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute -left-40 top-0 h-[500px] w-[500px] rounded-full bg-blue-400/20 blur-[120px]" />
         <div className="absolute -right-20 bottom-0 h-[400px] w-[400px] rounded-full bg-cyan-300/15 blur-[100px]" />
@@ -32,7 +32,7 @@ export function Login() {
           Back to home
         </Link>
 
-        <div className="rounded-2xl border border-white/60 bg-white/80 p-6 shadow-xl shadow-blue-900/[0.06] backdrop-blur-xl sm:p-8 md:p-10">
+        <div className="rounded-2xl border border-white/60 bg-white/80 p-8 shadow-xl shadow-blue-900/[0.06] backdrop-blur-xl md:p-10">
           <div className="mb-8 text-center">
             <Link to="/" className="inline-flex items-center gap-2.5">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-blue-500 shadow-lg shadow-blue-600/25">

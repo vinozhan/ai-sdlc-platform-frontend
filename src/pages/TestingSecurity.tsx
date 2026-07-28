@@ -1,650 +1,654 @@
-import { useState, useMemo } from "react";
-import { useParams } from "react-router-dom";
-import type { ProjectStatus } from "@/store/useStore";
-import {
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-  Radar,
-  ResponsiveContainer,
-} from "recharts";
-import {
-  ShieldAlert,
-  Wrench,
-  CheckCircle2,
-  AlertTriangle,
-  XCircle,
-  Bug,
-  Activity,
-  ScrollText,
-  ShieldCheck,
-  Lock,
-  History,
-  RotateCcw,
-  ThumbsUp,
-  ThumbsDown,
-  CheckCheck,
-  Sparkles,
-  Eye,
-} from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle, Badge, Button, Progress, CodeBlock, Table, Th, Td } from "@/components/ui/primitives";
-import { PhaseSectionHeader, getPhaseProgress } from "@/components/project/PhaseSectionHeader";
-import { ChevronStepper } from "@/components/ui/ChevronStepper";
-import { testResults, failingTests, approvalQueue, auditLog, vulnerabilities, cvssRadar } from "@/data/mockData";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { Play } from "lucide-react";
 import { useStore } from "@/store/useStore";
-import { cn } from "@/utils/cn";
-import { TestTabPanel } from "@/components/testing/TestTabPanel";
+import type { EditorTab } from "@/components/code/VSCodeEditor";
+import { Button } from "@/components/ui/primitives";
+import { ChevronStepper } from "@/components/ui/ChevronStepper";
+import { PhaseSectionHeader } from "@/components/project/PhaseSectionHeader";
+import { DecisionBar } from "@/components/testing/DecisionBar";
+import { PhaseLoadError, PhaseNotStarted } from "@/components/testing/EmptyStates";
+import { StickyHeader, SummaryStrip } from "@/components/testing/PhaseChrome";
+import { StepHealing, type InboxFilter } from "@/components/testing/steps/StepHealing";
+import { StepQuality } from "@/components/testing/steps/StepQuality";
+import { StepReport } from "@/components/testing/steps/StepReport";
+import { StepReverify } from "@/components/testing/steps/StepReverify";
+import { StepSecurity } from "@/components/testing/steps/StepSecurity";
+import { StepTests } from "@/components/testing/steps/StepTests";
+import {
+  buildView,
+  fileName,
+  stepOrder,
+  type FindingAction,
+  type PhaseDecision,
+  type PreviewState,
+  type RepairDecision,
+  type StepId,
+} from "@/components/testing/view";
+import { failures, findings, testingRun, type AuditEntry, type Finding } from "@/data/testingData";
 
-const testingPhaseSteps = [
-  { id: "dashboard", label: "Tests" },
-  { id: "healing", label: "Self-Healing" },
-  { id: "security", label: "Security" },
-  { id: "governance", label: "Governance" },
-];
+const DEFAULT_FILE = "backend/src/test/java/com/payflow/payments/PaymentControllerTest.java";
 
-function getTestingProgressId(status: ProjectStatus): string {
-  switch (status) {
-    case "complete":
-    case "deploy":
-      return "done";
-    case "testing":
-      return "governance";
-    default:
-      return "dashboard";
-  }
-}
+/**
+ * The page normally derives its state from the project and from the run.
+ * These are reachable for review without adding a control to the UI:
+ * ?state=running | green | empty | error
+ */
+const demoStates: PreviewState[] = ["running", "green", "empty", "error"];
 
-function SelfHealingRepair() {
-  const [selectedTest, setSelectedTest] = useState(failingTests[0]);
-  const { addToast } = useStore();
-
-  const statusConfig = {
-    "real-regression": { color: "#ef4444", label: "Real Regression", icon: XCircle, action: "Route to Developer" },
-    brittle: { color: "#f59e0b", label: "Brittle Test", icon: Wrench, action: "AI Repair Candidate" },
-    healed: { color: "#10b981", label: "Healed", icon: CheckCircle2, action: "Previously Fixed" },
-  };
-
-  return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <Card className="border-red-500/30">
-          <CardContent className="flex items-center gap-3 p-4">
-            <XCircle className="h-8 w-8 text-red-400" />
-            <div>
-              <p className="text-2xl font-bold text-white">{failingTests.filter((t) => t.status === "real-regression").length}</p>
-              <p className="text-xs text-slate-400">Real Regressions</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-amber-500/30">
-          <CardContent className="flex items-center gap-3 p-4">
-            <Wrench className="h-8 w-8 text-amber-400" />
-            <div>
-              <p className="text-2xl font-bold text-white">{failingTests.filter((t) => t.status === "brittle").length}</p>
-              <p className="text-xs text-slate-400">Brittle Tests</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-emerald-500/30">
-          <CardContent className="flex items-center gap-3 p-4">
-            <CheckCircle2 className="h-8 w-8 text-emerald-400" />
-            <div>
-              <p className="text-2xl font-bold text-white">{failingTests.filter((t) => t.status === "healed").length}</p>
-              <p className="text-xs text-slate-400">Healed</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-blue-500/30">
-          <CardContent className="flex items-center gap-3 p-4">
-            <Sparkles className="h-8 w-8 text-blue-400" />
-            <div>
-              <p className="text-2xl font-bold text-white">{approvalQueue.filter((a) => a.status === "pending").length}</p>
-              <p className="text-xs text-slate-400">Awaiting Approval</p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Bug className="h-4 w-4 text-blue-400" />
-              Failure Inbox
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            {failingTests.map((test) => {
-              const config = statusConfig[test.status as keyof typeof statusConfig];
-              const Icon = config.icon;
-              return (
-                <button
-                  key={test.id}
-                  onClick={() => setSelectedTest(test)}
-                  className={cn(
-                    "w-full rounded-lg border p-3 text-left transition-colors",
-                    selectedTest.id === test.id ? "border-blue-500/40 bg-blue-500/5" : "border-slate-800 hover:border-slate-700"
-                  )}
-                >
-                  <div className="flex items-center gap-2">
-                    <Icon className="h-4 w-4" style={{ color: config.color }} />
-                    <span className="text-xs font-medium text-slate-200">{test.name}</span>
-                  </div>
-                  <p className="mt-1 text-[11px] text-slate-500">{test.error}</p>
-                  <div className="mt-1.5 flex items-center justify-between">
-                    <Badge variant={test.status === "real-regression" ? "error" : test.status === "brittle" ? "warning" : "success"}>
-                      {config.label}
-                    </Badge>
-                    <span className="text-[10px] text-slate-600">{test.lastRun}</span>
-                  </div>
-                </button>
-              );
-            })}
-          </CardContent>
-        </Card>
-
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="font-mono text-xs">{selectedTest.name}</CardTitle>
-              <Badge variant={selectedTest.status === "real-regression" ? "error" : selectedTest.status === "brittle" ? "warning" : "success"}>
-                {statusConfig[selectedTest.status as keyof typeof statusConfig].label}
-              </Badge>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {selectedTest.status === "brittle" && (() => {
-              const guard = selectedTest.honestyGuard!;
-              const origCode = selectedTest.originalCode ?? "";
-              const propCode = selectedTest.proposedCode ?? "";
-              return (
-              <>
-                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-                  <div>
-                    <p className="mb-1 text-xs font-semibold text-red-300">Original Test</p>
-                    <CodeBlock code={origCode} language="java" className="max-h-48 text-[10px]" />
-                  </div>
-                  <div>
-                    <p className="mb-1 text-xs font-semibold text-emerald-300">Proposed Repair</p>
-                    <CodeBlock code={propCode} language="java" className="max-h-48 text-[10px]" />
-                  </div>
-                </div>
-
-                <div className="rounded-lg border border-blue-500/30 bg-blue-500/5 p-3">
-                  <p className="mb-2 text-xs font-semibold text-blue-300">🛡️ Honesty Guard Status</p>
-                  <div className="space-y-1.5">
-                    <div className="flex items-center gap-2 text-xs">
-                      {guard.passesUnchanged ? (
-                        <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-                      ) : (
-                        <XCircle className="h-4 w-4 text-red-400" />
-                      )}
-                      <span className="text-slate-300">Passes unchanged code</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-xs">
-                      {guard.killsMutant ? (
-                        <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-                      ) : (
-                        <XCircle className="h-4 w-4 text-red-400" />
-                      )}
-                      <span className="text-slate-300">Kills injected mutant</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-xs">
-                      {guard.integrity ? (
-                        <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-                      ) : (
-                        <XCircle className="h-4 w-4 text-red-400" />
-                      )}
-                      <span className="text-slate-300">
-                        Integrity check {guard.integrity ? "passed" : "failed"}
-                        {!guard.integrity && " — blocks acceptance"}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="rounded-lg border border-slate-800 p-3">
-                  <p className="mb-1 text-xs font-semibold text-slate-400">🤖 AI Explanation</p>
-                  <p className="text-xs text-slate-300">{selectedTest.explanation}</p>
-                </div>
-
-                <div className="flex flex-wrap gap-2">
-                  <Button
-                    variant="c3"
-                    size="sm"
-                    disabled={!guard.integrity}
-                    onClick={() => addToast({ type: "success", title: "Repair approved", message: "Test repair sent to merge queue" })}
-                  >
-                    <ThumbsUp className="h-3 w-3" /> Approve Repair
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => addToast({ type: "warning", title: "Repair rejected", message: "Test repair rejected by developer" })}
-                  >
-                    <ThumbsDown className="h-3 w-3" /> Reject
-                  </Button>
-                  {!guard.integrity && (
-                    <span className="flex items-center text-xs text-red-400">
-                      <AlertTriangle className="mr-1 h-3 w-3" />
-                      Blocked: integrity check failed
-                    </span>
-                  )}
-                </div>
-              </>
-              );
-            })()}
-
-            {selectedTest.status === "real-regression" && (
-              <div className="rounded-lg border border-red-500/30 bg-red-500/5 p-4">
-                <div className="flex items-center gap-2">
-                  <XCircle className="h-5 w-5 text-red-400" />
-                  <p className="text-sm font-semibold text-red-300">Real Regression Detected</p>
-                </div>
-                <p className="mt-2 text-xs text-slate-300">{selectedTest.explanation}</p>
-                <Button variant="error" size="sm" className="mt-3">
-                  <Bug className="h-3 w-3" /> Route to Developer
-                </Button>
-              </div>
-            )}
-
-            {selectedTest.status === "healed" && (
-              <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-4">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-emerald-400" />
-                  <p className="text-sm font-semibold text-emerald-300">Successfully Healed</p>
-                </div>
-                <p className="mt-2 text-xs text-slate-300">{selectedTest.explanation}</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <CheckCheck className="h-4 w-4 text-blue-400" />
-              Approval Workflow
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            {approvalQueue.map((item) => (
-              <div key={item.id} className="rounded-lg border border-slate-800 p-3">
-                <div className="flex items-center justify-between">
-                  <span className="font-mono text-xs text-slate-300">{item.testId}</span>
-                  <Badge variant={item.status === "pending" ? "warning" : "success"}>{item.status}</Badge>
-                </div>
-                <p className="mt-1 text-xs text-slate-500">Proposed by {item.proposedBy} · {item.createdAt}</p>
-                <p className="mt-1 text-xs text-slate-400">{item.qaComment}</p>
-                {item.devComment && (
-                  <p className="mt-1 text-xs text-emerald-400">Dev: {item.devComment}</p>
-                )}
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Activity className="h-4 w-4 text-blue-400" />
-              Mutation Testing Results
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-3 text-center">
-                <p className="text-3xl font-bold text-emerald-400">{testResults.mutation.killed}</p>
-                <p className="text-xs text-slate-400">Mutants Killed</p>
-              </div>
-              <div className="rounded-lg border border-red-500/30 bg-red-500/5 p-3 text-center">
-                <p className="text-3xl font-bold text-red-400">{testResults.mutation.survived}</p>
-                <p className="text-xs text-slate-400">Mutants Survived</p>
-              </div>
-            </div>
-            <div className="mt-3">
-              <div className="mb-1 flex justify-between text-xs">
-                <span className="text-slate-400">Mutation Score</span>
-                <span className="text-blue-400">{testResults.mutation.coverage}%</span>
-              </div>
-              <Progress value={testResults.mutation.coverage} color="#2563eb" />
-            </div>
-            <div className="mt-3 flex items-center justify-between rounded-lg border border-slate-800 p-2">
-              <span className="text-xs text-slate-400">PIT/Stryker Integration</span>
-              <Badge variant="success">
-                <CheckCircle2 className="h-3 w-3" /> Active
-              </Badge>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
-  );
-}
-
-function SecurityScanning() {
-  const [selectedVuln, setSelectedVuln] = useState(vulnerabilities[1]);
-
-  return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <Card className="border-red-500/30">
-          <CardContent className="p-4">
-            <p className="text-xs text-slate-400">Critical</p>
-            <p className="text-2xl font-bold text-red-400">{vulnerabilities.filter((v) => v.severity === "critical").length}</p>
-          </CardContent>
-        </Card>
-        <Card className="border-orange-500/30">
-          <CardContent className="p-4">
-            <p className="text-xs text-slate-400">High</p>
-            <p className="text-2xl font-bold text-orange-400">{vulnerabilities.filter((v) => v.severity === "high").length}</p>
-          </CardContent>
-        </Card>
-        <Card className="border-amber-500/30">
-          <CardContent className="p-4">
-            <p className="text-xs text-slate-400">Medium</p>
-            <p className="text-2xl font-bold text-amber-400">{vulnerabilities.filter((v) => v.severity === "medium").length}</p>
-          </CardContent>
-        </Card>
-        <Card className="border-slate-600">
-          <CardContent className="p-4">
-            <p className="text-xs text-slate-400">Low</p>
-            <p className="text-2xl font-bold text-slate-400">{vulnerabilities.filter((v) => v.severity === "low").length}</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <ShieldAlert className="h-4 w-4 text-blue-400" />
-              Vulnerability Dashboard
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <thead>
-                <tr>
-                  <Th>CWE</Th>
-                  <Th>Name</Th>
-                  <Th>Severity</Th>
-                  <Th>CVSS</Th>
-                  <Th>Location</Th>
-                  <Th>Status</Th>
-                </tr>
-              </thead>
-              <tbody>
-                {vulnerabilities.map((v) => (
-                  <tr
-                    key={v.id}
-                    onClick={() => setSelectedVuln(v)}
-                    className={cn("cursor-pointer", selectedVuln.id === v.id && "bg-blue-500/5")}
-                  >
-                    <Td className="font-mono text-xs">{v.cwe}</Td>
-                    <Td className="text-xs">{v.name}</Td>
-                    <Td>
-                      <Badge variant={v.severity === "critical" ? "error" : v.severity === "high" ? "warning" : v.severity === "medium" ? "info" : "default"}>
-                        {v.severity}
-                      </Badge>
-                    </Td>
-                    <Td className="text-xs font-mono">{v.cvss}</Td>
-                    <Td className="font-mono text-[10px]">{v.file}:{v.line}</Td>
-                    <Td>
-                      <Badge variant={v.status === "open" ? "error" : "success"}>{v.status}</Badge>
-                    </Td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <ShieldCheck className="h-4 w-4 text-blue-400" />
-              CVSS Radar
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-56">
-              <ResponsiveContainer width="100%" height="100%">
-                <RadarChart data={cvssRadar}>
-                  <PolarGrid stroke="#334155" />
-                  <PolarAngleAxis dataKey="axis" tick={{ fill: "#64748b", fontSize: 9 }} />
-                  <PolarRadiusAxis angle={90} domain={[0, 10]} tick={{ fill: "#475569", fontSize: 8 }} />
-                  <Radar name="CVSS" dataKey="value" stroke="#2563eb" fill="#2563eb" fillOpacity={0.3} />
-                </RadarChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
-              <Lock className="h-4 w-4 text-blue-400" />
-              Remediation Panel — {selectedVuln.cwe}
-            </CardTitle>
-            <Badge variant={selectedVuln.severity === "critical" ? "error" : selectedVuln.severity === "high" ? "warning" : "info"}>
-              {selectedVuln.severity}
-            </Badge>
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <div className="rounded-lg border border-slate-800 p-3">
-              <p className="text-xs font-semibold text-slate-400">Trained Model</p>
-              <p className="mt-1 text-sm text-white">Precision: {selectedVuln.precision}</p>
-              <p className="text-xs text-slate-500">Recall: {selectedVuln.recall}</p>
-            </div>
-            <div className="rounded-lg border border-slate-800 p-3">
-              <p className="text-xs font-semibold text-slate-400">LLM</p>
-              <p className="mt-1 text-sm text-white">Precision: {(selectedVuln.precision - 0.05).toFixed(2)}</p>
-              <p className="text-xs text-slate-500">Recall: {(selectedVuln.recall - 0.03).toFixed(2)}</p>
-            </div>
-            <div className="rounded-lg border border-blue-500/30 bg-blue-500/5 p-3">
-              <p className="text-xs font-semibold text-blue-300">Combined</p>
-              <p className="mt-1 text-sm text-white">Precision: {(selectedVuln.precision + 0.03).toFixed(2)}</p>
-              <p className="text-xs text-slate-500">Recall: {(selectedVuln.recall + 0.02).toFixed(2)}</p>
-            </div>
-          </div>
-
-          <div className="rounded-lg border border-blue-500/30 bg-blue-500/5 p-3">
-            <p className="mb-1 text-xs font-semibold text-blue-300">🤖 AI-Generated Fix</p>
-            <p className="text-xs text-slate-300">
-              Add parameterized query to prevent SQL injection. Use prepared statements with JPA repository
-              methods instead of native string concatenation.
-            </p>
-            <CodeBlock
-              code={`// Before (vulnerable)
-@Query("SELECT * FROM users WHERE email = '" + email + "'")
-List<User> findByEmail(String email);
-
-// After (fixed)
-@Query("SELECT * FROM users WHERE email = :email")
-List<User> findByEmail(@Param("email") String email);`}
-              language="java"
-              className="mt-2 text-[10px]"
-            />
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            <Button variant="c3" size="sm">
-              <Sparkles className="h-3 w-3" /> Apply Fix
-            </Button>
-            <Button variant="outline" size="sm">
-              <RotateCcw className="h-3 w-3" /> Rollback
-            </Button>
-            <div className="ml-auto flex gap-2">
-              <Badge variant="default">Cost: Low</Badge>
-              <Badge variant="default">Latency: 120ms</Badge>
-              <Badge variant="success">Privacy: Local</Badge>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
-
-function GovernanceAudit() {
-  const gates = [
-    { name: "QA Proposes", status: "complete", icon: Eye },
-    { name: "Dev Approves", status: "active", icon: CheckCheck },
-    { name: "C2 Implements", status: "pending", icon: Wrench },
-    { name: "C3 Re-verifies", status: "pending", icon: ShieldCheck },
-  ];
-
-  return (
-    <div className="space-y-4">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <ShieldCheck className="h-4 w-4 text-blue-400" />
-            Approval Gates
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="-mx-2 overflow-x-auto px-2 pb-1">
-            <div className="flex min-w-[640px] items-center gap-2">
-            {gates.map((gate, i) => {
-              const Icon = gate.icon;
-              return (
-                <div key={gate.name} className="flex flex-1 items-center gap-2">
-                  <div
-                    className={cn(
-                      "flex flex-1 items-center gap-2 rounded-lg border p-3",
-                      gate.status === "complete" && "border-emerald-500/30 bg-emerald-500/5",
-                      gate.status === "active" && "border-blue-500/30 bg-blue-500/5",
-                      gate.status === "pending" && "border-slate-800 bg-slate-900/50"
-                    )}
-                  >
-                    <Icon
-                      className="h-5 w-5"
-                      style={{ color: gate.status === "complete" ? "#10b981" : gate.status === "active" ? "#2563eb" : "#475569" }}
-                    />
-                    <div>
-                      <p className="text-xs font-medium text-white">{gate.name}</p>
-                      <p className="text-[10px] capitalize text-slate-500">{gate.status}</p>
-                    </div>
-                  </div>
-                  {i < gates.length - 1 && (
-                    <div className={cn("h-px w-4", gate.status === "complete" ? "bg-emerald-500/40" : "bg-slate-700")} />
-                  )}
-                </div>
-              );
-            })}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
-              <ScrollText className="h-4 w-4 text-blue-400" />
-              Audit Log
-            </CardTitle>
-            <Button size="sm" variant="outline">
-              <History className="h-3 w-3" /> Export
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <thead>
-              <tr>
-                <Th>Timestamp</Th>
-                <Th>Actor</Th>
-                <Th>Action</Th>
-                <Th>Target</Th>
-                <Th>Details</Th>
-              </tr>
-            </thead>
-            <tbody>
-              {auditLog.map((log) => (
-                <tr key={log.id}>
-                  <Td className="font-mono text-[10px] text-slate-500">{log.timestamp}</Td>
-                  <Td className="text-xs">{log.actor}</Td>
-                  <Td>
-                    <Badge variant="default">{log.action}</Badge>
-                  </Td>
-                  <Td className="font-mono text-[10px]">{log.target}</Td>
-                  <Td className="text-xs text-slate-400">{log.details}</Td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-        </CardContent>
-      </Card>
-
-      <Card className="border-red-500/30">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <RotateCcw className="h-4 w-4 text-red-400" />
-            Rollback Controls
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="flex items-center justify-between">
-          <div>
-            <p className="text-sm text-white">Rollback to last verified state</p>
-            <p className="text-xs text-slate-400">Last verified: Sprint 23, Build #1847 · All tests passing</p>
-          </div>
-          <Button variant="error" size="sm">
-            <RotateCcw className="h-3 w-3" /> Rollback
-          </Button>
-        </CardContent>
-      </Card>
-    </div>
-  );
+/** Mock clock so a decision made now lands after the last logged event. */
+function useStamp() {
+  const tick = useRef(0);
+  return useCallback(() => {
+    const minutes = 15 * 60 + 22 + tick.current * 2;
+    tick.current += 1;
+    const h = Math.floor(minutes / 60);
+    const m = minutes % 60;
+    return `2025-01-21 ${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+  }, []);
 }
 
 export function TestingSecurity() {
   const { projectId } = useParams();
-  const { theme, projects, activeProjectId } = useStore();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const { theme, projects, activeProjectId, settings, addToast, updateProject } = useStore();
   const isDark = theme === "dark";
-  const [activeTab, setActiveTab] = useState("dashboard");
+  const stamp = useStamp();
 
   const project = useMemo(
     () => projects.find((p) => p.id === (activeProjectId ?? projectId)),
     [projects, activeProjectId, projectId]
   );
+  const reviewer = settings.profile.name;
 
-  const progressId = project ? getTestingProgressId(project.status) : activeTab;
+  const [preview, setPreview] = useState<PreviewState>("live");
+  const [step, setStep] = useState<StepId>("tests");
+  const [inboxFilter, setInboxFilter] = useState<InboxFilter>("attention");
+  const [selectedFailure, setSelectedFailure] = useState(failures[0].id);
+  const [expandedFinding, setExpandedFinding] = useState<string | null>(findings[0].id);
+  const [repairDecisions, setRepairDecisions] = useState<Record<string, RepairDecision>>({});
+  const [extraAudit, setExtraAudit] = useState<AuditEntry[]>([]);
+  const [stream, setStream] = useState({ lines: 0, done: false });
+
+  // Which build the page is showing, and when that build's run finished.
+  // "Run tests again" produces the next build, which is what supersedes a
+  // decision and confirms an approved repair.
+  const [build, setBuild] = useState(testingRun.build);
+  const [buildFinishedAt, setBuildFinishedAt] = useState(testingRun.finishedAt);
+
+  // One security fix was still being proven when the page loaded.
+  const [findingActions, setFindingActions] = useState<Record<string, FindingAction>>({
+    v6: { kind: "applied", at: "2025-01-21 15:14", by: "A. Chen", scan: "pass", suite: "running" },
+  });
+
+  const [phaseDecision, setPhaseDecision] = useState<PhaseDecision | null>(() =>
+    project && ["deploy", "complete"].includes(project.status)
+      ? { kind: "approved", at: "2025-01-21 15:24", by: settings.profile.name, build: testingRun.build }
+      : null
+  );
+
+  const [tabs, setTabs] = useState<EditorTab[]>([{ path: DEFAULT_FILE }]);
+  const [activePath, setActivePath] = useState(DEFAULT_FILE);
+  const [highlight, setHighlight] = useState<{ path: string; line: number; label?: string } | undefined>({
+    path: DEFAULT_FILE,
+    line: failures[0].line,
+    label: failures[0].reason,
+  });
+  const viewerRef = useRef<HTMLDivElement | null>(null);
+  const timers = useRef<number[]>([]);
+  const transcriptTotal = useRef(1);
+  const actionsRef = useRef<Record<string, FindingAction>>({});
+  const settledBuild = useRef(testingRun.build);
+
+  useEffect(() => () => timers.current.forEach((id) => window.clearTimeout(id)), []);
+
+  // A project that has not produced a build yet has nothing to show here.
+  const notStarted = project ? ["draft", "analyzing", "design", "code"].includes(project.status) : false;
+  const requested = searchParams.get("state") as PreviewState | null;
+  const fromUrl = requested && demoStates.includes(requested) ? requested : null;
+  const effective: PreviewState = preview !== "live" ? preview : fromUrl ?? (notStarted ? "empty" : "live");
+
+  const view = useMemo(
+    () =>
+      buildView({
+        preview: effective,
+        reviewer,
+        build,
+        buildFinishedAt,
+        repairDecisions,
+        findingActions,
+        extraAudit,
+        phaseDecision,
+        stream,
+      }),
+    [effective, reviewer, build, buildFinishedAt, repairDecisions, findingActions, extraAudit, phaseDecision, stream]
+  );
+  transcriptTotal.current = view.transcriptTotal;
+  actionsRef.current = findingActions;
+
+  const logEntries = useCallback(
+    (entries: Omit<AuditEntry, "id">[]) =>
+      setExtraAudit((prev) => [...entries.map((e, i) => ({ ...e, id: `local-${prev.length}-${i}` })), ...prev]),
+    []
+  );
+
+  /* --------------------------------------------------------------- the run */
+
+  useEffect(() => {
+    if (effective !== "running") return;
+    setStream({ lines: 0, done: false });
+    const id = window.setInterval(() => {
+      setStream((s) => {
+        if (s.lines >= transcriptTotal.current - 1) {
+          window.clearInterval(id);
+          return { lines: s.lines, done: true };
+        }
+        return { lines: s.lines + 1, done: false };
+      });
+    }, 380);
+    return () => window.clearInterval(id);
+  }, [effective]);
+
+  // A finished run is what confirms approved repairs and stamps the build.
+  useEffect(() => {
+    if (effective !== "running" || !stream.done || settledBuild.current === build) return;
+    settledBuild.current = build;
+    const at = stamp();
+    setBuildFinishedAt(at);
+    logEntries([
+      {
+        at,
+        actor: "Testing agent",
+        actorKind: "agent",
+        action: "Ran suite",
+        target: `Build ${build}`,
+        detail: `${view.totals.run} tests run, ${view.totals.passed} passed, ${view.totals.failed} failed.`,
+      },
+    ]);
+    addToast({
+      type: view.totals.failed > 0 ? "info" : "success",
+      title: `Build ${build} finished`,
+      message: `${view.totals.passed} passing, ${view.totals.failed} failing`,
+    });
+    setPreview("live");
+  }, [effective, stream.done, build, stamp, logEntries, addToast, view.totals]);
+
+  // The suite re-run that was in flight when the page loaded finishes here.
+  useEffect(() => {
+    const id = window.setTimeout(() => {
+      setFindingActions((prev) => {
+        const current = prev.v6;
+        if (!current || current.kind !== "applied" || current.suite !== "running") return prev;
+        return { ...prev, v6: { ...current, suite: "pass" } };
+      });
+      setExtraAudit((prev) =>
+        prev.some((e) => e.id === "reverify-v6")
+          ? prev
+          : [
+              {
+                id: "reverify-v6",
+                at: "2025-01-21 15:19",
+                actor: "Testing agent",
+                actorKind: "agent",
+                action: "Re-ran suite",
+                target: "Build 1852",
+                detail: "Same result as before the deserialization fix, no new failures.",
+              },
+              ...prev,
+            ]
+      );
+    }, 7000);
+    timers.current.push(id);
+    return () => window.clearTimeout(id);
+  }, []);
+
+  const startRerun = () => {
+    const next = build + 1;
+    const at = stamp();
+
+    // A proof that has not finished cannot survive a new build - it was proving
+    // something about the old one.
+    setFindingActions((prev) => {
+      const updated: Record<string, FindingAction> = {};
+      let broken = 0;
+      Object.entries(prev).forEach(([id, action]) => {
+        if (action.kind !== "applied" || (action.scan === "pass" && action.suite === "pass")) {
+          updated[id] = action;
+          return;
+        }
+        broken += 1;
+        updated[id] = {
+          ...action,
+          scan: action.scan === "pass" ? "pass" : "errored",
+          suite: action.suite === "pass" ? "pass" : "errored",
+        };
+      });
+      if (broken > 0) {
+        logEntries([
+          {
+            at,
+            actor: "Testing agent",
+            actorKind: "agent",
+            action: "Stopped proofs",
+            target: `${broken} unfinished ${broken === 1 ? "proof" : "proofs"}`,
+            detail: `Build ${next} started, so proofs against Build ${build} were stopped. They prove nothing and can be retried.`,
+          },
+        ]);
+      }
+      return updated;
+    });
+
+    setBuild(next);
+    logEntries([
+      {
+        at,
+        actor: reviewer,
+        actorKind: "human",
+        action: "Started run",
+        target: `Build ${next}`,
+        detail: "Re-ran the full suite, including every repair approved since the last run.",
+      },
+    ]);
+    setPreview("running");
+    setStep("tests");
+  };
+
+  /* ------------------------------------------------------------- item decisions */
+
+  const openFileAt = (path: string, line: number, label: string) => {
+    setTabs((prev) => (prev.some((t) => t.path === path) ? prev : [...prev, { path }]));
+    setActivePath(path);
+    setHighlight({ path, line, label });
+    setStep("tests");
+    timers.current.push(
+      window.setTimeout(() => viewerRef.current?.scrollIntoView({ block: "center", behavior: "smooth" }), 80)
+    );
+  };
+
+  const openFailure = (failureId: string) => {
+    const failure = view.failures.find((f) => f.id === failureId);
+    if (!failure) return;
+    setSelectedFailure(failureId);
+    setInboxFilter(failure.state === "healed" ? "healed" : "attention");
+    setStep("healing");
+  };
+
+  const approveRepair = (id: string) => {
+    const failure = failures.find((f) => f.id === id);
+    if (!failure) return;
+    const at = stamp();
+    setRepairDecisions((prev) => ({ ...prev, [id]: { decision: "approved", at, by: reviewer, build } }));
+    logEntries([
+      {
+        at,
+        actor: "Testing agent",
+        actorKind: "agent",
+        action: "Applied repair",
+        target: fileName(failure.file),
+        detail: `Applied the approved repair. Counted as passing from the guard run - Build ${build + 1} will record it.`,
+      },
+      {
+        at,
+        actor: reviewer,
+        actorKind: "human",
+        action: "Approved repair",
+        target: failure.test,
+        detail: "Both guard checks passed: it still catches the planted bug.",
+      },
+    ]);
+    addToast({
+      type: "success",
+      title: "Repair approved",
+      message: "Counted as passing - the next run confirms it",
+    });
+  };
+
+  const rejectRepair = (id: string) => {
+    const failure = failures.find((f) => f.id === id);
+    if (!failure) return;
+    const at = stamp();
+    setRepairDecisions((prev) => ({ ...prev, [id]: { decision: "rejected", at, by: reviewer, build } }));
+    logEntries([
+      {
+        at,
+        actor: "Testing agent",
+        actorKind: "agent",
+        action: "Escalated failure",
+        target: failure.test,
+        detail: `Repair rejected by a reviewer. Left the test as written and routed it to ${failure.owner ?? "the module owner"}.`,
+      },
+      {
+        at,
+        actor: reviewer,
+        actorKind: "human",
+        action: "Rejected repair",
+        target: failure.test,
+        detail: "Rejected the proposed repair.",
+      },
+    ]);
+    addToast({ type: "info", title: "Repair rejected", message: "The failure went to the module owner untouched" });
+  };
+
+  /** Both proofs, in order: the scan answers first, then the suite. */
+  const runProofs = (finding: Finding, retry: boolean) => {
+    const stillRunning = (id: string, proof: "scan" | "suite") => {
+      const action = actionsRef.current[id];
+      return Boolean(action && action.kind === "applied" && action[proof] !== "errored");
+    };
+
+    timers.current.push(
+      window.setTimeout(() => {
+        setFindingActions((prev) => {
+          const current = prev[finding.id];
+          // A proof stopped by a newer build stays stopped - this answer is stale.
+          if (!current || current.kind !== "applied" || current.scan !== "running") return prev;
+          return { ...prev, [finding.id]: { ...current, scan: "pass", suite: "running" } };
+        });
+        if (!stillRunning(finding.id, "scan")) return;
+        logEntries([
+          {
+            at: stamp(),
+            actor: "Security agent",
+            actorKind: "agent",
+            action: retry ? "Re-scanned again" : "Re-scanned",
+            target: fileName(finding.file),
+            detail: `${finding.cwe} no longer reported. Suite re-run started.`,
+          },
+        ]);
+      }, 1800)
+    );
+
+    timers.current.push(
+      window.setTimeout(() => {
+        setFindingActions((prev) => {
+          const current = prev[finding.id];
+          if (!current || current.kind !== "applied" || current.suite !== "running") return prev;
+          return { ...prev, [finding.id]: { ...current, suite: "pass" } };
+        });
+        if (!stillRunning(finding.id, "suite")) return;
+        logEntries([
+          {
+            at: stamp(),
+            actor: "Testing agent",
+            actorKind: "agent",
+            action: "Re-ran suite",
+            target: `Build ${build}`,
+            detail: "Same result as before the fix, no new failures.",
+          },
+        ]);
+        addToast({
+          type: "success",
+          title: "Fixed and re-verified",
+          message: `${finding.cwe} is gone and behaviour did not change`,
+        });
+      }, 4400)
+    );
+  };
+
+  const applyFix = (id: string) => {
+    const finding = findings.find((f) => f.id === id);
+    if (!finding) return;
+    const at = stamp();
+    setFindingActions((prev) => ({
+      ...prev,
+      [id]: { kind: "applied", at, by: reviewer, scan: "running", suite: "pending" },
+    }));
+    logEntries([
+      {
+        at,
+        actor: reviewer,
+        actorKind: "human",
+        action: "Applied fix",
+        target: `${fileName(finding.file)}:${finding.line}`,
+        detail: finding.fix?.summary ?? "Applied the proposed fix.",
+      },
+    ]);
+    addToast({ type: "info", title: "Fix applied", message: "Two proofs are running - scan and suite" });
+    setStep("reverify");
+    runProofs(finding, false);
+  };
+
+  const retryProofs = (id: string) => {
+    const finding = findings.find((f) => f.id === id);
+    if (!finding) return;
+    setFindingActions((prev) => {
+      const current = prev[id];
+      if (!current || current.kind !== "applied") return prev;
+      return { ...prev, [id]: { ...current, scan: "running", suite: "pending" } };
+    });
+    logEntries([
+      {
+        at: stamp(),
+        actor: reviewer,
+        actorKind: "human",
+        action: "Retried proofs",
+        target: `${finding.cwe} · ${fileName(finding.file)}:${finding.line}`,
+        detail: `Started both proofs again against Build ${build}.`,
+      },
+    ]);
+    addToast({ type: "info", title: "Proofs restarted", message: "Scan first, then the full suite" });
+    runProofs(finding, true);
+  };
+
+  const dismissFinding = (id: string) => {
+    const finding = findings.find((f) => f.id === id);
+    if (!finding) return;
+    const at = stamp();
+    setFindingActions((prev) => ({ ...prev, [id]: { kind: "dismissed", at, by: reviewer } }));
+    logEntries([
+      {
+        at,
+        actor: reviewer,
+        actorKind: "human",
+        action: "Dismissed finding",
+        target: `${finding.cwe} · ${fileName(finding.file)}:${finding.line}`,
+        detail: "Dismissed without a fix. It stays in the log.",
+      },
+    ]);
+    addToast({ type: "info", title: "Finding dismissed", message: "It stays in the audit log" });
+  };
+
+  /* ------------------------------------------------------------ phase decision */
+
+  const approvePhase = () => {
+    const at = stamp();
+    setPhaseDecision({ kind: "approved", at, by: reviewer, build });
+    logEntries([
+      {
+        at,
+        actor: reviewer,
+        actorKind: "human",
+        action: "Approved the phase",
+        target: `Build ${build}`,
+        detail: "Approved the validation report for this build. Deployment can start.",
+      },
+    ]);
+    if (project) updateProject(project.id, { status: "deploy", progress: Math.max(project.progress, 82) });
+    addToast({ type: "success", title: `Build ${build} approved`, message: "Deployment can start" });
+    setStep("report");
+  };
+
+  const requestChanges = (note: string) => {
+    const at = stamp();
+    setPhaseDecision({ kind: "changes", at, by: reviewer, build, note });
+    logEntries([
+      {
+        at,
+        actor: reviewer,
+        actorKind: "human",
+        action: "Requested changes",
+        target: `Build ${build}`,
+        detail: note,
+      },
+    ]);
+    addToast({ type: "warning", title: "Changes requested", message: "The note went to the team" });
+    setStep("report");
+  };
+
+  const rollback = () => {
+    const at = stamp();
+    logEntries([
+      {
+        at,
+        actor: reviewer,
+        actorKind: "human",
+        action: "Rolled back",
+        target: `Build ${testingRun.lastVerified.build}`,
+        detail: `Returned the deployable build to ${testingRun.lastVerified.sprint} · Build ${testingRun.lastVerified.build}.`,
+      },
+    ]);
+    addToast({
+      type: "warning",
+      title: `Returned to Build ${testingRun.lastVerified.build}`,
+      message: testingRun.lastVerified.note,
+    });
+  };
+
+  /* --------------------------------------------------------------------- render */
+
+  const running = effective === "running" && !stream.done;
+
+  /* The same chevron bar the other phases use. Counts ride inside the chevron
+     so a reviewer can see where the work is without opening a step. */
+  const stepBadges: Partial<Record<StepId, number>> = {
+    tests: view.totals.failed || undefined,
+    healing: view.inbox.awaiting || view.inbox.needsAttention || undefined,
+    security: view.findingCounts.toResolve || undefined,
+  };
+  const stepperSteps = stepOrder.map((s) => ({ id: s.id, label: s.label, badge: stepBadges[s.id] }));
+  const progressId = running ? "tests" : view.decision ? "done" : "report";
+
+  const header = (
+    <PhaseSectionHeader
+      title="Testing & Security"
+      subtitle="Tests are written from the requirements, run, and triaged. Every repair and every fix has to prove itself before you approve the phase."
+      progress={view.progress}
+      isDark={isDark}
+      action={
+        <Button variant="outline" onClick={startRerun} disabled={running}>
+          <Play className="h-3.5 w-3.5" />
+          {running ? "Running…" : "Run tests again"}
+        </Button>
+      }
+    />
+  );
+
+  if (effective === "empty" || effective === "error") {
+    return (
+      <div className="tp w-full px-6 pb-10 pt-6 md:px-8 md:pt-8">
+        {header}
+        <div className="mt-8">
+          {effective === "empty" ? (
+            <PhaseNotStarted
+              projectName={project?.name ?? "this project"}
+              onOpenCode={() => navigate(`/projects/${project?.id ?? projectId}/code`)}
+            />
+          ) : (
+            <PhaseLoadError
+              build={testingRun.build}
+              onRetry={() => navigate(`/projects/${project?.id ?? projectId}/testing`)}
+            />
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="w-full space-y-5 p-4 sm:p-6 md:p-8">
-      <PhaseSectionHeader
-        title="Testing & Security"
-        subtitle={
-          project && ["deploy", "complete"].includes(project.status)
-            ? "All testing and security stages complete — browse any step below"
-            : "Automated tests, self-healing repairs, vulnerability scanning, and governance"
-        }
-        progress={project ? getPhaseProgress(project, "testing") : 0}
-        isDark={isDark}
-      />
+    <div className="tp w-full px-6 pb-6 pt-6 md:px-8 md:pt-8">
+      {header}
 
-      <ChevronStepper
-        steps={testingPhaseSteps}
-        progressId={progressId}
-        selectedId={activeTab}
-        isDark={isDark}
-        onStepClick={setActiveTab}
-      />
+      <div className="mt-5">
+        <StickyHeader>
+          <ChevronStepper
+            steps={stepperSteps}
+            progressId={progressId}
+            selectedId={step}
+            isDark={isDark}
+            onStepClick={(id) => setStep(id as StepId)}
+          />
+        </StickyHeader>
+      </div>
 
-      {activeTab === "dashboard" && <TestTabPanel />}
-      {activeTab === "healing" && <SelfHealingRepair />}
-      {activeTab === "security" && <SecurityScanning />}
-      {activeTab === "governance" && <GovernanceAudit />}
+      <div role="tabpanel" className="space-y-4 pt-5">
+        {step === "tests" && (
+          <>
+            <SummaryStrip
+              view={view}
+              onGoTo={(target) => {
+                if (target === "healing") setInboxFilter("awaiting");
+                setStep(target);
+              }}
+            />
+            <StepTests
+              view={view}
+              onGoTo={setStep}
+              onOpenFailure={openFailure}
+              tabs={tabs}
+              activePath={activePath}
+              highlight={highlight}
+              onSelectFile={(path) => {
+                setTabs((prev) => (prev.some((t) => t.path === path) ? prev : [...prev, { path }]));
+                setActivePath(path);
+              }}
+              onSelectTab={setActivePath}
+              onCloseTab={(path) =>
+                setTabs((prev) => {
+                  const next = prev.filter((t) => t.path !== path);
+                  if (next.length === 0) return prev;
+                  if (activePath === path) setActivePath(next[next.length - 1].path);
+                  return next;
+                })
+              }
+              viewerRef={viewerRef}
+            />
+          </>
+        )}
+
+        {step === "healing" && (
+          <StepHealing
+            view={view}
+            filter={inboxFilter}
+            onFilter={setInboxFilter}
+            selectedId={selectedFailure}
+            onSelect={setSelectedFailure}
+            onApprove={approveRepair}
+            onReject={rejectRepair}
+            onOpenFile={openFileAt}
+          />
+        )}
+
+        {step === "quality" && <StepQuality view={view} />}
+
+        {step === "security" && (
+          <StepSecurity
+            view={view}
+            expandedId={expandedFinding}
+            onExpand={setExpandedFinding}
+            onApplyFix={applyFix}
+            onDismiss={dismissFinding}
+            onGoTo={setStep}
+          />
+        )}
+
+        {step === "reverify" && <StepReverify view={view} onGoTo={setStep} onRetry={retryProofs} />}
+
+        {step === "report" && (
+          <StepReport
+            view={view}
+            onGoTo={setStep}
+            onOpenDeployment={() => navigate(`/projects/${project?.id ?? projectId}/deployment`)}
+            onRollback={rollback}
+          />
+        )}
+      </div>
+
+      {view.decisionPending && (
+        <div className="mt-6">
+          <DecisionBar view={view} onApprove={approvePhase} onRequestChanges={requestChanges} />
+        </div>
+      )}
     </div>
   );
 }

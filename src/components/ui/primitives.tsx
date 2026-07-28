@@ -1,4 +1,10 @@
-import { type ReactNode, type HTMLAttributes, forwardRef } from "react";
+import {
+  type ReactNode,
+  type HTMLAttributes,
+  type ThHTMLAttributes,
+  type TdHTMLAttributes,
+  forwardRef,
+} from "react";
 import { useStore } from "@/store/useStore";
 import { cn } from "@/utils/cn";
 
@@ -26,7 +32,7 @@ export function CardHeader({ className, children, ...props }: HTMLAttributes<HTM
   const { theme } = useStore();
   const isDark = theme === "dark";
   return (
-    <div className={cn("border-b px-4 py-3 sm:px-5 sm:py-4", isDark ? "border-white/[0.05]" : "border-slate-100", className)} {...props}>
+    <div className={cn("border-b px-5 py-4", isDark ? "border-white/[0.05]" : "border-slate-100", className)} {...props}>
       {children}
     </div>
   );
@@ -44,7 +50,7 @@ export function CardTitle({ className, children, ...props }: HTMLAttributes<HTML
 
 export function CardContent({ className, children, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn("p-4 sm:p-5", className)} {...props}>
+    <div className={cn("p-5", className)} {...props}>
       {children}
     </div>
   );
@@ -292,13 +298,13 @@ CodeBlock.displayName = "CodeBlock";
 // ===== Table =====
 export function Table({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <div className={cn("w-full overflow-x-auto scroll-touch scrollbar-thin", className)}>
-      <table className="w-full min-w-[520px] text-sm">{children}</table>
+    <div className={cn("w-full overflow-auto", className)}>
+      <table className="w-full text-sm">{children}</table>
     </div>
   );
 }
 
-export function Th({ children, className, ...props }: HTMLAttributes<HTMLTableCellElement>) {
+export function Th({ children, className, ...props }: ThHTMLAttributes<HTMLTableCellElement>) {
   const { theme } = useStore();
   const isDark = theme === "dark";
   return (
@@ -315,7 +321,7 @@ export function Th({ children, className, ...props }: HTMLAttributes<HTMLTableCe
   );
 }
 
-export function Td({ children, className, ...props }: HTMLAttributes<HTMLTableCellElement>) {
+export function Td({ children, className, ...props }: TdHTMLAttributes<HTMLTableCellElement>) {
   const { theme } = useStore();
   const isDark = theme === "dark";
   return (

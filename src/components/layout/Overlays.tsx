@@ -137,7 +137,7 @@ export function Toasts() {
   const isDark = theme === "dark";
 
   return (
-    <div className="fixed bottom-4 right-4 z-[90] flex flex-col gap-2">
+    <div className="fixed bottom-4 left-4 right-4 z-[90] flex flex-col gap-2 sm:left-auto sm:right-4 sm:w-96">
       {toasts.map((toast) => {
         const Icon =
           toast.type === "success"
@@ -159,7 +159,7 @@ export function Toasts() {
           <div
             key={toast.id}
             className={cn(
-              "flex w-80 items-start gap-3 rounded-2xl border p-3 shadow-2xl",
+              "flex w-full items-start gap-3 rounded-2xl border p-3 shadow-2xl sm:w-80",
               isDark ? "border-white/10 bg-[#0f1d32]" : "border-slate-200 bg-white"
             )}
           >

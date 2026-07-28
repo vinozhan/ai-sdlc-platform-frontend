@@ -79,12 +79,12 @@ export function Home() {
   };
 
   return (
-    <div className="relative w-full px-6 pb-12 pt-10 md:px-8 md:pt-14">
+    <div className="relative w-full px-4 pb-12 pt-8 sm:px-6 md:px-8 md:pt-14">
         <ProjectCreatePrompt firstName={firstName} isDark={isDark} onSubmit={handleCreate} />
 
         {/* Active projects */}
         <div className="mt-14">
-          <div className="mb-4 flex items-end justify-between gap-3">
+          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <h2 className={cn("text-lg font-semibold tracking-tight", isDark ? "text-white" : "text-slate-900")}>
                 Your projects
@@ -93,7 +93,7 @@ export function Home() {
                 Continue a run or start something new
               </p>
             </div>
-            <Button variant="outline" size="sm" onClick={() => navigate("/projects")}>
+            <Button variant="outline" size="sm" className="w-full sm:w-auto" onClick={() => navigate("/projects")}>
               View all
               <ArrowRight className="h-3.5 w-3.5" />
             </Button>

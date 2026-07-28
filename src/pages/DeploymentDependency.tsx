@@ -95,8 +95,8 @@ function RepositoryManager() {
   );
 
   return (
-    <div className="grid grid-cols-3 gap-4">
-      <Card className="col-span-2">
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+      <Card className="lg:col-span-2">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Archive className="h-4 w-4 text-orange-400" />
@@ -162,7 +162,7 @@ function BreakingChangePrediction() {
   };
 
   return (
-    <div className="grid grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -205,7 +205,7 @@ function BreakingChangePrediction() {
         </CardContent>
       </Card>
 
-      <Card className="col-span-2">
+      <Card className="lg:col-span-2">
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="font-mono text-sm">{selectedUpdate.package}</CardTitle>
@@ -624,7 +624,7 @@ export function DeploymentDependency() {
   const progressId = project ? getDeploymentProgressId(project.status) : activeTab;
 
   return (
-    <div className="w-full space-y-5 p-6 md:p-8">
+    <div className="w-full space-y-5 p-4 sm:p-6 md:p-8">
       <PhaseSectionHeader
         title="Deployment & Dependencies"
         subtitle={

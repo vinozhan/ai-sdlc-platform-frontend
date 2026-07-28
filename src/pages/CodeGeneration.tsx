@@ -172,7 +172,7 @@ function ContractDesigner() {
   const [validationMode, setValidationMode] = useState<"rule" | "llm">("rule");
 
   return (
-    <div className="grid grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -206,7 +206,7 @@ function ContractDesigner() {
         </CardContent>
       </Card>
 
-      <Card className="col-span-2">
+      <Card className="lg:col-span-2">
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>Contract Editor - {selectedContract.path}</CardTitle>
@@ -308,7 +308,7 @@ function FrontendStudio() {
   const { tabs, activePath, openFile, closeTab, setActivePath } = useEditorTabs(defaultPath);
 
   return (
-    <div className="grid h-[560px] grid-cols-3 gap-4">
+    <div className="grid h-auto grid-cols-1 gap-4 md:h-[560px] md:grid-cols-3">
       <VSCodeFileTree
         title="Explorer"
         files={frontendCode.files}
@@ -316,7 +316,7 @@ function FrontendStudio() {
         onSelect={openFile}
       />
 
-      <div className="col-span-2 min-h-0">
+      <div className="min-h-[320px] md:col-span-2 md:min-h-0">
         <VSCodeEditor
           tabs={tabs}
           activePath={activePath}
@@ -342,7 +342,7 @@ function BackendStudio() {
 
   return (
     <div className="space-y-4">
-      <div className="grid h-[560px] grid-cols-3 gap-4">
+      <div className="grid h-auto grid-cols-1 gap-4 md:h-[560px] md:grid-cols-3">
         <VSCodeFileTree
           title="Backend Files"
           files={backendCode.files}
@@ -350,7 +350,7 @@ function BackendStudio() {
           onSelect={openFile}
         />
 
-        <div className="col-span-2 min-h-0">
+        <div className="min-h-[320px] md:col-span-2 md:min-h-0">
           <VSCodeEditor
             tabs={tabs}
             activePath={activePath}
@@ -559,7 +559,7 @@ export function CodeGeneration() {
   const progressId = project ? getCodeProgressId(project.status) : activeTab;
 
   return (
-    <div className="w-full space-y-5 p-6 md:p-8">
+    <div className="w-full space-y-5 p-4 sm:p-6 md:p-8">
       <PhaseSectionHeader
         title="Code Generation"
         subtitle={

@@ -47,7 +47,8 @@ export function ChevronStepper({
   return (
     <div
       className={cn(
-        "flex gap-1 overflow-x-auto rounded-xl border p-2",
+        "flex gap-1 overflow-x-auto rounded-xl border p-1.5 scrollbar-none sm:p-2",
+        "snap-x snap-mandatory",
         isDark ? "border-white/10 bg-white/[0.03]" : "border-slate-200/80 bg-white shadow-sm"
       )}
     >
@@ -63,7 +64,7 @@ export function ChevronStepper({
             onClick={() => onStepClick?.(step.id)}
             disabled={!onStepClick || status === "future"}
             className={cn(
-              "flex min-w-[88px] flex-1 items-center justify-center whitespace-nowrap px-4 py-2.5 text-xs font-semibold tracking-wide transition-opacity",
+              "flex min-w-[76px] flex-1 snap-start items-center justify-center whitespace-nowrap px-2.5 py-2 text-[11px] font-semibold tracking-wide transition-opacity sm:min-w-[88px] sm:px-4 sm:py-2.5 sm:text-xs",
               statusStyles[status],
               isDark && status === "future" && "bg-slate-700/60 text-slate-400",
               isDark && status === "complete" && "bg-emerald-600 text-white",

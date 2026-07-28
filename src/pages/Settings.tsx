@@ -142,7 +142,7 @@ export function SettingsPage() {
   );
 
   return (
-    <div className="w-full px-6 py-8 md:px-8 md:py-10 lg:px-10">
+    <div className="w-full px-4 py-8 md:px-8 md:py-10 lg:px-10">
       <header className="mb-8">
         <h1 className={cn("text-3xl font-semibold tracking-tight", isDark ? "text-white" : "text-slate-900")}>
           Settings
@@ -165,7 +165,7 @@ export function SettingsPage() {
                 key={item.id}
                 onClick={() => setTab(item.id)}
                 className={cn(
-                  "flex min-w-[140px] flex-1 items-center gap-3 rounded-xl px-3.5 py-3 text-left transition-all lg:min-w-0 lg:flex-none",
+                  "flex min-w-[7.5rem] flex-1 items-center gap-2.5 rounded-xl px-3 py-2.5 text-left transition-all sm:min-w-[140px] sm:gap-3 sm:px-3.5 sm:py-3 lg:min-w-0 lg:flex-none",
                   active
                     ? isDark
                       ? "bg-blue-600/20 text-white ring-1 ring-blue-500/30"

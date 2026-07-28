@@ -72,9 +72,9 @@ export function PhaseSectionHeader({
       </div>
       {/* Progress first, then any phase action underneath it, so every phase
           header stacks the same way whether or not it has both. */}
-      <div className="flex shrink-0 flex-col items-end gap-3">
+      <div className="flex w-full shrink-0 flex-col items-stretch gap-3 sm:w-auto sm:items-end">
         {showProgress && (
-          <div className="w-48">
+          <div className="w-full sm:w-48">
             <div className="mb-1 flex justify-between text-xs">
               <span className={isDark ? "text-slate-500" : "text-slate-400"}>Progress</span>
               <span className={cn("tabular-nums font-medium", isDark ? "text-white" : "text-slate-900")}>

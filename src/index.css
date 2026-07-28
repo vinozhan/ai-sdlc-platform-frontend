@@ -489,3 +489,27 @@
     to { width: 90px; }
   }
 }
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    overflow-x: hidden;
+  }
+}
+
+@layer utilities {
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  .safe-pb {
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+  }
+}

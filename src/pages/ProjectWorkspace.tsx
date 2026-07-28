@@ -407,7 +407,7 @@ function RequirementsResults({ project }: { project: Project }) {
   }));
 
   return (
-    <div className="w-full space-y-5 p-6 md:p-8">
+    <div className="w-full space-y-5 p-4 sm:p-6 md:p-8">
       <PhaseSectionHeader
         title="Requirements & Design"
         subtitle={

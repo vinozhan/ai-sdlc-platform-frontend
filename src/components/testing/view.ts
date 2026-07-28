@@ -90,6 +90,8 @@ export type TestingView = {
   decisions: { approved: number; rejected: number; applied: number; dismissed: number };
   audit: AuditEntry[];
   steps: Record<StepId, { state: StepState; count?: number; hint: string }>;
+  /** steps settled ÷ 6, or 100 once this build has a decision */
+  progress: number;
   /** the decision that applies to this build, if any */
   decision: PhaseDecision | null;
   /** a decision made against an earlier build, now superseded */
@@ -450,6 +452,11 @@ export function buildView(input: ViewInput): TestingView {
       : { state: "waiting", hint: superseded ? "waiting on you again" : "waiting on you" },
   };
 
+  // A step counts towards progress once it has nothing outstanding. Recording
+  // the phase decision is the last of the six, so 100% means exactly that.
+  const settledSteps = Object.values(steps).filter((s) => s.state === "done").length;
+  const progress = decisionForThisBuild ? 100 : Math.round((settledSteps / stepOrder.length) * 100);
+
   return {
     preview: input.preview,
     build,
@@ -471,6 +478,7 @@ export function buildView(input: ViewInput): TestingView {
     decisions,
     audit,
     steps,
+    progress,
     decision: decisionForThisBuild,
     superseded,
     decisionPending,

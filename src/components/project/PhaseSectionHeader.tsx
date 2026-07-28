@@ -70,7 +70,9 @@ export function PhaseSectionHeader({
           {subtitle}
         </p>
       </div>
-      <div className="flex shrink-0 items-start gap-3">
+      {/* Progress first, then any phase action underneath it, so every phase
+          header stacks the same way whether or not it has both. */}
+      <div className="flex shrink-0 flex-col items-end gap-3">
         {showProgress && (
           <div className="w-48">
             <div className="mb-1 flex justify-between text-xs">

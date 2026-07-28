@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Play } from "lucide-react";
-import { cn } from "@/utils/cn";
 import { useStore } from "@/store/useStore";
 import type { EditorTab } from "@/components/code/VSCodeEditor";
 import { Button } from "@/components/ui/primitives";
 import { ChevronStepper } from "@/components/ui/ChevronStepper";
+import { PhaseSectionHeader } from "@/components/project/PhaseSectionHeader";
 import { DecisionBar } from "@/components/testing/DecisionBar";
 import { PhaseLoadError, PhaseNotStarted } from "@/components/testing/EmptyStates";
 import { StickyHeader, SummaryStrip } from "@/components/testing/PhaseChrome";
@@ -520,24 +520,24 @@ export function TestingSecurity() {
   const progressId = running ? "tests" : view.decision ? "done" : "report";
 
   const header = (
-    <header className="flex flex-wrap items-end justify-between gap-4">
-      <div className="min-w-0">
-        <p className="tp-label">
-          Build {view.build} · {testingRun.sprint} · branch {testingRun.branch}
-        </p>
-        <h3 className={cn("mt-1 text-xl font-semibold", isDark ? "text-white" : "text-slate-900")}>
-          Testing &amp; Security
-        </h3>
-        <p className={cn("mt-1 max-w-2xl text-sm", isDark ? "text-slate-400" : "text-slate-500")}>
-          Tests are written from the requirements, run, and triaged. Every repair and every fix has to prove itself
-          before you approve the phase.
-        </p>
+    <header>
+      <p className="tp-label">
+        Build {view.build} · {testingRun.sprint} · branch {testingRun.branch}
+      </p>
+      <div className="mt-1">
+        <PhaseSectionHeader
+          title="Testing & Security"
+          subtitle="Tests are written from the requirements, run, and triaged. Every repair and every fix has to prove itself before you approve the phase."
+          progress={view.progress}
+          isDark={isDark}
+          action={
+            <Button variant="outline" onClick={startRerun} disabled={running}>
+              <Play className="h-3.5 w-3.5" />
+              {running ? "Running…" : "Run tests again"}
+            </Button>
+          }
+        />
       </div>
-
-      <Button variant="outline" onClick={startRerun} disabled={running}>
-        <Play className="h-3.5 w-3.5" />
-        {running ? "Running…" : "Run tests again"}
-      </Button>
     </header>
   );
 

@@ -3,7 +3,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import {
   Home,
   FolderKanban,
-  Settings,
   Search,
   Bell,
   Command,
@@ -18,6 +17,7 @@ import {
   ChevronsRight,
 } from "lucide-react";
 import { useStore } from "@/store/useStore";
+import { AccountMenu } from "@/components/layout/AccountMenu";
 import { cn } from "@/utils/cn";
 
 const mainNav = [
@@ -144,33 +144,15 @@ function Sidebar({ collapsed }: { collapsed: boolean }) {
         )}
       </nav>
 
-      <div className={cn("border-t p-3", isDark ? "border-white/[0.06]" : "border-slate-100", collapsed && "px-2")}>
-        <button
-          onClick={() => navigate("/settings")}
-          title="Settings"
-          className={cn(
-            "flex w-full items-center rounded-xl py-2 text-[13px] font-medium transition-all",
-            collapsed ? "justify-center px-0" : "gap-2.5 px-3",
-            isActive("/settings")
-              ? isDark
-                ? "bg-white/[0.08] text-white shadow-sm"
-                : "bg-blue-50 text-blue-900 shadow-sm"
-              : isDark
-              ? "text-slate-400 hover:bg-white/[0.04] hover:text-slate-200"
-              : "text-slate-500 hover:bg-blue-50/50 hover:text-slate-800"
-          )}
-        >
-          <Settings className={cn("h-4 w-4 shrink-0", isActive("/settings") && (isDark ? "text-blue-400" : "text-blue-600"))} />
-          {!collapsed && <span className="truncate">Settings</span>}
-        </button>
+      <div className={cn("border-t p-2", isDark ? "border-white/[0.06]" : "border-slate-100")}>
+        <AccountMenu collapsed={collapsed} />
       </div>
     </aside>
   );
 }
 
 function TopBar() {
-  const navigate = useNavigate();
-  const { setCommandPaletteOpen, addToast, theme, toggleTheme, settings, projects, logout } = useStore();
+  const { setCommandPaletteOpen, addToast, theme, toggleTheme, settings, projects } = useStore();
   const [showNotifications, setShowNotifications] = useState(false);
   const isDark = theme === "dark";
   const location = useLocation();
@@ -309,31 +291,6 @@ function TopBar() {
         )}
       </div>
 
-      <button
-        type="button"
-        title="Log out"
-        onClick={() => {
-          logout();
-          addToast({ type: "info", title: "Signed out", message: "You have been logged out successfully" });
-          navigate("/login");
-        }}
-        className={cn(
-          "flex h-9 items-center gap-2 rounded-full border pl-1 pr-3 transition-colors",
-          isDark ? "border-white/10 bg-white/[0.04] hover:bg-white/[0.06]" : "border-slate-200 bg-slate-50 hover:bg-white"
-        )}
-      >
-        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-blue-400 text-[10px] font-bold text-white">
-          {settings.profile.name
-            .split(" ")
-            .map((n) => n[0])
-            .join("")
-            .slice(0, 2)
-            .toUpperCase()}
-        </div>
-        <span className={cn("hidden text-xs font-medium sm:inline", isDark ? "text-slate-300" : "text-slate-700")}>
-          {settings.profile.name.split(" ")[0]}
-        </span>
-      </button>
     </header>
   );
 }

@@ -141,7 +141,7 @@ function ScreenPreview({ screen, showLinks, onNavigate, isDark }: {
       {(isKycUpload || isKycReview) && (
         <div className={cn("rounded-lg border p-4 text-center", isDark ? "border-white/10 bg-white/[0.03]" : "border-slate-200 bg-slate-50")}>
           <p className={cn("text-sm", isDark ? "text-slate-300" : "text-slate-600")}>
-            {isKycUpload ? "Upload a government-issued ID to verify your account." : "Your documents are being reviewed (1–2 business days)."}
+            {isKycUpload ? "Upload a government-issued ID to verify your account." : "Your documents are being reviewed (1-2 business days)."}
           </p>
         </div>
       )}

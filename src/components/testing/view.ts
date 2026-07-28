@@ -40,7 +40,7 @@ export type StepId = "tests" | "healing" | "quality" | "security" | "reverify" |
 
 export type StepState = "done" | "attention" | "waiting" | "running" | "pending";
 
-/** Which build the decision was made against — a later build supersedes it. */
+/** Which build the decision was made against - a later build supersedes it. */
 export type RepairDecision = { decision: "approved" | "rejected"; at: string; by: string; build: number };
 
 export type FindingAction =
@@ -138,7 +138,7 @@ function decorateFailures(input: ViewInput, confirmedThrough: number): ViewFailu
         triage: "healed" as const,
         state: "healed" as const,
         note: awaitingRerun
-          ? `You approved the repair at ${decision.at.slice(11)}. The guard already ran it against this build's code, so it counts as passing — the next full run records it.`
+          ? `You approved the repair at ${decision.at.slice(11)}. The guard already ran it against this build's code, so it counts as passing - the next full run records it.`
           : `You approved the repair at ${decision.at.slice(11)} and run ${decision.build + 1} confirmed it.`,
       };
     }
@@ -314,8 +314,8 @@ function decorateFixes(input: ViewInput, findings: Finding[]): AppliedFix[] {
         verdict: both
           ? "Fixed and re-verified."
           : broken
-          ? "Not verified. A proof could not finish, so nothing was proven — retry it."
-          : "Not verified yet — both proofs have to pass.",
+          ? "Not verified. A proof could not finish, so nothing was proven - retry it."
+          : "Not verified yet - both proofs have to pass.",
       };
     });
 

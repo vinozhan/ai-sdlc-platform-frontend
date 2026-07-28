@@ -45,14 +45,14 @@ function TrendChart({ trend, note }: { trend: Quality["trend"]; note: string }) 
 
         {trend.map((p, i) => (
           <g key={p.build}>
-            <title>{`Build ${p.build} — line ${p.line}%, branch ${p.branch}%`}</title>
+            <title>{`Build ${p.build} - line ${p.line}%, branch ${p.branch}%`}</title>
             <circle cx={x(i)} cy={y(p.branch)} r={2.5} fill="#94a3b8" />
             <circle cx={x(i)} cy={y(p.line)} r={3} fill="#2563eb" />
             <text x={x(i)} y={h - 14} textAnchor="middle" fontSize={10} fill="var(--tp-muted)">
               {p.build}
             </text>
             <rect x={x(i) - 14} y={padT} width={28} height={h - padT - padB} fill="transparent">
-              <title>{`Build ${p.build} — line ${p.line}%, branch ${p.branch}%`}</title>
+              <title>{`Build ${p.build} - line ${p.line}%, branch ${p.branch}%`}</title>
             </rect>
           </g>
         ))}
@@ -116,7 +116,7 @@ export function StepQuality({ view }: { view: TestingView }) {
               </div>
             </div>
             <Note className="text-xs">
-              Line coverage counts lines the tests ran. Branch coverage counts the decisions inside them — the second
+              Line coverage counts lines the tests ran. Branch coverage counts the decisions inside them - the second
               number is the harder one, and the one that tells you whether the edge cases are tested.
             </Note>
           </div>

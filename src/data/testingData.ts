@@ -1,4 +1,4 @@
-// Testing & Security phase — one coherent run.
+// Testing & Security phase - one coherent run.
 //
 // Every number in this file is derived from the same run: Sprint 24, Build 1852.
 // 223 tests ran, 217 passed, 6 failed, 3 were skipped. The six failures are the
@@ -24,7 +24,7 @@ export const testingRun = {
 };
 
 /* ========================================================================== *
- * 1 — Tests
+ * 1 - Tests
  * ========================================================================== */
 
 export type SuiteModule = {
@@ -153,7 +153,7 @@ export const runTranscript: ConsoleLine[] = [
 ];
 
 /* ========================================================================== *
- * 2 — Healing: the failure inbox is the only approval queue
+ * 2 - Healing: the failure inbox is the only approval queue
  * ========================================================================== */
 
 export type Triage = "brittle" | "regression" | "healed";
@@ -276,7 +276,7 @@ void shouldSplitSettlementFees() {
         },
       },
       verdictLine: "Repair holds. It still catches the planted bug.",
-      why: "getFeeBreakdown() became feeBreakdown() and returns an Optional now, so the old call no longer compiles. The repair unwraps it with a message that says what went wrong, and also checks the merchant's net amount — a number the old test never looked at.",
+      why: "getFeeBreakdown() became feeBreakdown() and returns an Optional now, so the old call no longer compiles. The repair unwraps it with a message that says what went wrong, and also checks the merchant's net amount - a number the old test never looked at.",
     },
   },
   {
@@ -294,7 +294,7 @@ void shouldSplitSettlementFees() {
     file: "backend/src/test/java/com/payflow/payments/PaymentServiceTest.java",
     line: 51,
     owner: "M. Rodriguez",
-    note: "A $1,400 payment from an unverified customer went through. The KYC check moved behind a feature flag in Build 1851 and the flag is off in this environment, so the rule is not being applied. The test is correct and was left untouched — this is a real regression, routed to M. Rodriguez.",
+    note: "A $1,400 payment from an unverified customer went through. The KYC check moved behind a feature flag in Build 1851 and the flag is off in this environment, so the rule is not being applied. The test is correct and was left untouched - this is a real regression, routed to M. Rodriguez.",
   },
   {
     id: "f4",
@@ -334,7 +334,7 @@ void shouldVerifyDocument() {
         },
       },
       verdictLine: "Repair rejected. It no longer catches a planted bug, so it would hide the failure instead of reporting it.",
-      why: "verify() takes a verification context now, so the old call no longer matches and the test fails to compile. The repair fixes the call — but it only checks that the verifier was called, not what it answered. A service that accepted an unverified document would still pass. Escalated to A. Chen with the proposal attached.",
+      why: "verify() takes a verification context now, so the old call no longer matches and the test fails to compile. The repair fixes the call - but it only checks that the verifier was called, not what it answered. A service that accepted an unverified document would still pass. Escalated to A. Chen with the proposal attached.",
     },
   },
   {
@@ -352,7 +352,7 @@ void shouldVerifyDocument() {
     file: "backend/src/test/java/com/payflow/notifications/NotificationServiceTest.java",
     line: 31,
     owner: "J. Kim",
-    note: "The retry policy stopped after the first attempt. The mail client's own retry was removed in Build 1852 and nothing replaced it, so a failed receipt email is now dropped silently. The test is correct and was left untouched — this is a real regression, routed to J. Kim.",
+    note: "The retry policy stopped after the first attempt. The mail client's own retry was removed in Build 1852 and nothing replaced it, so a failed receipt email is now dropped silently. The test is correct and was left untouched - this is a real regression, routed to J. Kim.",
   },
   {
     id: "f6",
@@ -388,7 +388,7 @@ expect(onSubmit).not.toHaveBeenCalled();`,
         },
       },
       verdictLine: "Repair holds. It still catches the planted bug.",
-      why: 'The error copy changed from "Card expired" to "This card has expired". The old test matched the exact sentence, so a wording change read as a broken feature. The repair matches the alert the form renders and checks that the payment was not submitted — the behaviour this test exists to protect.',
+      why: 'The error copy changed from "Card expired" to "This card has expired". The old test matched the exact sentence, so a wording change read as a broken feature. The repair matches the alert the form renders and checks that the payment was not submitted - the behaviour this test exists to protect.',
     },
   },
   {
@@ -426,7 +426,7 @@ expect(onSubmit).not.toHaveBeenCalled();`,
 ];
 
 /* ========================================================================== *
- * Generated test files — the real repository tree, filtered to tests
+ * Generated test files - the real repository tree, filtered to tests
  * ========================================================================== */
 
 export const testFiles: FileEntry[] = [
@@ -786,7 +786,7 @@ class NotificationServiceTest {
 };
 
 /* ========================================================================== *
- * 3 — Quality
+ * 3 - Quality
  * ========================================================================== */
 
 export type Quality = {
@@ -843,7 +843,7 @@ export const quality: Quality = {
 };
 
 /* ========================================================================== *
- * 4 — Security
+ * 4 - Security
  * ========================================================================== */
 
 export type Severity = "critical" | "high" | "medium" | "low";
@@ -988,7 +988,7 @@ export const detectorNames: Record<Detector, string> = {
   reviewer: "AI reviewer",
 };
 
-/** Model-level numbers from the offline evaluation set — not per-finding confidence. */
+/** Model-level numbers from the offline evaluation set - not per-finding confidence. */
 export const detectorComparison = {
   caption:
     "Measured on 1,240 labelled Java and TypeScript files on 14 Jan 2025. These are model-level numbers for the detectors, not confidence in any single finding.",
@@ -1000,7 +1000,7 @@ export const detectorComparison = {
 };
 
 /* ========================================================================== *
- * 5 — Fix and re-verify: two proofs per applied fix
+ * 5 - Fix and re-verify: two proofs per applied fix
  * ========================================================================== */
 
 export type ProofState = "pass" | "fail" | "running" | "pending" | "errored";
@@ -1060,12 +1060,12 @@ export const appliedFixes: AppliedFix[] = [
       state: "running",
       detail: "148 of 223 tests run",
     },
-    verdict: "Not verified yet — waiting on the suite re-run.",
+    verdict: "Not verified yet - waiting on the suite re-run.",
   },
 ];
 
 /* ========================================================================== *
- * 6 — Report and approval
+ * 6 - Report and approval
  * ========================================================================== */
 
 export type AuditActorKind = "human" | "agent" | "guard";
@@ -1106,7 +1106,7 @@ export const auditTrail: AuditEntry[] = [
     actorKind: "agent",
     action: "Re-ran suite",
     target: "Build 1852",
-    detail: "217 passed, 6 failed — the same 6 as before the CSRF fix.",
+    detail: "217 passed, 6 failed - the same 6 as before the CSRF fix.",
   },
   {
     id: "a10",
@@ -1218,7 +1218,7 @@ export const decisionChain = [
 ];
 
 /* ========================================================================== *
- * Running state — the transcript streams in this order
+ * Running state - the transcript streams in this order
  * ========================================================================== */
 
 export const streamingTranscript: ConsoleLine[] = [
@@ -1248,7 +1248,7 @@ export const streamingTranscript: ConsoleLine[] = [
 ];
 
 /* ========================================================================== *
- * The all-green run — a later build where every failure and finding is closed
+ * The all-green run - a later build where every failure and finding is closed
  * ========================================================================== */
 
 export const greenRun = {

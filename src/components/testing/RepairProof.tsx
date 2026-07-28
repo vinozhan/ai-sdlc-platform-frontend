@@ -136,7 +136,7 @@ export function CodeDiff({
 /**
  * The one thing this page should be remembered by: a proposed test repair
  * shown next to the run that proves it still catches a planted bug.
- * One dark artifact — the diff and the receipt underneath it are both the
+ * One dark artifact - the diff and the receipt underneath it are both the
  * runner talking, so they share a surface.
  */
 export function RepairProof({ repair, className }: { repair: Repair; className?: string }) {

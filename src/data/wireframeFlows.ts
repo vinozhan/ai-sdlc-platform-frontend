@@ -32,8 +32,8 @@ export const wireframeFlows: WireframeFlow[] = [
         name: "Products",
         breadcrumb: ["PayFlow", "Products"],
         links: [
-          { id: "add-premium", label: "Add Premium Plan — $49/mo", targetId: "cart", variant: "row" },
-          { id: "add-basic", label: "Add Basic Plan — $19/mo", targetId: "cart", variant: "row" },
+          { id: "add-premium", label: "Add Premium Plan - $49/mo", targetId: "cart", variant: "row" },
+          { id: "add-basic", label: "Add Basic Plan - $19/mo", targetId: "cart", variant: "row" },
           { id: "view-cart", label: "View cart (2)", targetId: "cart", variant: "primary" },
         ],
       },
@@ -42,8 +42,8 @@ export const wireframeFlows: WireframeFlow[] = [
         name: "Cart",
         breadcrumb: ["PayFlow", "Products", "Cart"],
         links: [
-          { id: "item-1", label: "Premium Plan × 1 — $49.00", targetId: "cart", variant: "row" },
-          { id: "item-2", label: "Basic Plan × 1 — $19.00", targetId: "cart", variant: "row" },
+          { id: "item-1", label: "Premium Plan × 1 - $49.00", targetId: "cart", variant: "row" },
+          { id: "item-2", label: "Basic Plan × 1 - $19.00", targetId: "cart", variant: "row" },
           { id: "checkout", label: "Proceed to checkout", targetId: "checkout", variant: "primary" },
           { id: "continue", label: "Continue shopping", targetId: "products", variant: "secondary" },
         ],

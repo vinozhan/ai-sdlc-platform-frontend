@@ -288,7 +288,7 @@ export function StepReport({
               {last.sprint} · Build {last.build}
             </p>
             <Note className="mt-1 text-[12.5px]">
-              Verified {last.at} — {last.note}. Everything from Build {view.build} stays in the branch history.
+              Verified {last.at} - {last.note}. Everything from Build {view.build} stays in the branch history.
             </Note>
           </div>
           {!confirming ? (

@@ -237,7 +237,7 @@ function BreakingChangePrediction() {
 
           <div className="rounded-lg border border-red-500/30 bg-red-500/5 p-3">
             <p className="mb-2 text-xs font-semibold text-red-300">
-              📍 Client Contextual Analysis — {selectedUpdate.affectedFunctions} affected functions
+              📍 Client Contextual Analysis - {selectedUpdate.affectedFunctions} affected functions
             </p>
             {selectedUpdate.impactedFiles.length > 0 ? (
               <div className="space-y-1">
@@ -298,7 +298,7 @@ function DeploymentPipeline() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <GitCompare className="h-4 w-4 text-orange-400" />
-            CI/CD Pipeline — GitHub Actions
+            CI/CD Pipeline - GitHub Actions
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -385,7 +385,7 @@ ENTRYPOINT ["java", "-jar", "app.jar"]`}
                     </svg>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-white">Frontend — Vercel</p>
+                    <p className="text-sm font-medium text-white">Frontend - Vercel</p>
                     <p className="font-mono text-[10px] text-slate-500">{deploymentTargets.frontend.url}</p>
                   </div>
                 </div>
@@ -414,7 +414,7 @@ ENTRYPOINT ["java", "-jar", "app.jar"]`}
                 <div className="flex items-center gap-2">
                   <Server className="h-5 w-5 text-blue-400" />
                   <div>
-                    <p className="text-sm font-medium text-white">Backend — Azure AKS</p>
+                    <p className="text-sm font-medium text-white">Backend - Azure AKS</p>
                     <p className="font-mono text-[10px] text-slate-500">{deploymentTargets.backend.url}</p>
                   </div>
                 </div>
@@ -629,7 +629,7 @@ export function DeploymentDependency() {
         title="Deployment & Dependencies"
         subtitle={
           project?.status === "complete"
-            ? "All deployment stages complete — browse any step below"
+            ? "All deployment stages complete - browse any step below"
             : "Repository management, dependency updates, CI/CD pipeline, and production monitoring"
         }
         progress={project ? getPhaseProgress(project, "deployment") : 0}

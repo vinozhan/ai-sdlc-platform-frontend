@@ -4,7 +4,6 @@ import {
   Plus,
   FolderKanban,
   ArrowRight,
-  Settings,
   Clock,
   CheckCircle2,
   Loader2,
@@ -192,10 +191,6 @@ export function Home() {
           <Button variant="outline" size="sm" onClick={() => navigate("/projects")}>
             <FolderKanban className="h-3.5 w-3.5" />
             All projects ({projects.length})
-          </Button>
-          <Button variant="outline" size="sm" onClick={() => navigate("/settings")}>
-            <Settings className="h-3.5 w-3.5" />
-            Settings
           </Button>
         </div>
     </div>

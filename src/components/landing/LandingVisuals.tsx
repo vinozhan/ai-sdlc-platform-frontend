@@ -38,7 +38,7 @@ export function FeaturesBanner() {
             Full-stack architecture generated from your requirements
           </h3>
           <p className="mt-3 text-sm leading-relaxed text-slate-400">
-            Our AI maps every requirement to services, data models, and deployment targets — with full traceability from SRS to production artifacts.
+            Our AI maps every requirement to services, data models, and deployment targets - with full traceability from SRS to production artifacts.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             {[

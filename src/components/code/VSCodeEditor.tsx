@@ -36,7 +36,7 @@ export function VSCodeEditor({
   onSelectTab: (path: string) => void;
   onCloseTab: (path: string) => void;
   onDirty?: (path: string) => void;
-  /** Open the file at a line — e.g. the assertion that failed. */
+  /** Open the file at a line - e.g. the assertion that failed. */
   highlight?: { path: string; line: number; label?: string };
   showLanguage?: boolean;
   copyable?: boolean;

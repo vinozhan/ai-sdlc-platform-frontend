@@ -235,7 +235,7 @@ function TestOverview({
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle className="text-sm">Test Case Results — {scenario.name}</CardTitle>
+            <CardTitle className="text-sm">Test Case Results - {scenario.name}</CardTitle>
             <Button size="sm" variant="outline">
               <Play className="h-3 w-3" /> Run scenario
             </Button>
@@ -342,7 +342,7 @@ function TestSourceCode({ scenario, isDark }: { scenario: TestScenario; isDark: 
     <div className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className={cn("text-sm", isDark ? "text-slate-400" : "text-slate-500")}>
-          Source for <strong className={isDark ? "text-slate-200" : "text-slate-700"}>{scenario.name}</strong> — frontend & backend test scripts
+          Source for <strong className={isDark ? "text-slate-200" : "text-slate-700"}>{scenario.name}</strong> - frontend & backend test scripts
         </p>
         <div className="flex gap-2">
           <Button size="sm" variant="outline" onClick={handleCopy}>
@@ -378,7 +378,7 @@ function TestSourceCode({ scenario, isDark }: { scenario: TestScenario; isDark: 
         <span className="flex items-center gap-1"><FileCode2 className="h-3.5 w-3.5" /> Integration test scripts</span>
         <span className="flex items-center gap-1"><FileCode2 className="h-3.5 w-3.5" /> API contract tests</span>
         <span className={isDark ? "text-slate-600" : "text-slate-300"}>|</span>
-        <span>Full source — no truncation</span>
+        <span>Full source - no truncation</span>
       </div>
     </div>
   );

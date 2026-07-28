@@ -131,8 +131,8 @@ export function StepTests({
             </p>
           )}
           <p className="tp-den border-t border-[color:var(--tp-line)] px-4 py-2.5 leading-relaxed">
-            Pass rate is passed ÷ run. Skipped tests are not counted as run. Coverage is a different measure — how much
-            of the code the tests execute — and it lives in{" "}
+            Pass rate is passed ÷ run. Skipped tests are not counted as run. Coverage is a different measure - how much
+            of the code the tests execute - and it lives in{" "}
             <button
               type="button"
               onClick={() => onGoTo("quality")}
@@ -210,7 +210,7 @@ export function StepTests({
                         onClick={() => onOpenFailure(healed.id)}
                         className="inline-flex items-center gap-1 text-emerald-600 underline underline-offset-2 dark:text-emerald-400"
                       >
-                        Healed — open the repair
+                        Healed - open the repair
                       </button>
                     )}
                   </>

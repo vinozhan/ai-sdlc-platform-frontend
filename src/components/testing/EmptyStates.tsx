@@ -42,7 +42,7 @@ export function PhaseNotStarted({
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-slate-100 bg-slate-50 px-5 py-3.5 dark:border-white/[0.05] dark:bg-white/[0.02]">
         <div className="min-w-0 flex-1">
           <p className="tp-label">Waiting on</p>
-          <p className="mt-1 text-[13px]">Code Generation — no build has been produced yet.</p>
+          <p className="mt-1 text-[13px]">Code Generation - no build has been produced yet.</p>
         </div>
         <Button variant="outline" onClick={onOpenCode}>
           Open Code Generation

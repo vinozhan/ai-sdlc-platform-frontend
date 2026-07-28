@@ -18,7 +18,7 @@ type Cell = {
 
 export function SummaryStrip({ view, onGoTo }: { view: TestingView; onGoTo: (step: StepId) => void }) {
   const waiting = view.streaming;
-  const dash = <span className="text-[color:var(--tp-muted)]">—</span>;
+  const dash = <span className="text-[color:var(--tp-muted)]">-</span>;
 
   const cells: Cell[] = [
     {

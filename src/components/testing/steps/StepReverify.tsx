@@ -40,7 +40,7 @@ export function StepReverify({
         <div className="flex items-start gap-2.5 rounded-lg border border-amber-500/30 bg-amber-500/5 px-4 py-3">
           <AlertTriangle className="mt-px h-4 w-4 shrink-0 text-amber-500 dark:text-amber-400" />
           <Note className="max-w-3xl text-[12.5px]">
-            A proof could not answer. That is not a pass and not a fail — it means nothing was proven, so the finding
+            A proof could not answer. That is not a pass and not a fail - it means nothing was proven, so the finding
             stays unresolved until you retry it.
           </Note>
         </div>
@@ -103,7 +103,7 @@ export function StepReverify({
                       Start again
                     </Button>
                     <Note className="text-[12.5px]">
-                      If a proof has not answered in a few minutes, start it again — the runner may have dropped the job.
+                      If a proof has not answered in a few minutes, start it again - the runner may have dropped the job.
                     </Note>
                   </div>
                 ) : undefined

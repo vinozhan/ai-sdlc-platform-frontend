@@ -209,7 +209,7 @@ function ContractDesigner() {
       <Card className="col-span-2">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>Contract Editor — {selectedContract.path}</CardTitle>
+            <CardTitle>Contract Editor - {selectedContract.path}</CardTitle>
             <div className="flex gap-1 rounded-lg bg-slate-950 p-1">
               <button
                 onClick={() => setValidationMode("rule")}
@@ -486,7 +486,7 @@ function BuildValidation() {
             <p className="text-red-400">[FAIL] IntegrationTest.testPaymentRefund - Expected 200, got 201</p>
             <p className="text-slate-500">
               <span className="inline-flex items-center gap-1">
-                <Sparkles className="h-3 w-3 text-blue-400" /> AI Fix: Update assertion to expect 201 (CREATED) — refund creates new record
+                <Sparkles className="h-3 w-3 text-blue-400" /> AI Fix: Update assertion to expect 201 (CREATED) - refund creates new record
               </span>
             </p>
           </div>
@@ -564,7 +564,7 @@ export function CodeGeneration() {
         title="Code Generation"
         subtitle={
           project && ["deploy", "complete", "testing"].includes(project.status)
-            ? "All code generation stages complete — browse any step below"
+            ? "All code generation stages complete - browse any step below"
             : "AI-generated frontend, backend, and build artifacts from your requirements"
         }
         progress={project ? getPhaseProgress(project, "code") : 0}

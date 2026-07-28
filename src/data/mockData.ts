@@ -266,7 +266,7 @@ export const architecturePatterns = [
   },
 ];
 
-// ===== UML DIAGRAMS (Mermaid) — see src/data/umlDiagrams.ts =====
+// ===== UML DIAGRAMS (Mermaid) - see src/data/umlDiagrams.ts =====
 export { umlDiagramList, umlDiagrams } from "@/data/umlDiagrams";
 
 // ===== CODE GENERATION DATA =====
@@ -583,7 +583,7 @@ export const buildStatus = {
 };
 
 // ===== TESTING & SECURITY DATA =====
-// Lives in src/data/testingData.ts — one coherent run, so the counts in the
+// Lives in src/data/testingData.ts - one coherent run, so the counts in the
 // suite table, the failure inbox and the report cannot disagree.
 
 // ===== DEPLOYMENT DATA =====
@@ -737,10 +737,10 @@ export const productionMetrics = [
 export const alerts = [
   { id: "al1", type: "security", severity: "critical", title: "SQL Injection in UserRepository", component: "c3", message: "CWE-89 detected in UserRepository.java:88", time: "2 min ago" },
   { id: "al2", type: "test", severity: "warning", title: "Brittle test detected", component: "c3", message: "PaymentServiceTest.shouldProcessRefund marked for AI repair", time: "5 min ago" },
-  { id: "al3", type: "deployment", severity: "high", title: "Breaking change predicted", component: "c4", message: "spring-security-crypto 7.0.0 — 88% probability of breaking changes", time: "12 min ago" },
+  { id: "al3", type: "deployment", severity: "high", title: "Breaking change predicted", component: "c4", message: "spring-security-crypto 7.0.0 - 88% probability of breaking changes", time: "12 min ago" },
   { id: "al4", type: "approval", severity: "info", title: "Approval request", component: "c3", message: "3 test repairs awaiting your approval", time: "15 min ago" },
-  { id: "al5", type: "test", severity: "error", title: "Integration test failed", component: "c3", message: "UserControllerTest.shouldReturn404 — real regression detected", time: "20 min ago" },
-  { id: "al6", type: "deployment", severity: "warning", title: "Deployment in progress", component: "c4", message: "Deploy stage running — 65% complete", time: "1 min ago" },
+  { id: "al5", type: "test", severity: "error", title: "Integration test failed", component: "c3", message: "UserControllerTest.shouldReturn404 - real regression detected", time: "20 min ago" },
+  { id: "al6", type: "deployment", severity: "warning", title: "Deployment in progress", component: "c4", message: "Deploy stage running - 65% complete", time: "1 min ago" },
 ];
 
 // ===== ACTIVITY LOG =====
@@ -772,7 +772,7 @@ export const activityLogEntries: ActivityLogEntry[] = [
     timestamp: "2026-01-20T15:05:30",
     displayDate: "Jan 20, 2026",
     title: "Test repair applied",
-    description: "PaymentServiceTest.shouldProcessRefund — approved repair merged to main",
+    description: "PaymentServiceTest.shouldProcessRefund - approved repair merged to main",
     actor: "System",
     category: "approval",
     metric: "1 test healed",
@@ -784,7 +784,7 @@ export const activityLogEntries: ActivityLogEntry[] = [
     timestamp: "2026-01-20T15:01:22",
     displayDate: "Jan 20, 2026",
     title: "Security scan completed",
-    description: "PaymentController scanned — 1 medium CWE-79 XSS in input validation",
+    description: "PaymentController scanned - 1 medium CWE-79 XSS in input validation",
     actor: "AI-Security",
     category: "security",
     metric: "CVSS 7.4 · High",
@@ -816,7 +816,7 @@ export const activityLogEntries: ActivityLogEntry[] = [
     timestamp: "2026-01-20T14:32:11",
     displayDate: "Jan 20, 2026",
     title: "AI proposed test repair",
-    description: "Stale assertion detected — proposed fix for refund status code",
+    description: "Stale assertion detected - proposed fix for refund status code",
     actor: "AI-Healer",
     category: "test",
     metric: "1 brittle test",

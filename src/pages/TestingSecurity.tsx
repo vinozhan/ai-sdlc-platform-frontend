@@ -207,7 +207,7 @@ export function TestingSecurity() {
     const next = build + 1;
     const at = stamp();
 
-    // A proof that has not finished cannot survive a new build — it was proving
+    // A proof that has not finished cannot survive a new build - it was proving
     // something about the old one.
     setFindingActions((prev) => {
       const updated: Record<string, FindingAction> = {};
@@ -286,7 +286,7 @@ export function TestingSecurity() {
         actorKind: "agent",
         action: "Applied repair",
         target: fileName(failure.file),
-        detail: `Applied the approved repair. Counted as passing from the guard run — Build ${build + 1} will record it.`,
+        detail: `Applied the approved repair. Counted as passing from the guard run - Build ${build + 1} will record it.`,
       },
       {
         at,
@@ -300,7 +300,7 @@ export function TestingSecurity() {
     addToast({
       type: "success",
       title: "Repair approved",
-      message: "Counted as passing — the next run confirms it",
+      message: "Counted as passing - the next run confirms it",
     });
   };
 
@@ -341,7 +341,7 @@ export function TestingSecurity() {
       window.setTimeout(() => {
         setFindingActions((prev) => {
           const current = prev[finding.id];
-          // A proof stopped by a newer build stays stopped — this answer is stale.
+          // A proof stopped by a newer build stays stopped - this answer is stale.
           if (!current || current.kind !== "applied" || current.scan !== "running") return prev;
           return { ...prev, [finding.id]: { ...current, scan: "pass", suite: "running" } };
         });
@@ -404,7 +404,7 @@ export function TestingSecurity() {
         detail: finding.fix?.summary ?? "Applied the proposed fix.",
       },
     ]);
-    addToast({ type: "info", title: "Fix applied", message: "Two proofs are running — scan and suite" });
+    addToast({ type: "info", title: "Fix applied", message: "Two proofs are running - scan and suite" });
     setStep("reverify");
     runProofs(finding, false);
   };
@@ -520,25 +520,18 @@ export function TestingSecurity() {
   const progressId = running ? "tests" : view.decision ? "done" : "report";
 
   const header = (
-    <header>
-      <p className="tp-label">
-        Build {view.build} · {testingRun.sprint} · branch {testingRun.branch}
-      </p>
-      <div className="mt-1">
-        <PhaseSectionHeader
-          title="Testing & Security"
-          subtitle="Tests are written from the requirements, run, and triaged. Every repair and every fix has to prove itself before you approve the phase."
-          progress={view.progress}
-          isDark={isDark}
-          action={
-            <Button variant="outline" onClick={startRerun} disabled={running}>
-              <Play className="h-3.5 w-3.5" />
-              {running ? "Running…" : "Run tests again"}
-            </Button>
-          }
-        />
-      </div>
-    </header>
+    <PhaseSectionHeader
+      title="Testing & Security"
+      subtitle="Tests are written from the requirements, run, and triaged. Every repair and every fix has to prove itself before you approve the phase."
+      progress={view.progress}
+      isDark={isDark}
+      action={
+        <Button variant="outline" onClick={startRerun} disabled={running}>
+          <Play className="h-3.5 w-3.5" />
+          {running ? "Running…" : "Run tests again"}
+        </Button>
+      }
+    />
   );
 
   if (effective === "empty" || effective === "error") {

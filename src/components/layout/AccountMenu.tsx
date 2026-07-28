@@ -56,7 +56,7 @@ function MenuItem({
 
 /**
  * The account row at the foot of the sidebar: who you are signed in as, and
- * everything that belongs to the account behind one click — settings, theme,
+ * everything that belongs to the account behind one click - settings, theme,
  * sign out. It replaces the standalone Settings link so there is one place for
  * "things about me" rather than two.
  */

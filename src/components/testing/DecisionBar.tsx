@@ -7,7 +7,7 @@ import type { TestingView } from "@/components/testing/view";
 
 /**
  * The phase decision. It appears when the phase is waiting on a human, spans
- * the bottom, and never blocks navigation — every step stays reachable behind
+ * the bottom, and never blocks navigation - every step stays reachable behind
  * it. Built from the app's card surface and buttons; the only motion is the
  * amber dot that marks "waiting on you".
  */
@@ -86,7 +86,7 @@ export function DecisionBar({
         <div className="min-w-0 flex-1">
           <p className={cn("text-[13px] font-semibold", isDark ? "text-white" : "text-slate-900")}>
             {view.superseded
-              ? `Build ${view.build} arrived after your approval — this phase is waiting on you again`
+              ? `Build ${view.build} arrived after your approval - this phase is waiting on you again`
               : "This phase is waiting on you"}
           </p>
           <p className="tp-den mt-0.5 truncate">

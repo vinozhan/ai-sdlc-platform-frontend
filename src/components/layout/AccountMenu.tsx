@@ -3,15 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { ChevronsUpDown, LogOut, Moon, Settings, Sun } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { useStore } from "@/store/useStore";
-
-function initialsOf(name: string) {
-  return name
-    .split(" ")
-    .map((part) => part[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-}
+import { UserAvatar } from "@/components/brand/UserAvatar";
 
 function MenuItem({
   icon,
@@ -113,9 +105,7 @@ export function AccountMenu({ collapsed }: { collapsed: boolean }) {
             : "hover:bg-blue-50/50"
         )}
       >
-        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-blue-400 text-[11px] font-bold text-white">
-          {initialsOf(name)}
-        </span>
+        <UserAvatar size="sm" />
         {!collapsed && (
           <>
             <span className="min-w-0 flex-1 text-left">

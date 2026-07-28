@@ -1,8 +1,9 @@
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Sparkles, LogIn, Mail, Lock, ArrowLeft } from "lucide-react";
+import { LogIn, Mail, Lock, ArrowLeft } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { useStore } from "@/store/useStore";
+import { NexusWordmark } from "@/components/brand/NexusWordmark";
 
 export function Login() {
   const navigate = useNavigate();
@@ -24,23 +25,18 @@ export function Login() {
       </div>
 
       <div className="relative w-full max-w-md">
-        <Link
-          to="/"
-          className="mb-8 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition-colors hover:text-blue-600"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to home
-        </Link>
-
         <div className="rounded-2xl border border-white/60 bg-white/80 p-8 shadow-xl shadow-blue-900/[0.06] backdrop-blur-xl md:p-10">
+          <Link
+            to="/"
+            className="mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition-colors hover:text-blue-600"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back
+          </Link>
+
           <div className="mb-8 text-center">
-            <Link to="/" className="inline-flex items-center gap-2.5">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-blue-500 shadow-lg shadow-blue-600/25">
-                <Sparkles className="h-5 w-5 text-white" />
-              </div>
-              <span className="text-xl font-semibold tracking-tight text-slate-900">
-                SDLC<span className="text-blue-600">AI</span>
-              </span>
+            <Link to="/" className="inline-flex justify-center">
+              <NexusWordmark className="h-12 max-w-[220px]" />
             </Link>
             <h1 className="mt-6 text-2xl font-semibold tracking-tight text-slate-900">Welcome back</h1>
             <p className="mt-2 text-sm text-slate-500">Sign in to your AI workspace</p>

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import defaultAvatar from "@/assets/avatar-default.jpg";
 
 export type Theme = "light" | "dark";
 export type ProjectStatus = "draft" | "analyzing" | "design" | "code" | "testing" | "deploy" | "complete";
@@ -42,6 +43,7 @@ export interface SettingsState {
     name: string;
     email: string;
     workspace: string;
+    avatarUrl: string | null;
   };
 }
 
@@ -58,7 +60,12 @@ const defaultSettings: SettingsState = {
   git: { provider: "github", token: "", defaultOrg: "acme-labs", connected: true },
   vercel: { token: "", team: "acme-labs", connected: true },
   ai: { provider: "openai", model: "gpt-4o", apiKey: "", temperature: 0.2 },
-  profile: { name: "Alex Chen", email: "alex@acme.dev", workspace: "Alex's Workspace" },
+  profile: {
+    name: "Alex Chen",
+    email: "alex@acme.dev",
+    workspace: "Alex's Workspace",
+    avatarUrl: defaultAvatar,
+  },
 };
 
 const daysAgo = (d: number) => new Date(Date.now() - d * 86400000).toISOString();

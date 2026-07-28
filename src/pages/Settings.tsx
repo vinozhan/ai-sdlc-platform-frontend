@@ -9,11 +9,11 @@ import {
   Unlink,
   Save,
   Shield,
-  Sparkles,
 } from "lucide-react";
 import { useStore } from "@/store/useStore";
 import { cn } from "@/utils/cn";
 import { Badge, Button } from "@/components/ui/primitives";
+import { ProfilePhotoEditor } from "@/components/brand/UserAvatar";
 
 type SettingsTab = "profile" | "git" | "vercel" | "ai";
 
@@ -141,30 +141,19 @@ export function SettingsPage() {
       : "border-slate-200 bg-white text-slate-900 placeholder:text-slate-400"
   );
 
-  const initials = settings.profile.name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-
   return (
-    <div className="mx-auto w-full max-w-5xl px-6 py-8 md:px-8 md:py-10">
+    <div className="w-full px-6 py-8 md:px-8 md:py-10 lg:px-10">
       <header className="mb-8">
-        <div className="flex items-center gap-2 text-sm font-medium text-blue-600">
-          <Sparkles className="h-4 w-4" />
-          Workspace
-        </div>
-        <h1 className={cn("mt-1 text-3xl font-semibold tracking-tight", isDark ? "text-white" : "text-slate-900")}>
+        <h1 className={cn("text-3xl font-semibold tracking-tight", isDark ? "text-white" : "text-slate-900")}>
           Settings
         </h1>
       </header>
 
-      <div className="flex flex-col gap-8 lg:flex-row lg:items-start">
+      <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-10">
         {/* Side navigation */}
         <nav
           className={cn(
-            "flex shrink-0 flex-row gap-1 overflow-x-auto rounded-2xl border p-1.5 lg:w-56 lg:flex-col",
+            "flex shrink-0 flex-row gap-1 overflow-x-auto rounded-2xl border p-1.5 lg:w-64 lg:flex-col",
             isDark ? "border-white/[0.08] bg-white/[0.03]" : "border-slate-200/80 bg-white/80 shadow-sm"
           )}
         >
@@ -223,15 +212,7 @@ export function SettingsPage() {
                 </Button>
               }
             >
-              <div className="flex items-center gap-4 rounded-xl border border-dashed p-4">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-blue-400 text-lg font-bold text-white shadow-md">
-                  {initials}
-                </div>
-                <div>
-                  <p className={cn("font-medium", isDark ? "text-white" : "text-slate-900")}>{settings.profile.name}</p>
-                  <p className={cn("text-sm", isDark ? "text-slate-400" : "text-slate-500")}>{settings.profile.email}</p>
-                </div>
-              </div>
+              <ProfilePhotoEditor isDark={isDark} />
 
               <div className="grid gap-5 sm:grid-cols-2">
                 <Field label="Full name">

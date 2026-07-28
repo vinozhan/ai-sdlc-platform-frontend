@@ -9,13 +9,13 @@ import {
   AlertTriangle,
   Info,
   X,
-  Sparkles,
   Plus,
   ChevronsLeft,
   ChevronsRight,
 } from "lucide-react";
 import { useStore } from "@/store/useStore";
 import { AccountMenu } from "@/components/layout/AccountMenu";
+import { NexusWordmark } from "@/components/brand/NexusWordmark";
 import { cn } from "@/utils/cn";
 
 const mainNav = [
@@ -43,18 +43,18 @@ function Sidebar({ collapsed }: { collapsed: boolean }) {
         isDark ? "border-white/[0.06] bg-[#0a1628]" : "border-slate-200/90 bg-white"
       )}
     >
-      <div className={cn("flex h-14 shrink-0 items-center border-b", collapsed ? "justify-center px-2" : "gap-2.5 px-4", isDark ? "border-white/[0.06]" : "border-slate-200/80")}>
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-blue-400 shadow-lg shadow-blue-500/25">
-          <Sparkles className="h-4 w-4 text-white" />
-        </div>
-        {!collapsed && (
-          <div className="min-w-0">
-            <p className={cn("truncate text-sm font-semibold tracking-tight", isDark ? "text-white" : "text-slate-900")}>
-              SDLC AI
-            </p>
-            <p className={cn("truncate text-[10px]", isDark ? "text-slate-500" : "text-slate-400")}>Orchestrator</p>
-          </div>
+      <div
+        className={cn(
+          "flex h-14 shrink-0 items-center border-b",
+          collapsed ? "justify-center px-2" : "justify-start px-4",
+          isDark ? "border-white/[0.06]" : "border-slate-200/80"
         )}
+      >
+        <NexusWordmark
+          dark={isDark}
+          compact={collapsed}
+          className={collapsed ? "h-9 w-9" : "h-10 w-[210px]"}
+        />
       </div>
 
       <div className={cn("pb-3 pt-4", collapsed ? "px-2" : "px-3")}>
@@ -166,7 +166,7 @@ function TopBar() {
     if (location.pathname.startsWith("/projects/") && location.pathname.includes("/traceability")) return "Activity Log";
     if (location.pathname.startsWith("/projects")) return "Projects";
     if (location.pathname.startsWith("/settings")) return "Settings";
-    return "SDLC AI";
+    return "Nexus";
   })();
 
   const alerts = [

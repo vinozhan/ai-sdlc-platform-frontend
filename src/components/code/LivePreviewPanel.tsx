@@ -66,7 +66,7 @@ export function LivePreviewPanel({
         </div>
 
         {/* Status + Generated */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <p className={cn("mb-1.5 text-[10px] font-semibold uppercase tracking-wider", isDark ? "text-slate-500" : "text-slate-400")}>
               Status

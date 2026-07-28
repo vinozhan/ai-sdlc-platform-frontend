@@ -556,7 +556,7 @@ export function TestingSecurity() {
   }
 
   return (
-    <div className="tp w-full px-6 pb-6 pt-6 md:px-8 md:pt-8">
+    <div className="tp w-full px-4 pb-6 pt-4 sm:px-6 md:px-8 md:pt-8">
       {header}
 
       <div className="mt-5">

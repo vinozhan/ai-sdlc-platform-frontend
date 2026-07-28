@@ -246,9 +246,9 @@ export function Landing() {
 
       {/* Navbar */}
       <header className="fixed inset-x-0 top-0 z-50 border-b border-white/40 bg-white/70 backdrop-blur-xl">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 lg:px-8">
-          <Link to="/" className="flex items-center">
-            <NexusWordmark className="h-9 max-w-[180px]" />
+        <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:h-16 sm:px-6 lg:px-8">
+          <Link to="/" className="flex min-w-0 items-center">
+            <NexusWordmark className="h-7 max-w-[140px] sm:h-9 sm:max-w-[180px]" />
           </Link>
 
           <nav className="hidden items-center gap-8 lg:flex">
@@ -279,31 +279,38 @@ export function Landing() {
             </button>
           </div>
 
-          <button className="lg:hidden" onClick={() => setMobileNav(!mobileNav)} aria-label="Menu">
-            {mobileNav ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          <button
+            className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-700 hover:bg-slate-100 lg:hidden"
+            onClick={() => setMobileNav(!mobileNav)}
+            aria-label="Menu"
+          >
+            {mobileNav ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
 
         {mobileNav && (
-          <div className="border-t border-slate-200/80 bg-white/95 px-6 py-4 lg:hidden">
-            <nav className="flex flex-col gap-3">
+          <div className="border-t border-slate-200/80 bg-white/95 px-4 py-4 safe-pb lg:hidden">
+            <nav className="flex flex-col gap-1">
               {navLinks.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileNav(false)}
-                  className="text-sm font-medium text-slate-700"
+                  className="rounded-xl px-3 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50"
                 >
                   {link.label}
                 </a>
               ))}
-              <hr className="border-slate-200" />
-              <button onClick={() => navigate("/login")} className="text-left text-sm font-medium text-slate-700">
+              <hr className="my-2 border-slate-200" />
+              <button
+                onClick={() => navigate("/login")}
+                className="rounded-xl px-3 py-3 text-left text-sm font-medium text-slate-700 hover:bg-slate-50"
+              >
                 Log In
               </button>
               <button
                 onClick={() => navigate("/projects/new")}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-medium text-white"
+                className="mt-1 inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white"
               >
                 <Upload className="h-4 w-4" />
                 Upload SRS
@@ -314,28 +321,28 @@ export function Landing() {
       </header>
 
       {/* Hero */}
-      <section id="home" className="relative px-6 pb-24 pt-32 lg:px-8 lg:pt-40">
-        <div className="mx-auto grid max-w-7xl items-center gap-16 lg:grid-cols-2">
+      <section id="home" className="relative px-4 pb-16 pt-24 sm:px-6 sm:pb-24 sm:pt-32 lg:px-8 lg:pt-40">
+        <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <div>
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-200/80 bg-blue-50/80 px-4 py-1.5 text-xs font-medium text-blue-700 backdrop-blur-sm">
-              <Sparkles className="h-3.5 w-3.5" />
-              AI-Powered Software Development Platform
+            <div className="mb-5 inline-flex max-w-full items-center gap-2 rounded-full border border-blue-200/80 bg-blue-50/80 px-3 py-1.5 text-[11px] font-medium text-blue-700 backdrop-blur-sm sm:mb-6 sm:px-4 sm:text-xs">
+              <Sparkles className="h-3.5 w-3.5 shrink-0" />
+              <span className="truncate">AI-Powered Software Development</span>
             </div>
-            <h1 className="text-4xl font-semibold leading-[1.1] tracking-tight text-slate-900 md:text-5xl lg:text-[3.25rem]">
+            <h1 className="text-[1.85rem] font-semibold leading-[1.15] tracking-tight text-slate-900 sm:text-4xl md:text-5xl lg:text-[3.25rem]">
               From SRS document to{" "}
               <span className="bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
                 production-ready software
               </span>{" "}
               in minutes
             </h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-slate-600">
+            <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-slate-600 sm:mt-6 sm:text-lg">
               Upload your Software Requirements Specification and let AI analyze, architect, and generate complete
               applications - frontend, backend, database, APIs, and deployment-ready files - automatically.
             </p>
-            <div className="mt-10 flex flex-wrap items-center gap-4">
+            <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
               <button
                 onClick={() => navigate("/projects/new")}
-                className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 text-sm font-semibold text-white shadow-xl shadow-blue-600/30 transition-all hover:bg-blue-500 hover:shadow-blue-500/30"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 text-sm font-semibold text-white shadow-xl shadow-blue-600/30 transition-all hover:bg-blue-500 hover:shadow-blue-500/30 sm:w-auto"
               >
                 <Upload className="h-4 w-4" />
                 Upload SRS
@@ -343,26 +350,26 @@ export function Landing() {
               </button>
               <button
                 onClick={() => navigate("/login")}
-                className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white/80 px-6 py-3.5 text-sm font-semibold text-slate-800 shadow-sm backdrop-blur-sm transition-all hover:border-blue-200 hover:bg-blue-50/50"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white/80 px-6 py-3.5 text-sm font-semibold text-slate-800 shadow-sm backdrop-blur-sm transition-all hover:border-blue-200 hover:bg-blue-50/50 sm:w-auto"
               >
                 <LogIn className="h-4 w-4" />
                 Log In to Workspace
               </button>
             </div>
-            <p className="mt-6 text-sm text-slate-500">
+            <p className="mt-5 text-xs text-slate-500 sm:mt-6 sm:text-sm">
               Trusted by IT companies, software development firms, and enterprise teams worldwide.
             </p>
           </div>
 
           {/* Hero visual */}
-          <div className="relative mt-12 lg:mt-0">
+          <div className="relative mt-8 lg:mt-0">
             <HeroVisual />
           </div>
         </div>
       </section>
 
       {/* Features */}
-      <section id="features" className="relative px-6 py-24 lg:px-8">
+      <section id="features" className="relative px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-2xl text-center">
             <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">Features</p>
@@ -390,7 +397,7 @@ export function Landing() {
       </section>
 
       {/* Solutions */}
-      <section id="solutions" className="relative bg-slate-50/80 px-6 py-24 lg:px-8">
+      <section id="solutions" className="relative bg-slate-50/80 px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-2xl text-center">
             <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">Solutions</p>
@@ -412,7 +419,7 @@ export function Landing() {
       </section>
 
       {/* Workflow */}
-      <section className="relative px-6 py-24 lg:px-8">
+      <section className="relative px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-2xl text-center">
             <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">How it works</p>
@@ -436,7 +443,7 @@ export function Landing() {
       </section>
 
       {/* Testimonials */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-blue-600 to-[#1e3a8a] px-6 py-24 lg:px-8">
+      <section className="relative overflow-hidden bg-gradient-to-b from-blue-600 to-[#1e3a8a] px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <TestimonialsPattern />
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-2xl text-center">
@@ -464,7 +471,7 @@ export function Landing() {
       </section>
 
       {/* Pricing */}
-      <section id="pricing" className="relative px-6 py-24 lg:px-8">
+      <section id="pricing" className="relative px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-2xl text-center">
             <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">Pricing</p>
@@ -516,7 +523,7 @@ export function Landing() {
       </section>
 
       {/* FAQ */}
-      <section id="docs" className="relative bg-slate-50/80 px-6 py-24 lg:px-8">
+      <section id="docs" className="relative bg-slate-50/80 px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <div className="mx-auto max-w-3xl">
           <div className="text-center">
             <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">FAQ</p>
@@ -531,7 +538,7 @@ export function Landing() {
       </section>
 
       {/* CTA */}
-      <section className="relative px-6 py-24 lg:px-8">
+      <section className="relative px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <GlassCard className="relative mx-auto max-w-4xl overflow-hidden border-0 bg-gradient-to-br from-blue-600 to-[#1e3a8a] p-12 text-center">
           <CtaVisual />
           <h2 className="text-3xl font-semibold text-white md:text-4xl">Ready to transform your delivery pipeline?</h2>
@@ -557,11 +564,11 @@ export function Landing() {
       </section>
 
       {/* Footer */}
-      <footer id="contact" className="border-t border-slate-200 bg-slate-900 px-6 py-16 text-slate-400 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-12 md:grid-cols-4">
-          <div className="md:col-span-1">
+      <footer id="contact" className="border-t border-slate-200 bg-slate-900 px-4 py-12 text-slate-400 sm:px-6 sm:py-16 lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-10 sm:grid-cols-2 md:grid-cols-4 md:gap-12">
+          <div className="sm:col-span-2 md:col-span-1">
             <div className="flex items-center">
-              <NexusWordmark dark className="h-9 max-w-[180px]" />
+              <NexusWordmark dark className="h-8 max-w-[160px] sm:h-9 sm:max-w-[180px]" />
             </div>
             <p className="mt-4 text-sm leading-relaxed">
               AI-powered software development from requirements to deployment-ready code.

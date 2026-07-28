@@ -70,7 +70,7 @@ export function Projects() {
   };
 
   return (
-    <div className="w-full space-y-6 p-6 md:p-8">
+    <div className="w-full space-y-6 p-4 sm:p-6 md:p-8">
       <div>
         <div className="mb-1 flex items-center gap-2">
           <FolderKanban className={cn("h-5 w-5", isDark ? "text-blue-400" : "text-blue-600")} />
@@ -80,10 +80,10 @@ export function Projects() {
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
         <div
           className={cn(
-            "flex h-10 flex-1 items-center gap-2 rounded-xl border px-3 sm:max-w-sm",
+            "flex h-10 w-full flex-1 items-center gap-2 rounded-xl border px-3 sm:max-w-sm",
             isDark ? "border-white/10 bg-white/[0.03]" : "border-slate-200 bg-white"
           )}
         >
@@ -262,7 +262,7 @@ export function Projects() {
                   <span className={cn("hidden text-xs sm:inline", isDark ? "text-slate-500" : "text-slate-400")}>
                     {p.progress}%
                   </span>
-                  <span className={cn("text-xs", isDark ? "text-slate-500" : "text-slate-400")}>
+                  <span className={cn("hidden text-xs sm:inline", isDark ? "text-slate-500" : "text-slate-400")}>
                     {formatRelative(p.updatedAt)}
                   </span>
                 </button>

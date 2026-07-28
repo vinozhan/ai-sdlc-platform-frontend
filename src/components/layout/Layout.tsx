@@ -10,8 +10,6 @@ import {
   Info,
   X,
   Sparkles,
-  Sun,
-  Moon,
   Plus,
   ChevronsLeft,
   ChevronsRight,
@@ -152,7 +150,7 @@ function Sidebar({ collapsed }: { collapsed: boolean }) {
 }
 
 function TopBar() {
-  const { setCommandPaletteOpen, addToast, theme, toggleTheme, settings, projects } = useStore();
+  const { setCommandPaletteOpen, addToast, theme, settings, projects } = useStore();
   const [showNotifications, setShowNotifications] = useState(false);
   const isDark = theme === "dark";
   const location = useLocation();
@@ -189,7 +187,7 @@ function TopBar() {
   return (
     <header
       className={cn(
-        "flex h-14 shrink-0 items-center gap-3 border-b px-6 backdrop-blur-xl",
+        "relative z-30 flex h-14 shrink-0 items-center gap-3 border-b px-6 backdrop-blur-xl",
         isDark ? "border-white/[0.06] bg-[#0a1628]/85" : "border-slate-200/80 bg-white/95"
       )}
     >
@@ -218,18 +216,6 @@ function TopBar() {
         </kbd>
       </button>
 
-      <button
-        onClick={toggleTheme}
-        className={cn(
-          "flex h-9 w-9 items-center justify-center rounded-full border transition-colors",
-          isDark
-            ? "border-white/10 bg-white/[0.04] text-slate-400 hover:text-amber-300"
-            : "border-slate-200 bg-white text-slate-500 hover:text-blue-600"
-        )}
-      >
-        {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-      </button>
-
       <div className="relative">
         <button
           onClick={() => setShowNotifications(!showNotifications)}
@@ -246,7 +232,7 @@ function TopBar() {
         {showNotifications && (
           <div
             className={cn(
-              "absolute right-0 top-11 z-50 w-80 overflow-hidden rounded-2xl border shadow-2xl",
+              "absolute right-0 top-11 z-50 w-80 overflow-hidden rounded-2xl border shadow-2xl isolate",
               isDark ? "border-white/10 bg-[#0f1d32]" : "border-slate-200 bg-white"
             )}
           >

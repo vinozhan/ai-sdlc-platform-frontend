@@ -1,4 +1,5 @@
 // Comprehensive mock data layer simulating all AI backend responses
+import { failures, findings, quality, auditTrail } from "@/data/testingData";
 
 export type ComponentKey = "c1" | "c2" | "c3" | "c4";
 
@@ -585,6 +586,84 @@ export const buildStatus = {
 // ===== TESTING & SECURITY DATA =====
 // Lives in src/data/testingData.ts - one coherent run, so the counts in the
 // suite table, the failure inbox and the report cannot disagree.
+// Compatibility exports used by TestingSecurity and legacy components.
+export const testResults = {
+  unit: { passed: 172, failed: 2, skipped: 2, total: 176, coverage: 89 },
+  integration: { passed: 45, failed: 4, skipped: 1, total: 50, coverage: 83 },
+  mutation: {
+    killed: quality.mutation.killed,
+    survived: quality.mutation.survived,
+    total: quality.mutation.total,
+    coverage: quality.mutation.score,
+  },
+  coverageTrend: quality.trend.map((point) => ({
+    day: `B${point.build}`,
+    coverage: point.line,
+    branchCoverage: point.branch,
+  })),
+};
+
+export const failingTests = failures.map((failure) => ({
+  id: failure.id,
+  name: failure.test,
+  error: failure.reason,
+  status: failure.triage === "regression" ? "real-regression" : failure.triage,
+  lastRun: failure.at,
+  explanation: failure.repair?.why ?? failure.note ?? failure.reason,
+  originalCode: failure.repair?.original,
+  proposedCode: failure.repair?.proposed,
+  honestyGuard: failure.repair
+    ? {
+        passesUnchanged: failure.repair.guard.unchanged.pass,
+        killsMutant: failure.repair.guard.planted.pass,
+        integrity: failure.repair.guard.unchanged.pass && failure.repair.guard.planted.pass,
+      }
+    : undefined,
+}));
+
+export const approvalQueue = failures
+  .filter((failure) => failure.state === "awaiting-approval")
+  .map((failure) => ({
+    id: failure.id,
+    testId: failure.test,
+    status: "pending",
+    proposedBy: "AI-Healer",
+    createdAt: failure.repair?.proposedAt ?? failure.at,
+    qaComment: failure.repair?.verdictLine ?? failure.reason,
+    devComment: "",
+  }));
+
+export const auditLog = auditTrail.map((entry) => ({
+  id: entry.id,
+  timestamp: entry.at,
+  actor: entry.actor,
+  action: entry.action,
+  target: entry.target,
+  details: entry.detail,
+}));
+
+export const vulnerabilities = findings.map((finding) => ({
+  id: finding.id,
+  cwe: finding.cwe,
+  name: finding.name,
+  severity: finding.severity,
+  cvss: finding.cvss,
+  file: finding.file,
+  line: finding.line,
+  status: finding.status,
+  precision: 0.89,
+  recall: 0.84,
+}));
+
+export const cvssRadar = [
+  { axis: "Attack Vector", value: 8.2 },
+  { axis: "Complexity", value: 5.6 },
+  { axis: "Privileges", value: 7.1 },
+  { axis: "User Interaction", value: 4.8 },
+  { axis: "Confidentiality", value: 8.8 },
+  { axis: "Integrity", value: 8.5 },
+  { axis: "Availability", value: 7.4 },
+];
 
 // ===== DEPLOYMENT DATA =====
 export const repositories = [

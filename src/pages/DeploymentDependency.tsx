@@ -4,7 +4,6 @@ import type { ProjectStatus } from "@/store/useStore";
 import {
   GitBranch,
   Package,
-  AlertTriangle,
   CheckCircle2,
   Rocket,
   Shield,
@@ -215,7 +214,7 @@ function BreakingChangePrediction() {
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 gap-2 sm:gap-3">
             <div className="rounded-lg border border-slate-800 p-3 text-center">
               <p className="text-xs text-slate-500">Rule-Based</p>
               <p className="text-xl font-bold text-blue-400">{selectedUpdate.ruleScore}%</p>
@@ -341,7 +340,7 @@ function DeploymentPipeline() {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -446,7 +445,7 @@ ENTRYPOINT ["java", "-jar", "app.jar"]`}
           <CardTitle>Pipeline Templates</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
             {[
               { name: "Single Service", desc: "Single pipeline for monorepo", icon: Database },
               { name: "Frontend + Backend", desc: "Separate pipelines per layer", icon: GitCompare },
@@ -468,7 +467,7 @@ ENTRYPOINT ["java", "-jar", "app.jar"]`}
 function DeploymentMonitor() {
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -544,7 +543,7 @@ function DeploymentMonitor() {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">

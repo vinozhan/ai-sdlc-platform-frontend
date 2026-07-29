@@ -120,8 +120,8 @@
    =========================================================================== */
 @layer components {
   .tp {
-    /* height of the phase tab bar this page sticks under */
-    --tp-nav: 57px;
+    /* height of the phase tab bar this page sticks under (measured at lg+) */
+    --tp-nav: 58px;
 
     --tp-ink: #0f172a;        /* slate-900 - app text-primary */
     --tp-ink-2: #475569;      /* slate-600 */
@@ -495,9 +495,48 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  body {
-    overflow-x: hidden;
+  /* Touch devices only: keep the desktop sizing but guarantee a 44px hit area.
+     The visual box never changes - the target grows via a centred overlay - so
+     nothing inflates on a mouse-driven screen. Rows that sit flush against a
+     neighbour opt out, otherwise adjacent targets would overlap. */
+  @media (pointer: coarse) {
+    /* Safari on iOS zooms the viewport when a focused field is under 16px,
+       which jerks the page on every tap into an input. Desktop keeps text-sm. */
+    input,
+    textarea,
+    select {
+      font-size: 16px;
+    }
+
+    button,
+    a[role="button"],
+    [role="menuitem"] {
+      position: relative;
+    }
+
+    button::after,
+    a[role="button"]::after,
+    [role="menuitem"]::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: max(100%, 44px);
+      height: max(100%, 44px);
+      transform: translate(-50%, -50%);
+    }
+
+    li button::after,
+    nav button::after,
+    thead button::after,
+    tbody button::after,
+    [role="tablist"] button::after,
+    .tp-console button::after {
+      width: 100%;
+      height: 100%;
+    }
   }
+
 }
 
 @layer utilities {

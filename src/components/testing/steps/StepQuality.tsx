@@ -87,7 +87,7 @@ export function StepQuality({ view }: { view: TestingView }) {
 
   return (
     <div className="space-y-4">
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Panel
           icon={<Activity className="h-4 w-4 text-blue-400" />}
           label="Coverage"
@@ -177,7 +177,7 @@ export function StepQuality({ view }: { view: TestingView }) {
         </Panel>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
         <Panel
           icon={<FileCheck className="h-4 w-4 text-blue-400" />}
           label="Coverage by module"

@@ -89,7 +89,7 @@ function highlightTsLine(line: string, t: typeof themes.dark) {
   return result;
 }
 
-function highlightJavaLine(line: string, t: typeof themes.dark) {
+function highlightJavaLine(line: string, t: typeof themes.dark): string {
   if (/^\s*\/\//.test(line)) return span(t.comment, line);
   if (/^\s*@/.test(line)) {
     const match = line.match(/^(\s*@\w+)/);

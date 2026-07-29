@@ -39,7 +39,7 @@ export function DecisionBar({
       )}
     >
       {composing && (
-        <div className={cn("border-b px-6 py-3 md:px-8", isDark ? "border-white/[0.06]" : "border-slate-100")}>
+        <div className={cn("border-b px-4 py-3 sm:px-6 md:px-8", isDark ? "border-white/[0.06]" : "border-slate-100")}>
           <label className="tp-label block" htmlFor="phase-note">
             What needs to change before this can ship
           </label>
@@ -77,8 +77,8 @@ export function DecisionBar({
         </div>
       )}
 
-      <div className="flex flex-col gap-3 px-6 py-3 md:flex-row md:items-center md:px-8">
-        <span className="relative mt-1 flex h-2 w-2 shrink-0 md:mt-0">
+      <div className="safe-pb flex flex-col gap-3 px-4 py-3 sm:px-6 md:px-8 lg:flex-row lg:items-center">
+        <span className="relative mt-1 flex h-2 w-2 shrink-0 lg:mt-0">
           <span className="tp-pending-edge absolute inline-flex h-full w-full rounded-full bg-amber-400" />
           <span className="relative inline-flex h-2 w-2 rounded-full bg-amber-500" />
         </span>
@@ -100,13 +100,13 @@ export function DecisionBar({
         <div className="flex shrink-0 gap-2">
           <Button
             variant="outline"
-            className={cn("flex-1 md:flex-none", composing && (isDark ? "bg-white/5" : "bg-slate-100"))}
+            className={cn("flex-1 lg:flex-none", composing && (isDark ? "bg-white/5" : "bg-slate-100"))}
             onClick={() => setComposing((v) => !v)}
           >
             <MessageSquare className="h-3.5 w-3.5" />
             Request changes
           </Button>
-          <Button variant="primary" className="flex-1 md:flex-none" onClick={onApprove}>
+          <Button variant="primary" className="flex-1 lg:flex-none" onClick={onApprove}>
             Approve and start Deployment
             <ArrowRight className="h-3.5 w-3.5" />
           </Button>

@@ -164,7 +164,7 @@ export function StepTests({
         bodyClassName="p-0"
       >
         <div ref={viewerRef} className="grid grid-cols-1 gap-4 p-3 sm:p-4 lg:h-[560px] lg:grid-cols-[minmax(0,290px)_minmax(0,1fr)]">
-          <div className="h-[220px] min-w-0 lg:h-auto">
+          <div className="h-[220px] min-h-0 min-w-0 lg:h-auto">
             <VSCodeFileTree
               title="Explorer"
               files={testFiles}
@@ -178,7 +178,7 @@ export function StepTests({
               }}
             />
           </div>
-          <div className="h-[360px] min-w-0 sm:h-[420px] lg:h-auto">
+          <div className="h-[360px] min-h-0 min-w-0 sm:h-[420px] lg:h-auto">
             <VSCodeEditor
               tabs={tabs}
               activePath={activePath}

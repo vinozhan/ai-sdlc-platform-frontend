@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   Home,
@@ -27,10 +27,12 @@ const mainNav = [
 function Sidebar({
   collapsed,
   mobileOpen,
+  isMobileViewport,
   onNavigate,
 }: {
   collapsed: boolean;
   mobileOpen: boolean;
+  isMobileViewport: boolean;
   onNavigate?: () => void;
 }) {
   const navigate = useNavigate();
@@ -51,6 +53,15 @@ function Sidebar({
 
   return (
     <aside
+      id="app-sidebar"
+      // On a phone the drawer is a modal surface; from md up it is plain page
+      // furniture, so the dialog semantics are dropped.
+      role={isMobileViewport ? "dialog" : undefined}
+      aria-modal={isMobileViewport ? true : undefined}
+      aria-label={isMobileViewport ? "Main navigation" : undefined}
+      // Off-screen but still in the DOM: without this, keyboard users tab into
+      // invisible links behind the scrim.
+      inert={isMobileViewport && !mobileOpen}
       className={cn(
         "flex h-full w-[min(280px,85vw)] shrink-0 flex-col border-r transition-transform duration-300 ease-in-out md:w-auto md:translate-x-0",
         collapsed ? "md:w-[68px]" : "md:w-[252px]",
@@ -180,7 +191,15 @@ function Sidebar({
   );
 }
 
-function TopBar({ onOpenMobileNav }: { onOpenMobileNav: () => void }) {
+function TopBar({
+  onOpenMobileNav,
+  mobileOpen,
+  menuTriggerRef,
+}: {
+  onOpenMobileNav: () => void;
+  mobileOpen: boolean;
+  menuTriggerRef: React.RefObject<HTMLButtonElement | null>;
+}) {
   const { setCommandPaletteOpen, addToast, theme, settings, projects } = useStore();
   const [showNotifications, setShowNotifications] = useState(false);
   const isDark = theme === "dark";
@@ -224,8 +243,12 @@ function TopBar({ onOpenMobileNav }: { onOpenMobileNav: () => void }) {
     >
       <button
         type="button"
+        ref={menuTriggerRef}
         onClick={onOpenMobileNav}
         aria-label="Open menu"
+        aria-haspopup="dialog"
+        aria-expanded={mobileOpen}
+        aria-controls="app-sidebar"
         className={cn(
           "flex h-9 w-9 shrink-0 items-center justify-center rounded-full border md:hidden",
           isDark ? "border-white/10 bg-white/[0.04] text-slate-300" : "border-slate-200 bg-white text-slate-600"
@@ -334,6 +357,24 @@ export function Layout({ children }: { children: ReactNode }) {
   const location = useLocation();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const menuTriggerRef = useRef<HTMLButtonElement | null>(null);
+
+  // Track whether the sidebar is currently the drawer, so the dialog semantics
+  // only apply when it actually behaves like one.
+  const [isMobileViewport, setIsMobileViewport] = useState(
+    () => typeof window !== "undefined" && !window.matchMedia("(min-width: 768px)").matches
+  );
+
+  useEffect(() => {
+    const query = window.matchMedia("(min-width: 768px)");
+    const sync = () => {
+      setIsMobileViewport(!query.matches);
+      if (query.matches) setMobileOpen(false);
+    };
+    sync();
+    query.addEventListener("change", sync);
+    return () => query.removeEventListener("change", sync);
+  }, []);
 
   // Close mobile drawer on route change
   useEffect(() => {
@@ -349,6 +390,19 @@ export function Layout({ children }: { children: ReactNode }) {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
+  // Escape closes the drawer and focus returns to the trigger, as with any
+  // modal surface.
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      setMobileOpen(false);
+      menuTriggerRef.current?.focus();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [mobileOpen]);
+
   // Lock body scroll when mobile menu is open
   useEffect(() => {
     if (!mobileOpen) return;
@@ -360,7 +414,7 @@ export function Layout({ children }: { children: ReactNode }) {
   }, [mobileOpen]);
 
   return (
-    <div className={cn("relative flex h-screen overflow-hidden transition-colors", isDark ? "bg-[#071018]" : "bg-white")}>
+    <div className={cn("relative flex h-[100dvh] overflow-hidden transition-colors", isDark ? "bg-[#071018]" : "bg-white")}>
       {/* Mobile overlay */}
       {mobileOpen && (
         <button
@@ -374,6 +428,7 @@ export function Layout({ children }: { children: ReactNode }) {
       <Sidebar
         collapsed={sidebarCollapsed}
         mobileOpen={mobileOpen}
+        isMobileViewport={isMobileViewport}
         onNavigate={() => setMobileOpen(false)}
       />
 
@@ -390,7 +445,7 @@ export function Layout({ children }: { children: ReactNode }) {
       </button>
 
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-        <TopBar onOpenMobileNav={() => setMobileOpen(true)} />
+        <TopBar onOpenMobileNav={() => setMobileOpen(true)} mobileOpen={mobileOpen} menuTriggerRef={menuTriggerRef} />
         <main className="relative flex-1 overflow-auto overscroll-contain">
           <div
             className={cn(

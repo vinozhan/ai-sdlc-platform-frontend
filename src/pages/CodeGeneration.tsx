@@ -90,7 +90,7 @@ function SprintScope() {
     setSelected((prev) => (prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]));
 
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -227,7 +227,7 @@ function ContractDesigner() {
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
               <p className="mb-1 text-xs font-semibold text-slate-400">Request Schema</p>
               <CodeBlock

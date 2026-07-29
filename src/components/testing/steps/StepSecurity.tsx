@@ -47,7 +47,7 @@ export function StepSecurity({
 
   return (
     <div className="space-y-4">
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
           {counts.map(({ severity, count }) => (
             <Card key={severity} className={severityTile[severity].border}>

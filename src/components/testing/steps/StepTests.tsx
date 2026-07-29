@@ -36,7 +36,7 @@ export function StepTests({
 
   return (
     <div className="space-y-4">
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
         <Panel
           icon={<FlaskConical className="h-4 w-4 text-blue-400" />}
           label="Suite results"
@@ -152,7 +152,7 @@ export function StepTests({
               ? `build ${view.build} · running`
               : `build ${view.build} · recorded ${view.finishedAt.slice(11)} · ${view.duration}`
           }
-          className="h-[420px]"
+          className="h-[300px] sm:h-[420px]"
         />
       </div>
 
@@ -163,8 +163,8 @@ export function StepTests({
         meta="Backend tests run on JUnit, frontend tests on Vitest. Each test sits where the code it protects sits."
         bodyClassName="p-0"
       >
-        <div ref={viewerRef} className="grid gap-4 p-4 lg:h-[560px] lg:grid-cols-[minmax(0,290px)_minmax(0,1fr)]">
-          <div className="h-[190px] lg:h-auto">
+        <div ref={viewerRef} className="grid grid-cols-1 gap-4 p-3 sm:p-4 lg:h-[560px] lg:grid-cols-[minmax(0,290px)_minmax(0,1fr)]">
+          <div className="h-[220px] min-w-0 lg:h-auto">
             <VSCodeFileTree
               title="Explorer"
               files={testFiles}
@@ -178,7 +178,7 @@ export function StepTests({
               }}
             />
           </div>
-          <div className="h-[420px] min-h-0 lg:h-auto">
+          <div className="h-[360px] min-w-0 sm:h-[420px] lg:h-auto">
             <VSCodeEditor
               tabs={tabs}
               activePath={activePath}

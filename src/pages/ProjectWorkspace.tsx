@@ -13,8 +13,6 @@ import {
   Sparkles,
   Upload,
   Network,
-  Layers,
-  Calendar,
 } from "lucide-react";
 import ReactFlow, {
   Background,
@@ -473,7 +471,7 @@ function RequirementsResults({ project }: { project: Project }) {
             <p className={cn("text-sm", isDark ? "text-slate-300" : "text-slate-600")}>
               Requirements document parsed successfully. Identified scope, actors, and core entities from your input.
             </p>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
               {[
                 { label: "Sections parsed", value: "12" },
                 { label: "Requirements found", value: "28" },
@@ -532,7 +530,7 @@ function RequirementsResults({ project }: { project: Project }) {
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0">
-                <div className={cn("h-[480px] w-full", isDark ? "bg-[#0a0e17]" : "bg-slate-50")}>
+                <div className={cn("h-[52vh] min-h-[320px] w-full md:h-[480px]", isDark ? "bg-[#0a0e17]" : "bg-slate-50")}>
                   <ReactFlow nodes={nodes} edges={edges} nodeTypes={sagNodeTypes} fitView fitViewOptions={{ padding: 0.2 }}>
                     <Background color={isDark ? "#1e293b" : "#cbd5e1"} gap={20} />
                     <Controls />
@@ -696,6 +694,8 @@ function RequirementsPage() {
 }
 
 export function ProjectWorkspace() {
+  const { projectId } = useParams();
+
   return (
     <Routes>
       <Route
@@ -746,7 +746,10 @@ export function ProjectWorkspace() {
           </ProjectShell>
         }
       />
-      <Route path="*" element={<Navigate to="requirements" replace />} />
+      {/* Absolute, not relative: inside a splat route a relative target resolves
+          against the unmatched URL, so /projects/p1/xyz would redirect to
+          /projects/p1/xyz/requirements and match "*" again, forever. */}
+      <Route path="*" element={<Navigate to={`/projects/${projectId}/requirements`} replace />} />
     </Routes>
   );
 }

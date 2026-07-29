@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { ArrowUpRight, Bug, Check, CheckCircle2, Clock, Inbox, ShieldAlert, Wrench, XCircle, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ArrowLeft, ArrowUpRight, Bug, Check, CheckCircle2, Clock, Inbox, ShieldAlert, Wrench, XCircle, X } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { Badge, Button, Card, CardContent } from "@/components/ui/primitives";
 import { Note, Panel, StateChip, TriageChip } from "@/components/testing/bits";
@@ -60,6 +60,9 @@ export function StepHealing({
 }) {
   const list = view.failures.filter((f) => matches(f, filter, view.build));
   const selected = view.failures.find((f) => f.id === selectedId) ?? list[0];
+  // Below lg there is only room for one pane, so tapping a failure drills in
+  // and a back control returns to the list. From lg up both are always visible.
+  const [showDetail, setShowDetail] = useState(false);
 
   // Keep whatever is selected as long as it still exists, so deciding on a
   // repair leaves its outcome on screen instead of jumping to the next item.
@@ -80,7 +83,10 @@ export function StepHealing({
               key={card.id}
               type="button"
               aria-pressed={active}
-              onClick={() => onFilter(active ? "attention" : card.id)}
+              onClick={() => {
+                setShowDetail(false);
+                onFilter(active ? "attention" : card.id);
+              }}
               className="text-left"
             >
               <Card className={cn("h-full", active ? "border-blue-500/40 bg-blue-500/5" : "hover:border-blue-500/30")}>
@@ -97,8 +103,9 @@ export function StepHealing({
         })}
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)]">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)]">
         <Panel
+          className={cn(showDetail && "hidden lg:block")}
           icon={<Inbox className="h-4 w-4 text-blue-400" />}
           label="Failure inbox"
           title={
@@ -127,7 +134,10 @@ export function StepHealing({
               <button
                 key={failure.id}
                 type="button"
-                onClick={() => onSelect(failure.id)}
+                onClick={() => {
+                  onSelect(failure.id);
+                  setShowDetail(true);
+                }}
                 className={cn(
                   "w-full rounded-lg border p-3 text-left transition-colors",
                   active
@@ -147,7 +157,19 @@ export function StepHealing({
           })}
         </Panel>
 
-        {selected && <FailureDetail failure={selected} onApprove={onApprove} onReject={onReject} onOpenFile={onOpenFile} />}
+        {selected && (
+          <div className={cn("min-w-0 space-y-3", !showDetail && "hidden lg:block")}>
+            <button
+              type="button"
+              onClick={() => setShowDetail(false)}
+              className="inline-flex items-center gap-1.5 text-[13px] font-medium text-blue-600 lg:hidden dark:text-blue-400"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to the inbox
+            </button>
+            <FailureDetail failure={selected} onApprove={onApprove} onReject={onReject} onOpenFile={onOpenFile} />
+          </div>
+        )}
       </div>
     </div>
   );

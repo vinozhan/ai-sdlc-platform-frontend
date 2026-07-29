@@ -1,7 +1,8 @@
 export type FileEntry = {
   path: string;
   type: string;
-  lines: number;
+  /** Informational only - no component reads it, so callers may omit it. */
+  lines?: number;
   /** Extra uppercase badges on the tree row, e.g. ["healed"]. */
   tags?: string[];
 };

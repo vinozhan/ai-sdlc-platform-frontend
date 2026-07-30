@@ -11,14 +11,18 @@ type NexusWordmarkProps = {
 
 /** Official NEXUS logo lockup (icon + wordmark) — transparent PNG. */
 export function NexusWordmark({ className, dark = false, compact = false }: NexusWordmarkProps) {
-  const src = dark ? nexusLogoLight : nexusLogo;
+  // Compact always uses the colorful mark (left side of the lockup)
+  const src = compact ? nexusLogo : dark ? nexusLogoLight : nexusLogo;
 
   if (compact) {
     return (
       <img
         src={src}
         alt="Nexus"
-        className={cn("h-8 w-8 object-cover object-left", className)}
+        className={cn(
+          "h-8 w-8 shrink-0 rounded-lg object-cover object-left",
+          className
+        )}
       />
     );
   }

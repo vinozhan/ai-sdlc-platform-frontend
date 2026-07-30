@@ -36,7 +36,10 @@ export function getPhaseProgress(project: Project, phase: ProjectPhase): number 
       return 0;
     case "deployment":
       if (project.status === "complete") return 100;
-      if (project.status === "deploy") return 84;
+      // 5 stages: Connect(1) Dependencies(2) Release(3) Verify(4) Live(5)
+      // A project in "deploy" status has connected providers and passed pre-flight,
+      // so at minimum stages 1-2 are done = 40%. Cap at 80 until promoted to live.
+      if (project.status === "deploy") return 40;
       return 0;
     case "activity":
       return project.progress;

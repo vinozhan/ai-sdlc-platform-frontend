@@ -33,6 +33,24 @@ export interface SettingsState {
     team: string;
     connected: boolean;
   };
+  azure: {
+    clientId: string;
+    clientSecret: string;
+    tenantId: string;
+    subscriptionId: string;
+    connected: boolean;
+  };
+  database: {
+    type: "sql" | "nosql";
+    engine: string;
+    host: string;
+    port: string;
+    name: string;
+    username: string;
+    password: string;
+    connectionString: string;
+    connected: boolean;
+  };
   ai: {
     provider: string;
     model: string;
@@ -59,6 +77,24 @@ const PROJECT_COLORS = ["#f97316", "#2563eb", "#3b82f6", "#22c55e", "#ec4899", "
 const defaultSettings: SettingsState = {
   git: { provider: "github", token: "", defaultOrg: "acme-labs", connected: true },
   vercel: { token: "", team: "acme-labs", connected: true },
+  azure: {
+    clientId: "",
+    clientSecret: "",
+    tenantId: "",
+    subscriptionId: "",
+    connected: false,
+  },
+  database: {
+    type: "sql",
+    engine: "postgresql",
+    host: "localhost",
+    port: "5432",
+    name: "nexuspay",
+    username: "",
+    password: "",
+    connectionString: "",
+    connected: false,
+  },
   ai: { provider: "openai", model: "gpt-4o", apiKey: "", temperature: 0.2 },
   profile: {
     name: "Alex Chen",
@@ -154,6 +190,8 @@ interface AppState {
   updateSettings: (patch: Partial<SettingsState>) => void;
   updateGitSettings: (patch: Partial<SettingsState["git"]>) => void;
   updateVercelSettings: (patch: Partial<SettingsState["vercel"]>) => void;
+  updateAzureSettings: (patch: Partial<SettingsState["azure"]>) => void;
+  updateDatabaseSettings: (patch: Partial<SettingsState["database"]>) => void;
   updateAiSettings: (patch: Partial<SettingsState["ai"]>) => void;
   updateProfile: (patch: Partial<SettingsState["profile"]>) => void;
 
@@ -264,6 +302,10 @@ export const useStore = create<AppState>()(
         set((s) => ({ settings: { ...s.settings, git: { ...s.settings.git, ...patch } } })),
       updateVercelSettings: (patch) =>
         set((s) => ({ settings: { ...s.settings, vercel: { ...s.settings.vercel, ...patch } } })),
+      updateAzureSettings: (patch) =>
+        set((s) => ({ settings: { ...s.settings, azure: { ...s.settings.azure, ...patch } } })),
+      updateDatabaseSettings: (patch) =>
+        set((s) => ({ settings: { ...s.settings, database: { ...s.settings.database, ...patch } } })),
       updateAiSettings: (patch) =>
         set((s) => ({ settings: { ...s.settings, ai: { ...s.settings.ai, ...patch } } })),
       updateProfile: (patch) =>
@@ -343,6 +385,18 @@ export const useStore = create<AppState>()(
         if (state && (!state.projects || state.projects.length === 0)) {
           state.projects = MOCK_PROJECTS;
           state.activeProjectId = "p1";
+        }
+        if (state?.settings) {
+          state.settings = {
+            ...defaultSettings,
+            ...state.settings,
+            git: { ...defaultSettings.git, ...state.settings.git },
+            vercel: { ...defaultSettings.vercel, ...state.settings.vercel },
+            azure: { ...defaultSettings.azure, ...state.settings.azure },
+            database: { ...defaultSettings.database, ...state.settings.database },
+            ai: { ...defaultSettings.ai, ...state.settings.ai },
+            profile: { ...defaultSettings.profile, ...state.settings.profile },
+          };
         }
       },
     }

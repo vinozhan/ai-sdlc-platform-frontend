@@ -73,23 +73,35 @@ function Sidebar({
     >
       <div
         className={cn(
-          "flex h-14 shrink-0 items-center border-b px-4",
+          "flex h-14 shrink-0 items-center gap-2 border-b px-3",
           collapsed ? "md:justify-center md:px-2" : "md:justify-start md:px-4",
           isDark ? "border-white/[0.06]" : "border-slate-200/80"
         )}
       >
-        {/* Mobile drawer: always full wordmark */}
-        <NexusWordmark dark={isDark} className="h-9 w-[180px] md:hidden" />
-        {/* Desktop: compact or full */}
+        {/* Mobile drawer: logo mark + Nexus label */}
+        <div className="flex min-w-0 flex-1 items-center gap-2.5 md:hidden">
+          <NexusWordmark compact className="h-8 w-8 shrink-0" />
+          <span
+            className={cn(
+              "truncate text-[15px] font-semibold tracking-tight",
+              isDark ? "text-white" : "text-slate-900"
+            )}
+          >
+            Nexus
+          </span>
+        </div>
+
+        {/* Desktop: compact icon or full wordmark */}
         <NexusWordmark
           dark={isDark}
           compact={collapsed}
           className={cn("hidden md:block", collapsed ? "h-9 w-9" : "h-10 w-[210px]")}
         />
+
         <button
           type="button"
           className={cn(
-            "ml-auto flex h-8 w-8 items-center justify-center rounded-lg md:hidden",
+            "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg md:hidden",
             isDark ? "text-slate-400 hover:bg-white/10" : "text-slate-500 hover:bg-slate-100"
           )}
           aria-label="Close menu"

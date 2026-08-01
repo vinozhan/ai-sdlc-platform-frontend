@@ -1,41 +1,29 @@
 import { type ReactNode, useState } from "react";
-import {
-  User,
-  GitBranch,
-  Cloud,
-  Brain,
-  CheckCircle2,
-  Link2,
-  Unlink,
-  Save,
-  Shield,
-} from "lucide-react";
+import { User, Plug, Brain, Save } from "lucide-react";
 import { useStore } from "@/store/useStore";
 import { cn } from "@/utils/cn";
-import { Badge, Button } from "@/components/ui/primitives";
+import { Button } from "@/components/ui/primitives";
 import { ProfilePhotoEditor } from "@/components/brand/UserAvatar";
+import { ConnectionsHub } from "@/components/settings/ConnectionsHub";
 
-type SettingsTab = "profile" | "git" | "vercel" | "ai";
+type SettingsTab = "profile" | "connections" | "ai";
 
 const tabs: { id: SettingsTab; label: string; description: string; icon: typeof User }[] = [
-  { id: "profile", label: "Profile", description: "Your identity & workspace", icon: User },
-  { id: "git", label: "Git", description: "Source control provider", icon: GitBranch },
-  { id: "vercel", label: "Vercel", description: "Deploy & preview URLs", icon: Cloud },
-  { id: "ai", label: "AI Model", description: "Generation preferences", icon: Brain },
+  { id: "profile", label: "Profile", description: "Your identity and workspace", icon: User },
+  { id: "connections", label: "Connections", description: "Providers every project uses", icon: Plug },
+  { id: "ai", label: "AI model", description: "Generation preferences", icon: Brain },
 ];
 
 function SettingsPanel({
   icon: Icon,
   title,
   description,
-  connected,
   children,
   footer,
 }: {
   icon: typeof User;
   title: string;
   description: string;
-  connected?: boolean;
   children: ReactNode;
   footer?: ReactNode;
 }) {
@@ -66,17 +54,6 @@ function SettingsPanel({
             <p className={cn("mt-0.5 text-sm", isDark ? "text-slate-400" : "text-slate-500")}>{description}</p>
           </div>
         </div>
-        {connected !== undefined && (
-          <Badge variant={connected ? "success" : "default"} className="px-2.5 py-1 text-xs">
-            {connected ? (
-              <>
-                <CheckCircle2 className="h-3.5 w-3.5" /> Connected
-              </>
-            ) : (
-              "Not connected"
-            )}
-          </Badge>
-        )}
       </div>
 
       <div className="space-y-6 px-6 py-6">{children}</div>
@@ -125,8 +102,6 @@ export function SettingsPage() {
     theme,
     settings,
     updateProfile,
-    updateGitSettings,
-    updateVercelSettings,
     updateAiSettings,
     addToast,
   } = useStore();
@@ -241,136 +216,7 @@ export function SettingsPage() {
             </SettingsPanel>
           )}
 
-          {tab === "git" && (
-            <SettingsPanel
-              icon={GitBranch}
-              title="Git integration"
-              description="Connect repositories for code generation and traceability"
-              connected={settings.git.connected}
-              footer={
-                <>
-                  <Button
-                    variant="primary"
-                    onClick={() => {
-                      updateGitSettings({ connected: true });
-                      addToast({ type: "success", title: "Git connected", message: settings.git.provider });
-                    }}
-                  >
-                    <Link2 className="h-4 w-4" />
-                    Connect
-                  </Button>
-                  {settings.git.connected && (
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        updateGitSettings({ connected: false });
-                        addToast({ type: "info", title: "Git disconnected" });
-                      }}
-                    >
-                      <Unlink className="h-4 w-4" />
-                      Disconnect
-                    </Button>
-                  )}
-                </>
-              }
-            >
-              <div className="grid gap-5 sm:grid-cols-2">
-                <Field label="Provider">
-                  <select
-                    className={fieldClass}
-                    value={settings.git.provider}
-                    onChange={(e) => updateGitSettings({ provider: e.target.value })}
-                  >
-                    <option value="github">GitHub</option>
-                    <option value="gitlab">GitLab</option>
-                    <option value="bitbucket">Bitbucket</option>
-                  </select>
-                </Field>
-                <Field label="Default organization" hint="Used when creating new repositories">
-                  <input
-                    className={fieldClass}
-                    placeholder="your-org"
-                    value={settings.git.defaultOrg}
-                    onChange={(e) => updateGitSettings({ defaultOrg: e.target.value })}
-                  />
-                </Field>
-              </div>
-              <Field
-                label="Personal access token"
-                hint="Stored locally. Required scopes: repo, read:org"
-              >
-                <div className="relative">
-                  <Shield className={cn("absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2", isDark ? "text-slate-500" : "text-slate-400")} />
-                  <input
-                    type="password"
-                    className={cn(fieldClass, "pl-10 font-mono text-[13px]")}
-                    placeholder="ghp_••••••••••••"
-                    value={settings.git.token}
-                    onChange={(e) => updateGitSettings({ token: e.target.value })}
-                  />
-                </div>
-              </Field>
-            </SettingsPanel>
-          )}
-
-          {tab === "vercel" && (
-            <SettingsPanel
-              icon={Cloud}
-              title="Vercel deployment"
-              description="Publish previews and production builds automatically"
-              connected={settings.vercel.connected}
-              footer={
-                <>
-                  <Button
-                    variant="primary"
-                    onClick={() => {
-                      updateVercelSettings({ connected: true });
-                      addToast({ type: "success", title: "Vercel connected" });
-                    }}
-                  >
-                    <Link2 className="h-4 w-4" />
-                    Connect Vercel
-                  </Button>
-                  {settings.vercel.connected && (
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        updateVercelSettings({ connected: false });
-                        addToast({ type: "info", title: "Vercel disconnected" });
-                      }}
-                    >
-                      <Unlink className="h-4 w-4" />
-                      Disconnect
-                    </Button>
-                  )}
-                </>
-              }
-            >
-              <Field
-                label="API token"
-                hint="Create a token at vercel.com/account/tokens with full project access"
-              >
-                <div className="relative">
-                  <Shield className={cn("absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2", isDark ? "text-slate-500" : "text-slate-400")} />
-                  <input
-                    type="password"
-                    className={cn(fieldClass, "pl-10 font-mono text-[13px]")}
-                    placeholder="vercel_••••••••"
-                    value={settings.vercel.token}
-                    onChange={(e) => updateVercelSettings({ token: e.target.value })}
-                  />
-                </div>
-              </Field>
-              <Field label="Team / scope" hint="Leave blank for personal account">
-                <input
-                  className={fieldClass}
-                  placeholder="your-team"
-                  value={settings.vercel.team}
-                  onChange={(e) => updateVercelSettings({ team: e.target.value })}
-                />
-              </Field>
-            </SettingsPanel>
-          )}
+          {tab === "connections" && <ConnectionsHub />}
 
           {tab === "ai" && (
             <SettingsPanel
@@ -420,17 +266,16 @@ export function SettingsPage() {
                 </Field>
               </div>
 
-              <Field label="API key" hint="Your key is never sent to our servers in this demo">
-                <div className="relative">
-                  <Shield className={cn("absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2", isDark ? "text-slate-500" : "text-slate-400")} />
-                  <input
-                    type="password"
-                    className={cn(fieldClass, "pl-10 font-mono text-[13px]")}
-                    placeholder="sk-••••••••••••"
-                    value={settings.ai.apiKey}
-                    onChange={(e) => updateAiSettings({ apiKey: e.target.value })}
-                  />
-                </div>
+              <Field label="Model credential">
+                <p
+                  className={cn(
+                    "rounded-xl border px-4 py-3 text-sm leading-relaxed",
+                    isDark ? "border-white/10 bg-white/[0.03] text-slate-400" : "border-slate-200 bg-slate-50/50 text-slate-500"
+                  )}
+                >
+                  The model credential is held by the platform, the same way provider connections are. It is
+                  never sent to this browser, so there is nothing to paste here.
+                </p>
               </Field>
 
               <Field label="Temperature" hint="Lower = more deterministic, higher = more creative">

@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 import { AlertTriangle, Check, Loader2, ShieldAlert, ShieldCheck, X } from "lucide-react";
 import { cn } from "@/utils/cn";
-import type { ProofState } from "@/data/testingData";
+/** Shared by every phase: a proof either answered, or it could not. */
+export type ProofState = "pass" | "fail" | "running" | "pending" | "errored";
 
 export type ProofCell = {
   label: string;

@@ -22,21 +22,21 @@ export interface Project {
 }
 
 export interface SettingsState {
+  // No secret has a home here. Provider credentials are held by the platform and
+  // the browser only ever sees status, scopes and last used, which the
+  // connections hub reads through the orchestrator.
   git: {
     provider: string;
-    token: string;
     defaultOrg: string;
     connected: boolean;
   };
   vercel: {
-    token: string;
     team: string;
     connected: boolean;
   };
   ai: {
     provider: string;
     model: string;
-    apiKey: string;
     temperature: number;
   };
   profile: {
@@ -57,9 +57,9 @@ export interface Toast {
 const PROJECT_COLORS = ["#f97316", "#2563eb", "#3b82f6", "#22c55e", "#ec4899", "#06b6d4"];
 
 const defaultSettings: SettingsState = {
-  git: { provider: "github", token: "", defaultOrg: "acme-labs", connected: true },
-  vercel: { token: "", team: "acme-labs", connected: true },
-  ai: { provider: "openai", model: "gpt-4o", apiKey: "", temperature: 0.2 },
+  git: { provider: "github", defaultOrg: "acme-labs", connected: true },
+  vercel: { team: "acme-labs", connected: true },
+  ai: { provider: "openai", model: "gpt-4o", temperature: 0.2 },
   profile: {
     name: "Alex Chen",
     email: "alex@acme.dev",
@@ -339,6 +339,17 @@ export const useStore = create<AppState>()(
       }),
       onRehydrateStorage: () => (state) => {
         if (state?.theme) applyTheme(state.theme);
+        // Storage written by an earlier build can still carry the token fields
+        // that used to exist. Drop them on the way in so they cannot come back.
+        if (state?.settings) {
+          for (const [group, key] of [
+            ["git", "token"],
+            ["vercel", "token"],
+            ["ai", "apiKey"],
+          ] as const) {
+            delete (state.settings[group] as Record<string, unknown>)[key];
+          }
+        }
         // Ensure demo projects exist for first-time / wiped storage
         if (state && (!state.projects || state.projects.length === 0)) {
           state.projects = MOCK_PROJECTS;

@@ -6,7 +6,7 @@ import type { EditorTab } from "@/components/code/VSCodeEditor";
 import { Button } from "@/components/ui/primitives";
 import { ChevronStepper } from "@/components/ui/ChevronStepper";
 import { PhaseSectionHeader } from "@/components/project/PhaseSectionHeader";
-import { DecisionBar } from "@/components/testing/DecisionBar";
+import { DecisionBar } from "@/components/phase/DecisionBar";
 import { PhaseLoadError, PhaseNotStarted } from "@/components/testing/EmptyStates";
 import { StickyHeader, SummaryStrip } from "@/components/testing/PhaseChrome";
 import { StepHealing, type InboxFilter } from "@/components/testing/steps/StepHealing";
@@ -646,7 +646,27 @@ export function TestingSecurity() {
 
       {view.decisionPending && (
         <div className="mt-6">
-          <DecisionBar view={view} onApprove={approvePhase} onRequestChanges={requestChanges} />
+          <DecisionBar
+            title={
+              view.superseded
+                ? `Build ${view.build} arrived after your approval, so this phase is waiting on you again`
+                : "This phase is waiting on you"
+            }
+            detail={
+              [
+                view.inbox.awaiting > 0 ? `${view.inbox.awaiting} repairs awaiting you` : null,
+                view.inbox.regressions > 0 ? `${view.inbox.regressions} regressions with the developers` : null,
+                view.findingCounts.toResolve > 0 ? `${view.findingCounts.toResolve} findings to resolve` : null,
+              ]
+                .filter(Boolean)
+                .join(" · ") || "Everything in this phase has settled"
+            }
+            approveLabel="Approve and start Deployment"
+            noteLabel="What needs to change before this can ship"
+            notePlaceholder="The KYC regression has to be fixed before Deployment starts."
+            onApprove={approvePhase}
+            onRequestChanges={requestChanges}
+          />
         </div>
       )}
     </div>

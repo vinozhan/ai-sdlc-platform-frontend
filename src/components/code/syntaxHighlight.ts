@@ -1,4 +1,4 @@
-type Lang = "typescript" | "tsx" | "java" | "css";
+type Lang = "typescript" | "tsx" | "java" | "css" | "json" | "yaml" | "dockerfile";
 
 const themes = {
   dark: {
@@ -135,6 +135,60 @@ function highlightCssLine(line: string, t: typeof themes.dark) {
     .replace(/:\s*([^;]+);/g, (_, val) => `: ${span(t.string, val.trim())};`);
 }
 
+const dockerInstructions = new Set([
+  "FROM", "RUN", "CMD", "LABEL", "EXPOSE", "ENV", "ADD", "COPY", "ENTRYPOINT", "VOLUME",
+  "USER", "WORKDIR", "ARG", "ONBUILD", "STOPSIGNAL", "HEALTHCHECK", "SHELL", "AS",
+]);
+
+/** Escape the plain runs and colour the double quoted ones. */
+function withStrings(text: string, t: typeof themes.dark) {
+  let out = "";
+  let rest = text;
+  for (;;) {
+    const open = rest.indexOf('"');
+    if (open === -1) return out + escapeHtml(rest);
+    const close = rest.indexOf('"', open + 1);
+    if (close === -1) return out + escapeHtml(rest);
+    out += escapeHtml(rest.slice(0, open)) + span(t.string, rest.slice(open, close + 1));
+    rest = rest.slice(close + 1);
+  }
+}
+
+function highlightYamlValue(text: string, t: typeof themes.dark) {
+  const value = text.trim();
+  if (!value) return escapeHtml(text);
+  const lead = text.slice(0, text.length - text.trimStart().length);
+  if (/^-?\d+(\.\d+)?$/.test(value)) return escapeHtml(lead) + span(t.number, value);
+  if (/^(true|false|null|~)$/.test(value)) return escapeHtml(lead) + span(t.keyword, value);
+  return escapeHtml(lead) + span(t.string, value);
+}
+
+function highlightYamlLine(line: string, t: typeof themes.dark) {
+  if (/^\s*#/.test(line)) return span(t.comment, line);
+
+  const hash = line.search(/\s#/);
+  const body = hash === -1 ? line : line.slice(0, hash);
+  const trailing = hash === -1 ? "" : line.slice(hash);
+
+  const key = body.match(/^(\s*(?:-\s*)?)([\w.$/-]+)(:)(.*)$/);
+  const marked = key
+    ? escapeHtml(key[1]) + span(t.function, key[2]) + span(t.punctuation, key[3]) + highlightYamlValue(key[4], t)
+    : highlightYamlValue(body, t);
+
+  return marked + (trailing ? span(t.comment, trailing) : "");
+}
+
+function highlightDockerLine(line: string, t: typeof themes.dark) {
+  if (/^\s*#/.test(line)) return span(t.comment, line);
+
+  const head = line.match(/^(\s*)([A-Z]+)\b/);
+  if (head && dockerInstructions.has(head[2])) {
+    const rest = line.slice(head[1].length + head[2].length);
+    return escapeHtml(head[1]) + span(t.keyword, head[2]) + withStrings(rest, t);
+  }
+  return withStrings(line, t);
+}
+
 export function highlightCode(code: string, language: Lang, isDark: boolean) {
   const t = isDark ? themes.dark : themes.light;
   const lines = code.split("\n");
@@ -142,6 +196,8 @@ export function highlightCode(code: string, language: Lang, isDark: boolean) {
   return lines.map((line) => {
     if (language === "java") return highlightJavaLine(line, t);
     if (language === "css") return highlightCssLine(line, t);
+    if (language === "yaml") return highlightYamlLine(line, t);
+    if (language === "dockerfile") return highlightDockerLine(line, t);
     return highlightTsLine(line, t);
   });
 }
@@ -151,5 +207,8 @@ export function languageFromPath(path: string): Lang {
   if (path.endsWith(".ts")) return "typescript";
   if (path.endsWith(".java")) return "java";
   if (path.endsWith(".css")) return "css";
+  if (path.endsWith(".json")) return "json";
+  if (path.endsWith(".yaml") || path.endsWith(".yml")) return "yaml";
+  if (path.endsWith("Dockerfile")) return "dockerfile";
   return "typescript";
 }

@@ -16,6 +16,9 @@ const languageLabels: Record<string, string> = {
   typescript: "TypeScript",
   java: "Java",
   css: "CSS",
+  json: "JSON",
+  yaml: "YAML",
+  dockerfile: "Dockerfile",
 };
 
 export function VSCodeEditor({

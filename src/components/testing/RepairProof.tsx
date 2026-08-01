@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { highlightCode } from "@/components/code/syntaxHighlight";
-import { ProofPair } from "@/components/testing/ProofPair";
+import { ProofPair } from "@/components/phase/ProofPair";
 import type { Repair } from "@/data/testingData";
 import { cn } from "@/utils/cn";
 

@@ -1,7 +1,7 @@
 import { AlertTriangle, ArrowUpRight, RefreshCw, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/primitives";
 import { Note, Panel, SeverityChip } from "@/components/testing/bits";
-import { ProofPair } from "@/components/testing/ProofPair";
+import { ProofPair } from "@/components/phase/ProofPair";
 import type { StepId, TestingView } from "@/components/testing/view";
 import { shortPath } from "@/components/testing/view";
 

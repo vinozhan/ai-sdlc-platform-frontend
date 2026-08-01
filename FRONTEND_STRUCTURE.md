@@ -43,7 +43,7 @@ frontend/
     │       ├── hooks/               #   feature hooks (useValidationRun, ...)
     │       ├── model/               #   pure derivation logic, no JSX, unit-testable
     │       ├── fixtures/            #   demo data for THIS feature only
-    │       ├── page.tsx             #   composes the feature; thin
+    │       ├── page.tsx             #   composes the feature; thin (you write this)
     │       └── index.ts             #   the only public door
     │
     ├── shared/                      # used by 2+ features, owned by none
@@ -81,9 +81,19 @@ cd frontend && mkdir -p \
   && echo "frontend structure ready"
 ```
 
-It creates the tree above, one `index.ts` door per feature, `vite-env.d.ts` (needed the
-moment you import an image or read `import.meta.env`), and a `.gitkeep` in every empty
-folder so the shape survives the first commit. Delete each `.gitkeep` as its folder fills.
+It creates the folders, one `index.ts` door per feature, `vite-env.d.ts` (needed the moment
+you import an image or read `import.meta.env`), and a `.gitkeep` in every empty folder so
+the shape survives the first commit. Delete each `.gitkeep` as its folder fills.
+
+It deliberately does **not** create `page.tsx` or any other placeholder component. Those
+are written when the feature is built, and an empty `.tsx` fails to compile as soon as
+something imports it. When you start a feature, add its `page.tsx` and export it from that
+feature's `index.ts`:
+
+```ts
+// src/features/testing/index.ts
+export { TestingPage } from "./page";
+```
 
 ### Then wire the `@/` alias
 

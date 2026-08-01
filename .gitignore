@@ -38,3 +38,6 @@ Thumbs.db
 coverage/
 .nyc_output/
 structure.md
+Integration_Flow.md
+Deployment.md
+deploy-connect.png

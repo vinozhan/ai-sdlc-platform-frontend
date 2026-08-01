@@ -145,6 +145,7 @@ export function StepTests({
         </Panel>
 
         <Console
+          label="Run transcript"
           lines={view.transcript}
           streaming={view.streaming}
           meta={

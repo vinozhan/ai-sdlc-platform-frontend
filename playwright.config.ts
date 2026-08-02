@@ -1,0 +1,28 @@
+import { defineConfig, devices } from "@playwright/test";
+
+/**
+ * Critical journeys only (login → project → gate).
+ * Install: npm i -D @playwright/test && npx playwright install
+ */
+export default defineConfig({
+  testDir: "./e2e",
+  fullyParallel: true,
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 2 : 0,
+  reporter: "list",
+  use: {
+    baseURL: "http://localhost:5173",
+    trace: "on-first-retry",
+  },
+  projects: [
+    {
+      name: "chromium",
+      use: { ...devices["Desktop Chrome"] },
+    },
+  ],
+  webServer: {
+    command: "npm run dev -- --port 5173",
+    url: "http://localhost:5173",
+    reuseExistingServer: !process.env.CI,
+  },
+});

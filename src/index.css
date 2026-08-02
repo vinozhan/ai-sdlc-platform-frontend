@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./assets/fonts/fonts.css";
 
 /* The app switches themes by putting .dark on <html> (see useStore.applyTheme).
    Tailwind 4 points `dark:` at prefers-color-scheme by default, which left every
@@ -6,6 +7,7 @@
    light styles on dark surfaces. Point the variant at the class instead. */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Typography tokens — keep in sync with shared/constants/fonts.ts (exclusive stacks). */
 @theme {
   --color-primary: #2563eb;
   --color-c1: #22c55e;
@@ -16,8 +18,8 @@
   --color-warning: #f59e0b;
   --color-error: #ef4444;
   --color-info: #3b82f6;
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-sans: "Inter";
+  --font-mono: "JetBrains Mono";
 }
 
 @layer base {
@@ -64,12 +66,50 @@
     height: 100%;
   }
 
-  body {
+  /*
+   * Every page inherits self-hosted faces from assets/fonts (via fonts.css).
+   * --font-sans = Inter, --font-mono = JetBrains Mono — no system fallbacks.
+   * Tailwind `.font-mono` still wins over inherit (utilities layer).
+   */
+  html,
+  body,
+  #root {
     font-family: var(--font-sans);
+  }
+
+  body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background-color: var(--bg-primary);
     color: var(--text-primary);
+  }
+
+  body *,
+  #root * {
+    font-family: inherit;
+  }
+
+  button,
+  input,
+  select,
+  textarea,
+  optgroup {
+    font-family: inherit;
+  }
+
+  code,
+  kbd,
+  samp,
+  pre {
+    font-family: var(--font-mono);
+  }
+
+  /* Third-party surfaces that might otherwise pick up a UA font */
+  .react-flow,
+  .react-flow__node,
+  .react-flow__edge-text,
+  .react-flow__attribution {
+    font-family: var(--font-sans);
   }
 
   .light {

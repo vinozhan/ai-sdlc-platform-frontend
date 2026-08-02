@@ -1,0 +1,10 @@
+# CODEOWNERS — platform review for shared design-system kit
+# Replace @ai-sdlc/platform-frontend with your GitHub org/team slug to enforce reviews.
+# Docs: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Shared Services / Platform UX — design system, viewers, theme bridge
+/src/shared/ @ai-sdlc/platform-frontend
+
+# Cross-cutting infrastructure
+/src/lib/ @ai-sdlc/platform-frontend
+/src/entities/ @ai-sdlc/platform-frontend

@@ -1,0 +1,1 @@
+export { useEditorTabs } from "./useEditorTabs";

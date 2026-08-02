@@ -83,7 +83,7 @@ export const activityLogEntries: ActivityLogEntry[] = [
     timestamp: "2026-01-18T11:22:00",
     displayDate: "Jan 18, 2026",
     title: "Production deployment healthy",
-    description: "Frontend (Vercel) and Backend (Azure AKS) targets reporting healthy",
+    description: "Frontend (Vercel) and Backend (Render) targets reporting healthy",
     actor: "CI/CD Pipeline",
     category: "deploy",
     metric: "99.97% uptime",

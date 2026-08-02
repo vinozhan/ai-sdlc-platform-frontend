@@ -16,7 +16,8 @@ export function useSettingsActions() {
     updateGitSettings: (patch: Partial<SettingsState["git"]>) => settingsApi.updateGit(patch),
     updateVercelSettings: (patch: Partial<SettingsState["vercel"]>) =>
       settingsApi.updateVercel(patch),
-    updateAzureSettings: (patch: Partial<SettingsState["azure"]>) => settingsApi.updateAzure(patch),
+    updateRenderSettings: (patch: Partial<SettingsState["render"]>) =>
+      settingsApi.updateRender(patch),
     updateDatabaseSettings: (patch: Partial<SettingsState["database"]>) =>
       settingsApi.updateDatabase(patch),
     updateAiSettings: (patch: Partial<SettingsState["ai"]>) => settingsApi.updateAi(patch),

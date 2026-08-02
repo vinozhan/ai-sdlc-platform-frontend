@@ -1,6 +1,6 @@
 import { Download, ScrollText } from "lucide-react";
 import { Button, Td, Th } from "@/shared/ui/primitives";
-import { ActorMark, Panel } from "../../bits";
+import { ActorMark, Panel } from "../../bits/index";
 import type { AuditEntry } from "../../../fixtures/types";
 import type { TestingView } from "../../../model/view";
 

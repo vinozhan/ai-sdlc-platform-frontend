@@ -1,5 +1,5 @@
 import { Workflow } from "lucide-react";
-import { Panel } from "../../bits";
+import { Panel } from "../../bits/index";
 import type { DecisionChainStep } from "../../../fixtures/types";
 
 export function ReportDecisionChain({ decisionChain }: { decisionChain: DecisionChainStep[] }) {

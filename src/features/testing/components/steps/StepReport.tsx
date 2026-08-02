@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ArrowUpRight, Check, GitBranch, History, MessageSquare, RotateCcw } from "lucide-react";
 import { cn } from "@/shared/utils/cn";
 import { Button } from "@/shared/ui/primitives";
-import { Note, Panel } from "../bits";
+import { Note, Panel } from "../bits/index";
 import type { DecisionChainStep, TestingRun } from "../../fixtures/types";
 import type { StepId, TestingView } from "../../model/view";
 import { ReportAuditTable } from "./report/ReportAuditTable";

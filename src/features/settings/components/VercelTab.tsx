@@ -15,8 +15,8 @@ export function VercelTab() {
   return (
     <SettingsPanel
       icon={Cloud}
-      title="Vercel deployment"
-      description="Publish previews and production builds automatically"
+      title="Vercel frontend"
+      description="Host the SPA — preview URLs and production deploys"
       connected={settings.vercel.connected}
       footer={
         <>

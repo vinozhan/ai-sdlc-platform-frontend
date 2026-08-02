@@ -1,6 +1,6 @@
 import { Activity, FileCheck, FlaskConical, TrendingUp } from "lucide-react";
 import { Progress } from "@/shared/ui/primitives";
-import { Bar, Metric, Note, Panel } from "../bits";
+import { Bar, Metric, Note, Panel } from "../bits/index";
 import type { Quality } from "../../fixtures/types";
 import type { TestingView } from "../../model/view";
 

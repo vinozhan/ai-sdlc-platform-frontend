@@ -1,24 +1,24 @@
 import { useState, type ComponentType } from "react";
-import { User, GitBranch, Cloud, Brain, CloudCog, Database } from "lucide-react";
+import { User, GitBranch, Cloud, Brain, Server, Database } from "lucide-react";
 import { useUiStore } from "@/store/ui";
 import { cn } from "@/shared/utils/cn";
 import {
   ProfileTab,
   GitTab,
   VercelTab,
-  AzureTab,
+  RenderTab,
   DatabaseTab,
   AiTab,
 } from "./components";
 
-type SettingsTab = "profile" | "git" | "vercel" | "azure" | "database" | "ai";
+type SettingsTab = "profile" | "git" | "vercel" | "render" | "database" | "ai";
 
 const tabs: { id: SettingsTab; label: string; description: string; icon: typeof User }[] = [
   { id: "profile", label: "Profile", description: "Your identity & workspace", icon: User },
   { id: "git", label: "Git", description: "Source control provider", icon: GitBranch },
-  { id: "vercel", label: "Vercel", description: "Deploy & preview URLs", icon: Cloud },
-  { id: "azure", label: "Azure", description: "Cloud provider credentials", icon: CloudCog },
-  { id: "database", label: "Database", description: "SQL / NoSQL connection", icon: Database },
+  { id: "vercel", label: "Vercel", description: "Frontend deploy & previews", icon: Cloud },
+  { id: "render", label: "Render", description: "Backend services & APIs", icon: Server },
+  { id: "database", label: "Database", description: "Neon & MongoDB Atlas", icon: Database },
   { id: "ai", label: "AI Model", description: "Generation preferences", icon: Brain },
 ];
 
@@ -26,7 +26,7 @@ const tabContent: Record<SettingsTab, ComponentType> = {
   profile: ProfileTab,
   git: GitTab,
   vercel: VercelTab,
-  azure: AzureTab,
+  render: RenderTab,
   database: DatabaseTab,
   ai: AiTab,
 };
@@ -66,8 +66,8 @@ export function SettingsPage() {
                       ? "bg-blue-600/20 text-white ring-1 ring-blue-500/30"
                       : "bg-blue-50 text-blue-900 ring-1 ring-blue-200"
                     : isDark
-                    ? "text-slate-400 hover:bg-white/[0.04] hover:text-slate-200"
-                    : "text-slate-600 hover:bg-slate-50"
+                      ? "text-slate-400 hover:bg-white/[0.04] hover:text-slate-200"
+                      : "text-slate-600 hover:bg-slate-50"
                 )}
               >
                 <Icon className={cn("h-4 w-4 shrink-0", active && (isDark ? "text-blue-400" : "text-blue-600"))} />
@@ -81,8 +81,8 @@ export function SettingsPage() {
                           ? "text-slate-400"
                           : "text-blue-600/70"
                         : isDark
-                        ? "text-slate-600"
-                        : "text-slate-400"
+                          ? "text-slate-600"
+                          : "text-slate-400"
                     )}
                   >
                     {item.description}

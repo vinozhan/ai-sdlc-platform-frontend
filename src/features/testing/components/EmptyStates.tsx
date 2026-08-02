@@ -1,6 +1,6 @@
 import { AlertTriangle, ArrowUpRight, FlaskConical, RefreshCw } from "lucide-react";
 import { Button, Card } from "@/shared/ui/primitives";
-import { Note } from "./bits";
+import { Note } from "./bits/index";
 
 const willHappen = [
   "Write unit and integration tests from the requirements and the code, then run them.",

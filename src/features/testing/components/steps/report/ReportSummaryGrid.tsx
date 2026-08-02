@@ -1,6 +1,6 @@
 import { ArrowUpRight, ClipboardCheck } from "lucide-react";
 import { cn } from "@/shared/utils/cn";
-import { Panel } from "../../bits";
+import { Panel } from "../../bits/index";
 import type { StepId, TestingView } from "../../../model/view";
 
 function SummaryCell({

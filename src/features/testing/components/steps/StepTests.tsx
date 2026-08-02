@@ -4,7 +4,7 @@ import { Td, Th } from "@/shared/ui/primitives";
 import { VSCodeFileTree } from "@/shared/code-viewer/VSCodeFileTree";
 import { VSCodeEditor, type EditorTab } from "@/shared/code-viewer/VSCodeEditor";
 import type { FileEntry } from "@/shared/code-viewer/buildFileTree";
-import { Bar, Console, Panel } from "../bits";
+import { Bar, Console, Panel } from "../bits/index";
 import type { StepId, TestingView } from "../../model/view";
 import type { TestFileMeta } from "../../fixtures/types";
 

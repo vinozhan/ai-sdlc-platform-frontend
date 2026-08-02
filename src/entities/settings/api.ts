@@ -6,19 +6,17 @@ import { http } from "@/lib/http";
 export const defaultSettings: SettingsState = {
   git: { provider: "github", token: "", defaultOrg: "acme-labs", connected: true },
   vercel: { token: "", team: "acme-labs", connected: true },
-  azure: {
-    clientId: "",
-    clientSecret: "",
-    tenantId: "",
-    subscriptionId: "",
+  render: {
+    apiKey: "",
+    serviceId: "",
+    region: "oregon",
     connected: false,
   },
   database: {
-    type: "sql",
-    engine: "postgresql",
-    host: "localhost",
+    provider: "neon",
+    host: "ep-cool-name.us-east-2.aws.neon.tech",
     port: "5432",
-    name: "nexuspay",
+    name: "neondb",
     username: "",
     password: "",
     connectionString: "",
@@ -38,7 +36,7 @@ export interface SettingsApi {
   update(patch: Partial<SettingsState>): Promise<SettingsState>;
   updateGit(patch: Partial<SettingsState["git"]>): Promise<SettingsState>;
   updateVercel(patch: Partial<SettingsState["vercel"]>): Promise<SettingsState>;
-  updateAzure(patch: Partial<SettingsState["azure"]>): Promise<SettingsState>;
+  updateRender(patch: Partial<SettingsState["render"]>): Promise<SettingsState>;
   updateDatabase(patch: Partial<SettingsState["database"]>): Promise<SettingsState>;
   updateAi(patch: Partial<SettingsState["ai"]>): Promise<SettingsState>;
   updateProfile(patch: Partial<SettingsState["profile"]>): Promise<SettingsState>;
@@ -82,8 +80,8 @@ function createFixtureSettingsApi(): SettingsApi {
     async updateVercel(patch) {
       return set({ ...settingsDb, vercel: { ...settingsDb.vercel, ...patch } });
     },
-    async updateAzure(patch) {
-      return set({ ...settingsDb, azure: { ...settingsDb.azure, ...patch } });
+    async updateRender(patch) {
+      return set({ ...settingsDb, render: { ...settingsDb.render, ...patch } });
     },
     async updateDatabase(patch) {
       return set({ ...settingsDb, database: { ...settingsDb.database, ...patch } });
@@ -103,7 +101,7 @@ function createHttpSettingsApi(): SettingsApi {
     update: (patch) => http.patch<SettingsState>("/settings", patch),
     updateGit: (patch) => http.patch<SettingsState>("/settings/git", patch),
     updateVercel: (patch) => http.patch<SettingsState>("/settings/vercel", patch),
-    updateAzure: (patch) => http.patch<SettingsState>("/settings/azure", patch),
+    updateRender: (patch) => http.patch<SettingsState>("/settings/render", patch),
     updateDatabase: (patch) => http.patch<SettingsState>("/settings/database", patch),
     updateAi: (patch) => http.patch<SettingsState>("/settings/ai", patch),
     updateProfile: (patch) => http.patch<SettingsState>("/settings/profile", patch),

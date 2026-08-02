@@ -1,7 +1,7 @@
 import { Check, GitCompare, X } from "lucide-react";
 import { cn } from "@/shared/utils/cn";
 import { Badge, Card, CardContent, Td, Th } from "@/shared/ui/primitives";
-import { Panel, severityLabel } from "../bits";
+import { Panel, severityLabel } from "../bits/index";
 import type { DetectorComparison, Severity } from "../../fixtures/types";
 import type { StepId, TestingView } from "../../model/view";
 import { SecurityFindingsList } from "./security/SecurityFindingsList";

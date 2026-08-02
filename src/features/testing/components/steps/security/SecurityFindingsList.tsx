@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import { ChevronDown, ChevronRight, ShieldAlert } from "lucide-react";
 import { cn } from "@/shared/utils/cn";
 import { Td, Th } from "@/shared/ui/primitives";
-import { FindingStatusChip, Panel, SeverityChip } from "../../bits";
+import { FindingStatusChip, Panel, SeverityChip } from "../../bits/index";
 import type { Finding } from "../../../fixtures/types";
 import { shortPath, type StepId } from "../../../model/view";
 import { SecurityFindingDetail } from "./SecurityFindingDetail";

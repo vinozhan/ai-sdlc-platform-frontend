@@ -1,7 +1,7 @@
 import { ArrowLeft, ArrowUpRight, Bug, Check, ShieldAlert, Wrench, X } from "lucide-react";
 import { cn } from "@/shared/utils/cn";
 import { Badge, Button } from "@/shared/ui/primitives";
-import { Note, Panel, StateChip, TriageChip } from "../../bits";
+import { Note, Panel, StateChip, TriageChip } from "../../bits/index";
 import { RepairProof } from "../../RepairProof";
 import { fileName, type ViewFailure } from "../../../model/view";
 

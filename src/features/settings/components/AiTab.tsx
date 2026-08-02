@@ -42,7 +42,6 @@ export function AiTab() {
           >
             <option value="openai">OpenAI</option>
             <option value="anthropic">Anthropic</option>
-            <option value="azure">Azure OpenAI</option>
             <option value="local">Local model</option>
           </select>
         </Field>

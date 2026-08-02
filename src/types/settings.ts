@@ -1,5 +1,7 @@
 /** Settings / integrations types. Secrets stay in memory — never persist tokens. */
 
+export type DatabaseProvider = "neon" | "mongodb_atlas";
+
 export interface SettingsState {
   git: {
     provider: string;
@@ -7,21 +9,22 @@ export interface SettingsState {
     defaultOrg: string;
     connected: boolean;
   };
+  /** Frontend hosting (Vercel). */
   vercel: {
     token: string;
     team: string;
     connected: boolean;
   };
-  azure: {
-    clientId: string;
-    clientSecret: string;
-    tenantId: string;
-    subscriptionId: string;
+  /** Backend hosting (Render). */
+  render: {
+    apiKey: string;
+    serviceId: string;
+    region: string;
     connected: boolean;
   };
+  /** Data stores: Neon (PostgreSQL) or MongoDB Atlas. */
   database: {
-    type: "sql" | "nosql";
-    engine: string;
+    provider: DatabaseProvider;
     host: string;
     port: string;
     name: string;

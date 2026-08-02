@@ -1,35 +1,54 @@
 import { Database, Link2, Unlink, Shield } from "lucide-react";
 import { useUiStore } from "@/store/ui";
 import { useSettings, useSettingsActions } from "@/entities/settings";
+import type { DatabaseProvider } from "@/types/settings";
 import { cn } from "@/shared/utils/cn";
 import { Button } from "@/shared/ui/primitives";
 import { SettingsPanel } from "./SettingsPanel";
 import { Field, useFieldClasses } from "./Field";
 
-const SQL_ENGINES = [
-  { value: "postgresql", label: "PostgreSQL", defaultPort: "5432" },
-  { value: "mysql", label: "MySQL", defaultPort: "3306" },
-  { value: "sqlserver", label: "Azure SQL", defaultPort: "1433" },
-] as const;
-
-const NOSQL_ENGINES = [
-  { value: "mongodb", label: "MongoDB", defaultPort: "27017" },
-  { value: "cosmosdb", label: "Azure Cosmos DB", defaultPort: "443" },
-  { value: "redis", label: "Redis", defaultPort: "6379" },
-] as const;
+const PROVIDERS: {
+  id: DatabaseProvider;
+  label: string;
+  desc: string;
+  port: string;
+  hostPlaceholder: string;
+  namePlaceholder: string;
+  connectionPlaceholder: string;
+}[] = [
+  {
+    id: "neon",
+    label: "Neon",
+    desc: "Serverless PostgreSQL",
+    port: "5432",
+    hostPlaceholder: "ep-cool-name.us-east-2.aws.neon.tech",
+    namePlaceholder: "neondb",
+    connectionPlaceholder: "postgresql://user:pass@ep-xxx.us-east-2.aws.neon.tech/neondb?sslmode=require",
+  },
+  {
+    id: "mongodb_atlas",
+    label: "MongoDB Atlas",
+    desc: "Managed document database",
+    port: "27017",
+    hostPlaceholder: "cluster0.xxxxx.mongodb.net",
+    namePlaceholder: "app_data",
+    connectionPlaceholder: "mongodb+srv://user:pass@cluster0.xxxxx.mongodb.net/app_data",
+  },
+];
 
 export function DatabaseTab() {
   const addToast = useUiStore((s) => s.addToast);
   const settings = useSettings();
   const { updateDatabaseSettings } = useSettingsActions();
   const { isDark, fieldClass, textAreaClass } = useFieldClasses();
-  const dbEngines = settings.database.type === "sql" ? SQL_ENGINES : NOSQL_ENGINES;
+  const activeProvider = PROVIDERS.find((p) => p.id === settings.database.provider) ?? PROVIDERS[0];
+  const isNeon = settings.database.provider === "neon";
 
   return (
     <SettingsPanel
       icon={Database}
-      title="Database Configuration"
-      description="Connect SQL or NoSQL storage used by generated backends"
+      title="Database"
+      description="Neon for PostgreSQL and MongoDB Atlas for document storage"
       connected={settings.database.connected}
       footer={
         <>
@@ -40,7 +59,7 @@ export function DatabaseTab() {
               addToast({
                 type: "success",
                 title: "Database connected",
-                message: `${settings.database.type === "sql" ? "SQL" : "NoSQL"} · ${settings.database.engine}`,
+                message: activeProvider.label,
               });
             }}
           >
@@ -62,29 +81,20 @@ export function DatabaseTab() {
         </>
       }
     >
-      <Field
-        label="Database type"
-        hint="NexusPay defaults to SQL (PostgreSQL); NoSQL for flexible document stores like MediTrack"
-      >
+      <Field label="Provider" hint="Stack defaults: Neon (PostgreSQL) and MongoDB Atlas">
         <div className="grid grid-cols-2 gap-3">
-          {(
-            [
-              { id: "sql" as const, label: "SQL", desc: "PostgreSQL, MySQL, Azure SQL" },
-              { id: "nosql" as const, label: "NoSQL", desc: "MongoDB, Cosmos DB, Redis" },
-            ] as const
-          ).map((option) => {
-            const active = settings.database.type === option.id;
+          {PROVIDERS.map((option) => {
+            const active = settings.database.provider === option.id;
             return (
               <button
                 key={option.id}
                 type="button"
                 onClick={() => {
-                  const engines = option.id === "sql" ? SQL_ENGINES : NOSQL_ENGINES;
-                  const engine = engines[0];
                   updateDatabaseSettings({
-                    type: option.id,
-                    engine: engine.value,
-                    port: engine.defaultPort,
+                    provider: option.id,
+                    port: option.port,
+                    host: option.hostPlaceholder,
+                    name: option.namePlaceholder,
                   });
                 }}
                 className={cn(
@@ -94,8 +104,8 @@ export function DatabaseTab() {
                       ? "border-blue-500/40 bg-blue-600/15 ring-1 ring-blue-500/30"
                       : "border-blue-300 bg-blue-50 ring-1 ring-blue-200"
                     : isDark
-                    ? "border-white/10 bg-white/[0.03] hover:bg-white/[0.05]"
-                    : "border-slate-200 bg-white hover:bg-slate-50"
+                      ? "border-white/10 bg-white/[0.03] hover:bg-white/[0.05]"
+                      : "border-slate-200 bg-white hover:bg-slate-50"
                 )}
               >
                 <p className={cn("text-sm font-semibold", isDark ? "text-white" : "text-slate-900")}>
@@ -111,44 +121,12 @@ export function DatabaseTab() {
       </Field>
 
       <div className="grid gap-5 sm:grid-cols-2">
-        <Field label="Engine">
-          <select
-            className={fieldClass}
-            value={settings.database.engine}
-            onChange={(e) => {
-              const engine = dbEngines.find((item) => item.value === e.target.value);
-              updateDatabaseSettings({
-                engine: e.target.value,
-                ...(engine ? { port: engine.defaultPort } : {}),
-              });
-            }}
-          >
-            {dbEngines.map((engine) => (
-              <option key={engine.value} value={engine.value}>
-                {engine.label}
-              </option>
-            ))}
-          </select>
-        </Field>
-        <Field label="Database name">
+        <Field label={isNeon ? "Database name" : "Database / collection DB"}>
           <input
             className={fieldClass}
-            placeholder={settings.database.type === "sql" ? "nexuspay" : "app_data"}
+            placeholder={activeProvider.namePlaceholder}
             value={settings.database.name}
             onChange={(e) => updateDatabaseSettings({ name: e.target.value })}
-          />
-        </Field>
-      </div>
-
-      <div className="grid gap-5 sm:grid-cols-3">
-        <Field label="Host / endpoint" className="sm:col-span-2">
-          <input
-            className={cn(fieldClass, "font-mono text-[13px]")}
-            placeholder={
-              settings.database.type === "sql" ? "db.example.com" : "cluster0.xxxxx.mongodb.net"
-            }
-            value={settings.database.host}
-            onChange={(e) => updateDatabaseSettings({ host: e.target.value })}
           />
         </Field>
         <Field label="Port">
@@ -161,11 +139,20 @@ export function DatabaseTab() {
         </Field>
       </div>
 
+      <Field label={isNeon ? "Neon host" : "Atlas cluster host"}>
+        <input
+          className={cn(fieldClass, "font-mono text-[13px]")}
+          placeholder={activeProvider.hostPlaceholder}
+          value={settings.database.host}
+          onChange={(e) => updateDatabaseSettings({ host: e.target.value })}
+        />
+      </Field>
+
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Username">
           <input
             className={fieldClass}
-            placeholder="db_user"
+            placeholder={isNeon ? "neondb_owner" : "atlas_user"}
             value={settings.database.username}
             onChange={(e) => updateDatabaseSettings({ username: e.target.value })}
           />
@@ -191,15 +178,15 @@ export function DatabaseTab() {
 
       <Field
         label="Connection string"
-        hint="Optional. Used as DATABASE_URL in deploy manifests when provided"
+        hint={
+          isNeon
+            ? "Paste from Neon Console → Connection details (DATABASE_URL)"
+            : "Paste from Atlas → Connect → Drivers (mongodb+srv)"
+        }
       >
         <textarea
           className={cn(textAreaClass, "font-mono text-[13px]")}
-          placeholder={
-            settings.database.type === "sql"
-              ? "postgresql://user:pass@host:5432/nexuspay"
-              : "mongodb+srv://user:pass@cluster0.xxxxx.mongodb.net/app_data"
-          }
+          placeholder={activeProvider.connectionPlaceholder}
           value={settings.database.connectionString}
           onChange={(e) => updateDatabaseSettings({ connectionString: e.target.value })}
         />

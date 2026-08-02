@@ -1,6 +1,6 @@
 import { AlertTriangle, ArrowUpRight, RefreshCw, ShieldCheck } from "lucide-react";
 import { Button } from "@/shared/ui/primitives";
-import { Note, Panel, SeverityChip } from "../bits";
+import { Note, Panel, SeverityChip } from "../bits/index";
 import { ProofPair } from "../ProofPair";
 import type { StepId, TestingView } from "../../model/view";
 import { shortPath } from "../../model/view";

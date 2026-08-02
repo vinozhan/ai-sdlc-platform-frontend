@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { Bug, CheckCircle2, Clock, Inbox, Wrench, XCircle } from "lucide-react";
 import { cn } from "@/shared/utils/cn";
 import { Card, CardContent } from "@/shared/ui/primitives";
-import { Note, Panel, StateChip, TriageChip } from "../../bits";
+import { Note, Panel, StateChip, TriageChip } from "../../bits/index";
 import type { TestingView, ViewFailure } from "../../../model/view";
 
 export type InboxFilter = "attention" | "regression" | "brittle" | "healed" | "awaiting" | "all";

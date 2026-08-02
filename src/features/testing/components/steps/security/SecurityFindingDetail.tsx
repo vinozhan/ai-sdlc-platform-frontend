@@ -1,6 +1,6 @@
 import { ArrowUpRight, Bot, Cpu, ShieldCheck, X } from "lucide-react";
 import { Badge, Button } from "@/shared/ui/primitives";
-import { Note } from "../../bits";
+import { Note } from "../../bits/index";
 import { CodeDiff } from "../../RepairProof";
 import type { Finding } from "../../../fixtures/types";
 import type { StepId } from "../../../model/view";
